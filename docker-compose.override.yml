@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  netbox:
+    ports:
+      - 8000:8080
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: netbox:d3c
+    volumes: 
+      - ./plugins:/plugins
+  netbox-worker:
+    image: netbox:d3c
+    build:
+      context: .
+      dockerfile: Dockerfile
+  netbox-housekeeping:
+    image: netbox:d3c
+    build:
+      context: .
+      dockerfile: Dockerfile

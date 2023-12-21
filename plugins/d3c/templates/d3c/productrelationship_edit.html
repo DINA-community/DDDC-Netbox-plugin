@@ -1,0 +1,76 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+{% load helpers %}
+{% load i18n %}
+
+{% block form %}
+    <div class="field-group my-5">
+      <div class="row mb-2">
+        <h5 class="offset-sm-3">{% trans "Parent Product" %}</h5>
+      </div>
+      <div class="row mb-2">
+        <div class="offset-sm-3">
+          <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="source_device_tab" data-bs-toggle="tab" aria-controls="source_device" data-bs-target="#source_device" class="nav-link {% if not form.initial.source_software %}active{% endif %}">
+                Device
+              </button>
+            </li>
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="source_software_tab" data-bs-toggle="tab" aria-controls="source_software" data-bs-target="#source_software" class="nav-link {% if form.initial.source_software %}active{% endif %}">
+                Software
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content p-0 border-0">
+        <div class="tab-pane {% if not form.initial.source_software %}active{% endif %}" id="source_device" role="tabpanel" aria-labeled-by="source_device_tab">
+          {% render_field form.source_device %}
+        </div>
+        <div class="tab-pane {% if form.initial.source_software %}active{% endif %}" id="source_software" role="tabpanel" aria-labeled-by="source_software_tab">
+          {% render_field form.source_software %}
+        </div>
+      </div>
+    </div>
+
+   <div class="field-group my-5">
+      <div class="row mb-2">
+        <h5 class="offset-sm-3">Relationship</h5>
+      </div>
+      {% render_field form.category %}
+    </div>
+
+    <div class="field-group my-5">
+      <div class="row mb-2">
+        <h5 class="offset-sm-3">{% trans "Target Product" %}</h5>
+      </div>
+      <div class="row mb-2">
+        <div class="offset-sm-3">
+          <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="destination_device_tab" data-bs-toggle="tab" aria-controls="destination_device" data-bs-target="#destination_device" class="nav-link {% if not form.initial.destination_software %}active{% endif %}">
+                Device
+              </button>
+            </li>
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="destination_software_tab" data-bs-toggle="tab" aria-controls="destination_software" data-bs-target="#destination_software" class="nav-link {% if form.initial.destination_software %}active{% endif %}">
+                Software
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content p-0 border-0">
+        <div class="tab-pane {% if not form.initial.destination_software %}active{% endif %}" id="destination_device" role="tabpanel" aria-labeled-by="destination_device_tab">
+          {% render_field form.destination_device %}
+        </div>
+        <div class="tab-pane {% if form.initial.destination_software %}active{% endif %}" id="destination_software" role="tabpanel" aria-labeled-by="destination_software_tab">
+          {% render_field form.destination_software %}
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

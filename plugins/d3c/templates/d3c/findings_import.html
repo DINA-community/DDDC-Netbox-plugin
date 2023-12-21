@@ -1,0 +1,304 @@
+{% extends 'base/layout.html' %}
+{% load helpers %}
+{% load form_helpers %}
+{% load d3c_tags %}
+
+{% block head %}
+<style>
+  html[data-netbox-color-mode=dark] td.highlight1 {
+    background: #363f3f;
+  }
+  td.highlight1 {
+    background: #D6EEEE;
+  }
+  html[data-netbox-color-mode=dark] td.highlight2 {
+    background: #3d4e4e;
+  }
+  td.highlight2 {
+    background: #adebeb;
+  }
+  html[data-netbox-color-mode=dark] col.highlight1 {
+    border-width: 0px 4px; 
+    border-style: solid; 
+    border-color: #363f3f;
+    background-color: #363f3f;
+  }
+  col.highlight1 {
+    border-width: 0px 4px; 
+    border-style: solid; 
+    border-color: #D6EEEE;
+    background-color: #D6EEEE;
+  }
+  html[data-netbox-color-mode=dark] col.highlight2 {
+    border-width: 0px 4px; 
+    border-style: solid; 
+    border-color: #3d4e4e;
+    background-color: #3d4e4e;
+  }
+  col.highlight2 {
+    border-width: 0px 4px; 
+    border-style: solid; 
+    border-color: #adebeb;
+    background-color: #adebeb;
+  }
+</style>
+{% endblock %}
+
+{% block title %}{{ form.title }}{% endblock %}
+
+{% block tabs %}
+<ul class="nav nav-tabs px-3">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="data-import-tab" data-bs-toggle="tab" data-bs-target="#data-import-form"
+      data-href="#tab_data-import-form" type="button" role="tab" aria-controls="data-import-form" aria-selected="true">
+      Data Import
+    </button>
+  </li>
+</ul>
+{% endblock tabs %}
+
+{% block content-wrapper %}
+<div class="tab-content">
+  {# Data Import Form #}
+  <div class="tab-pane show active" id="data-import-form" role="tabpanel" aria-labelledby="data-import-tab">
+    {% block content %}
+    <div class="row">
+      <div class="col col-md-12 col-lg-10">
+        <form action="" method="post" enctype="multipart/form-data" class="form">
+          {% csrf_token %}
+          {% render_field form.data_string %}
+          {% render_field form.data_file %}
+          {% render_field form.format %}
+          {{ form.file_name.as_hidden }}
+          {{ form.step_field.as_hidden }}
+          <div class="form-group">
+            <div class="col col-md-12 text-end">
+              <button type="submit" name="submit_button" value="data_validate" class="btn btn-primary">Validate</button>
+              {% if form|get_attr:'step' == 1 %}
+              <button type="submit" name="submit_button" value="string_matcher" class="btn btn-primary">Run String Matcher</button>
+              <button type="submit" name="submit_button" value="generate_table" class="btn btn-primary">Show Full Result</button>
+              <button type="submit" name="submit_button" value="data_submit" class="btn btn-primary">Submit</button>
+              {% endif %}
+              {% if return_url %}
+              <a href="{{ return_url }}" class="btn btn-outline-danger">Cancel</a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="field-group mb-5">
+            <div class="row mb-2">
+              {% if form|get_attr:'step' == 1 %}
+              <h5 class="offset-sm-3">Mappings</h5>
+                <div class="row">
+                  <div class="col col-sm-3 text-lg-end">
+                    Existing Mappings
+                  </div>
+                  <div class="col col-sm-3">
+                    {{ form.mapping }}
+                  </div>
+                  <div class="col col-sm-3">
+                    <button type="submit" name="submit_button" value="mapping_load" class="btn btn-primary">Load Mapping</button>
+                    <button type="submit" name="submit_button" value="mapping_delete" class="btn btn-secondary">Delete</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col col-sm-3 text-lg-end">
+                    Save Mapping
+                  </div>
+                  <div class="col col-sm-3">
+                    {{ form.mapping_name }}
+                  </div>
+                  <div class="col col-sm-3">
+                    <button type="submit" name="submit_button" value="mapping_save" class="btn btn-primary">Save Mapping</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col col-sm-3 text-lg-end">
+                  </div>
+                  <div class="col col-sm-6">
+                    <p>Templates can contain literal text. Occurrences of <code>{column-header}</code> will be replaced with the contents of that column,
+                      or <code>{column-header:`[search]`:`[expand]`:`[notFound]`}</code> will apply the regex [search] and [expand] patterns. If the pattern
+                      does not match, the [notFound] text is used. If the [notFound] text is <code>\0</code> the unmatched string is used.
+                      If there is no [notFound] text, the record is skipped.
+                      See <a href="https://docs.python.org/3/library/re.html#match-objects">match-objects</a>, <a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">Regular Expression Syntax</a> and examples below.</p>
+                    <p>
+                      {% with headers=form|get_attr:'csv_headers_filled' %}
+                        {% if headers %}
+                          Found headers:
+                          <ul>
+                          {% for name in headers %}
+                            <li style="display:inline-block;padding:2px 5px;margin:1px;background-color: var(--nbx-body-bg);border:1px solid var(--nbx-pre-border-color);border-radius: 3px;">{{ name }}</li>
+                          {% endfor %}
+                          </ul>
+                        {% else %}
+                          No headers found.
+                        {% endif %}
+                      {% endwith %}
+                    </p>
+                  </div>
+                </div>
+                {% for name in form.templates.values %}
+                  {% with field=form|getfield:name %}
+                  <div class="row">
+                    <div class="col-sm-3 text-lg-end">
+                      {{ field.label_tag }}
+                    </div>
+                    <div class="col-sm-5">
+                      {{ field }}
+                    </div>
+                    <div class="col">
+                      {% if field.errors %}
+                      <ul>
+                        {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% else %}
+                        {{ examples|getfield:name }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% endwith %}
+                {% endfor %}
+                {% if fullTable %}
+
+                <div class="row">
+                  <h5>Full Results</h5>
+                  The "Error" column lists where regular expression matches failed and no default value was given.
+                  <div class="col col-sm-12">
+                    <table>
+                      <colgroup>
+                        {% for header in fullTable.headers %}
+                        <col span="1" class="{% cycle 'highlight1' 'highlight2' %}">
+                        {% endfor %}
+                      </colgroup>
+                      <tr>
+                        {% for header in fullTable.headers %}
+                          <th>{{ header }}</th>
+                        {% endfor %}
+                      </tr>
+                      {% for record in fullTable.data %}
+                        <tr>    
+                          {% for value in record %}
+                            <td>{{ value }}</td>
+                          {% endfor %}
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                  <h5>Examples</h5>
+                  <div class="col col-sm-12">
+                    <p>Templates can contain literal text. Occurrences of <code>{column-header}</code> will be replaced with the contents of that column,
+                      or <code>{column-header:`[search]`:`[expand]`:`[notFound]`}</code> will apply the regex [search] and [expand] patterns. If the pattern
+                      does not match, the [notFound] text is used. If the [notFound] text is <code>\0</code> the unmatched string is used.
+                      If there is no [notFound] text, the record is skipped.
+                      See <a href="https://docs.python.org/3/library/re.html#match-objects">match-objects</a>, <a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">Regular Expression Syntax</a> and examples below.</p>
+                    <table style="padding: 2px 5px;">
+                      <colgroup>
+                        <col span="1" class="highlight1">
+                        <col span="1" class="highlight2">
+                        <col span="1" class="highlight1">
+                        <col span="1" class="highlight2">
+                      </colgroup>
+                      <tr>
+                        <th>Mapping</th>
+                        <th>Input<br>(Product)</th>
+                        <th>Output</th>
+                        <th>Comments</th>
+                      </tr>
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="2"><code>ConstantValue</code></td>
+                        <td><code>LJ 5000</code></td><td><code>ConstantValue</code></td>
+                        <td rowspan="2">Text outside of brackets is returned as is.</td>
+                      </tr>
+                      <tr>
+                        <td><code>LJ90dt</code></td><td><code>ConstantValue</code></td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="2"><code>{Product}</code></td>
+                        <td><code>LJ 5000</code></td><td><code>LJ 5000</code></td>
+                        <td rowspan="2">direct replacement</td>
+                      </tr>
+                      <tr>
+                        <td><code>LJ90dt</code></td><td><code>LJ90dt</code></td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="2"><code>Pre {Product} Post</code></td>
+                        <td><code>LJ 5000</code></td><td><code>Pre&nbsp;LJ&nbsp;5000&nbsp;Post</code></td>
+                        <td rowspan="2">Text outside of brackets is returned as is.</td>
+                      </tr>
+                      <tr>
+                        <td><code>LJ90dt</code></td><td><code>Pre&nbsp;LJ90dt&nbsp;Post</code></td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="2"><code>{Product} of {Vendor}</code></td>
+                        <td><code>LJ 5000</code></td><td><code>LJ&nbsp;5000&nbsp;of&nbsp;ACME</code></td>
+                        <td rowspan="2">Template can contain multiple placeholders. The <code>Vendor</code> field contains <code>ACME</code> in these examples.</td>
+                      </tr>
+                      <tr>
+                        <td><code>LJ90dt</code></td><td><code>LJ90dt of ACME</code></td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="2"><code>{Product:`\[(.*)\]`:`\1`:`-`}</code></td>
+                        <td><code>[LJ 5000]</code></td><td><code>LJ 5000</code></td>
+                        <td>Search the Product field for a <code>[</code> followed by anything (captured in <code>\1</code>), followed by a <code>]</code>. Return only the capture (not the <code>[</code> or <code>]</code>).</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>&lt;LJ90dt&gt;</code></td><td style="border-top: 1px solid #999;"><code>-</code></td>
+                        <td style="border-top: 1px solid #999;">No match, since no <code>[</code> present. <code>-</code> used instead.</td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="3"><code>{Product:`([A-Z]+)\W+([0-9]+)`:`\2:\1`}</code></td>
+                        <td><code>LJ 5000</code></td><td><code>5000:LJ</code></td>
+                        <td>Find one or more capital letters (captured in <code>\1</code>), followed by one or more whitespace, followed by one or more numbers (captured in <code>\2</code>). Return capture <code>\2</code>, a <code>:</code> and capture <code>\1</code>.</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>LJ 90dt</code></td><td style="border-top: 1px solid #999;"><code>90:LJ</code></td>
+                        <td style="border-top: 1px solid #999;">The part <code>LJ 90</code> matches and is used as above, the <code>dt</code> characters are ignored. To force a match on the full string, use <code>^</code> and <code>$</code>.</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>LJ90dt</code></td><td style="border-top: 1px solid #999;">Record skipped</td>
+                        <td style="border-top: 1px solid #999;">No match, since no whitespace found. Since no alternative given, the record is skipped.</td>
+                      </tr>
+
+                      <tr style="border-top: 1px solid #000;">
+                        <td rowspan="4"><code>{Product:`^([A-Z]{3})([0-9]{1,2})-([a-z][0-9])$`:`\3`}</code></td>
+                        <td><code>LJX52-a1</code></td><td><code>a1</code></td>
+                        <td>At the start of the string (<code>^</code>), find 3 capital letters (captured in <code>\1</code>), followed by 1 or 2 numbers (captured in <code>\2</code>) followed by a dash, followed by 1 lower-case letter and 1 number (captured in <code>\3</code>) and the end of the string (<code>$</code>). Return capture <code>\3</code>.</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>LJX52-a12</code></td><td style="border-top: 1px solid #999;">Record skipped</td>
+                        <td style="border-top: 1px solid #999;">No match, since the last part must be a lower-case letter followed by <u>single</u> digit.</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>LJX52-A1</code></td><td style="border-top: 1px solid #999;">Record skipped</td>
+                        <td style="border-top: 1px solid #999;">No match, the last part must be a <u>lower-case</u> letter followed by a number.</td>
+                      </tr>
+                      <tr>
+                        <td style="border-top: 1px solid #999;"><code>LJX52-1a</code></td><td style="border-top: 1px solid #999;">Record skipped</td>
+                        <td style="border-top: 1px solid #999;">No match, the last part must be a lower-case letter followed by a number.</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              {% else %}
+                Select a file or supply data first.
+              {% endif %}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endblock content %}
+  </div>
+
+</div>
+{% endblock content-wrapper %}

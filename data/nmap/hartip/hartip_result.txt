@@ -1,0 +1,21 @@
+# Nmap 7.94 scan initiated Wed Jun 28 00:50:28 2023 as: nmap -n -p 5094 --script hartip.nse -oN hartip_result.txt 172.16.10.90
+Nmap scan report for 172.192.20.90
+Host is up (0.00s latency).
+
+PORT     STATE SERVICE
+5094/tcp open  hart-ip
+| hartip: 
+|   Device Information: 
+|     Long Tag: ????????????????????????????????
+|     Expanded Device Type: GW PL ETH/UNI-BUS
+|     Manufacturer ID: Phoenix Contact
+|     Device ID: dd4fb3
+|     Device Revision: 1
+|     Software Revision: 1
+|     HART Protocol Major Revision: 7
+|     Private Label Distributor: Phoenix Contact
+|   Sub-Device Information: 
+|_    Error Code: 2
+MAC Address: 00:A0:45:DD:FF:FF (Phoenix Contact Electronics GmbH)
+
+# Nmap done at Wed Jun 28 00:50:28 2023 -- 1 IP address (1 host up) scanned in 0.33 seconds

@@ -1,0 +1,59 @@
+{% extends 'base/layout.html' %}
+{% load helpers %}
+{% load form_helpers %}
+
+{% block title %}{{ form.title }}{% endblock %}
+
+{% block tabs %}
+<ul class="nav nav-tabs px-3">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="data-import-tab" data-bs-toggle="tab" data-bs-target="#data-import-form"
+      data-href="#tab_data-import-form" type="button" role="tab" aria-controls="data-import-form" aria-selected="true">
+      Create Device for
+         {%  if ip %} IP: {{ ip|truncatechars:15}} {% endif %} {%  if mac %} MAC: {{ mac|truncatechars:17 }} {% endif %}
+    </button>
+  </li>
+</ul>
+{% endblock tabs %}
+
+{% block content-wrapper %}
+  <div class="tab-content">
+    <div class="tab-pane show active" id="edit-form" role="tabpanel" aria-labelledby="object-list-tab">
+
+      <form action="" method="post" enctype="multipart/form-data" class="form-object-edit mt-5">
+        {% csrf_token %}
+
+        <div id="form_fields">
+          {% block form %}
+            {% render_errors form %}
+
+                <div class="field-group my-5">
+                    <div class="row mb-2">
+                        <h5 class="offset-sm-3">Specify name for Device and Interface</h5>
+                    </div>
+                    {% render_field form.device_name %}
+                    {% render_field form.interface_name %}
+                    {% render_field form.comments %}
+                 </div>
+            {% endblock form %}
+        </div>
+        <div class="row mb-2">
+            <label class="col-sm-3 col-form-label text-lg-end"></label>
+            <div class="col">
+                      <i class="text-warning mdi mdi-alert"></i> Perform a Device Lookup after creating a new device
+            </div>
+        </div>
+
+        <div class="text-end my-3">
+          {% block buttons %}
+              <button type="submit" name="_create" class="btn btn-primary">
+                Create
+              </button>
+            <a class="btn btn-outline-danger" href="{{ return_url }}">Cancel</a>
+          {% endblock buttons %}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock content-wrapper %}

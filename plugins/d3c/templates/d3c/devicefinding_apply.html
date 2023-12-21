@@ -1,0 +1,324 @@
+{% extends 'base/layout.html' %}
+{% load helpers %}
+{% load form_helpers %}
+
+{% block title %}{{ form.title }}{% endblock %}
+
+{% block controls %}
+<div class="controls">
+    <a class="btn btn-sm btn-warning" href="{% url 'plugins:d3c:devicefinding_apply'%}?device={{ device.pk }}&finding={{ finding.pk }}&rsp={{ rsp }}&return_url={{ return_url }}" role="button">
+        {% if rsp %}
+            Enable Spell Checker
+        {% else %}
+            Disable Spell Checker
+        {% endif %}
+    </a>
+</div>
+{% endblock controls %}
+
+
+{% block tabs %}
+<ul class="nav nav-tabs px-3">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="data-import-tab" data-bs-toggle="tab" data-bs-target="#data-import-form"
+      data-href="#tab_data-import-form" type="button" role="tab" aria-controls="data-import-form" aria-selected="true">
+      Edit Device {% if finding.confidence %}with Confidence {{ finding.confidence }}{% endif %},
+      Interface:  {% if interface %} {{ interface |linkify}} {% else %} Not Found {% endif %}
+    </button>
+  </li>
+</ul>
+{% endblock tabs %}
+
+{% block content-wrapper %}
+  <div class="tab-content">
+    <div class="tab-pane show active" id="edit-form" role="tabpanel" aria-labelledby="object-list-tab">
+
+      <form action="" method="post" enctype="multipart/form-data" class="form-object-edit mt-5">
+        {% csrf_token %}
+        <div id="form_fields">
+            {% render_errors form %}
+            <div class="field-group my-5">
+            {% if not empty %}
+                {% if finding.device_name or finding.manufacturer or finding.device_type or finding.device_role or finding.device_family or finding.description or finding.article_number or finding.part_number or finding.serial_number or finding.is_router %}
+                    <div class="row mb-2">
+                        <h5 class="offset-sm-3">Device Properties (Current | Finding)</h5>
+                    </div>
+                    {% if finding.device_name %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_name.label }}</label>
+                        <div class="col-sm-8">
+                        {% for name in form.device_name %}
+                            {{ name.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ name.id_for_label }}">{{ name.choice_label|truncatechars:34}}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.manufacturer or finding.device_type %}
+                        {% if form.manufacturer.field.choices|length %}
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.manufacturer.label }}</label>
+                                <div class="col-sm-8">
+                                {% for manu in form.manufacturer %}
+                                    {{ manu.tag }}
+                                    <label class="btn btn-outline-danger mt-1" for="{{ manu.id_for_label }}">{{ manu.choice_label|truncatechars:34 }}</label>
+                                {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% if form.device_type.field.choices|length %}
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_type.label }}</label>
+                                <div class="col-sm-8">
+                                {% for radio in form.device_type %}
+                                    {{ radio.tag }}
+                                    <label class="btn btn-outline-danger mt-1" for="{{ radio.id_for_label }}">{{ radio.choice_label|truncatechars:34 }}</label>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if finding.description %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_description.label }}</label>
+                        <div class="col-sm-8">
+                        {% for description in form.device_description %}
+                            {{ description.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ description.id_for_label }}">{{ description.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.device_role and form.device_role.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_role.label }}</label>
+                        <div class="col-sm-8">
+                        {% for role in form.device_role %}
+                            {{ role.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ role.id_for_label }}">{{ role.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.device_family and form.device_family.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_family.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for family in form.device_family %}
+                            {{ family.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ family.id_for_label }}">{{ family.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.article_number and form.device_article.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_article.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for article in form.device_article %}
+                            {{ article.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ article.id_for_label }}">{{ article.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.part_number and form.device_model.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_model.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for model in form.device_model %}
+                            {{ model.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ model.id_for_label }}">{{ model.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.serial_number and form.device_serial.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_serial.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for serial in form.device_serial %}
+                            {{ serial.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ serial.id_for_label }}">{{ serial.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.status and form.device_status.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_status.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for status in form.device_status %}
+                            {{ status.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ status.id_for_label }}">{{ status.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.exposure and form.device_exposure.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_exposure.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for exposure in form.device_exposure %}
+                            {{ exposure.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ exposure.id_for_label }}">{{ exposure.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.site and form.device_site.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_site.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for site in form.device_site %}
+                            {{ site.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ site.id_for_label }}">{{ site.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.rack and form.device_rack.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_rack.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for rack in form.device_rack %}
+                            {{ rack.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ rack.id_for_label }}">{{ rack.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.location and form.device_location.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_location.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for location in form.device_location %}
+                            {{ location.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ location.id_for_label }}">{{ location.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.is_safety_critical and form.device_safety.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_safety.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for safety in form.device_safety %}
+                            {{ safety.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ safety.id_for_label }}">{{ safety.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.hardware_version and form.device_hver.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_hver.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for hver in form.device_hver %}
+                            {{ hver.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ hver.id_for_label }}">{{ hver.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.hardware_cpe and form.device_hcpe.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_hcpe.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for hcpe in form.device_hcpe %}
+                            {{ hcpe.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ hcpe.id_for_label }}">{{ hcpe.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if finding.is_router and form.device_router.field.choices|length %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_router.label }}:</label>
+                        <div class="col-sm-8">
+                        {% for router in form.device_router %}
+                            {{ router.tag }}
+                            <label class="btn btn-outline-danger mt-1" for="{{ router.id_for_label }}">{{ router.choice_label|truncatechars:34 }}</label>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                {% if finding.network_protocol or finding.transport_protocol or finding.application_protocol or finding.port %}
+                <div class="field-group my-5">
+                    <div class="row mb-2">
+                        <h5 class="offset-sm-3">Add Service</h5>
+                    </div>
+                    {% if finding.ip_address%}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">IP Address:</label>
+                        <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.ip_address}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.network_protocol %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">Network Protocol:</label>
+                        <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.network_protocol}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.transport_protocol %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">Transport Protocol:</label>
+                        <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.transport_protocol}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.application_protocol %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">Application Protocol:</label>
+                        <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.application_protocol}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.port %}
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">Port:</label>
+                            <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.port}} </label>
+                        </div>
+                    {% endif %}
+                    {% render_field form.add_service %}
+                </div>
+                {% endif %}
+                {% if finding.software_name or finding.is_firmware or finding.version %}
+                <div class="field-group my-5">
+                    <div class="row mb-2">
+                        <h5 class="offset-sm-3">Add Software</h5>
+                    </div>
+                    {% if finding.software_name%}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end">Software Name:</label>
+                        <label class="col-sm-3 col-form-label">{{ finding.software_name}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.is_firmware  %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end">Firmware:</label>
+                        <label class="col-sm-3 col-form-label">{{ finding.is_firmware}} </label>
+                    </div>
+                    {% endif %}
+                    {% if finding.version %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end">Version:</label>
+                        <label class="col-sm-3 col-form-label">{{ finding.version}} </label>
+                    </div>
+                    {% endif %}
+                    {% render_field form.add_software %}
+                </div>
+                {% endif %}
+            {% endif %}
+                <div class="text-end my-3">
+                    <button type="submit" name="_update" class="btn btn-primary">
+                        Apply
+                    </button>
+                    <a class="btn btn-outline-danger" href="{{ return_url }}">Cancel</a>
+                </div>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock content-wrapper %}

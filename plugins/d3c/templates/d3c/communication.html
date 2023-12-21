@@ -1,0 +1,57 @@
+{% extends 'generic/object.html' %}
+
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Communication</h5>
+        <div class="card-body">
+          <table class="table table-hover attr-table">
+            <tr>
+              <th scope="row">id</th>
+              <td>{{ object.id }}</td>
+            </tr>
+	    <tr>
+              <th scope="row">Source Device</th>
+	      <td>{{ object.source_device|linkify }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Destination Device</th>
+              <td>{{ object.destination_device|linkify }}</td>
+            </tr>
+	    <tr>
+              <th scope="row">Source IP</th>
+	      <td>{{ object.source_ip_addr|linkify }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Destination IP</th>
+              <td>{{ object.destination_ip_addr|linkify }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Destination Port</th>
+              <td>{{ object.destination_port|placeholder }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Network Protocol</th>
+              <td>{{ object.network_protocol|placeholder }}</td>
+            </tr>
+	    <tr>
+              <th scope="row">Transport Protocol</th>
+              <td>{{ object.transport_protocol|placeholder }}</td>
+            </tr>
+	    <tr>
+              <th scope="row">Application Protocol</th>
+              <td>{{ object.application_protocol|placeholder }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+      {% include 'inc/panels/tags.html' %}
+    </div>
+
+
+
+
+{% endblock content %}

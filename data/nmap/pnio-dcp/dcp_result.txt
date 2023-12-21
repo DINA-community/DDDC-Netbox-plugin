@@ -1,0 +1,114 @@
+# Nmap 7.70 scan initiated Mon Jun 26 11:34:01 2023 as: nmap --script ./pn_discovery.nse -oN dcp_result.txt
+Pre-scan script results:
+| pn_discovery: 
+|   devices: 
+|     
+|       ip_addr: 192.168.10.24
+|       mac_addr: 54:E3:B0:00:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x0200
+|       deviceId: 0x0200
+|       vendorvalue: JVL-MOTOR
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: motor-scheibe
+|     
+|       ip_addr: 192.168.10.14
+|       mac_addr: AC:64:17:48:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x0101
+|       vendorvalue: S7-300
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: sps-safety
+|     
+|       ip_addr: 192.168.10.21
+|       mac_addr: 00:A0:45:A8:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x00B0
+|       deviceId: 0x1000
+|       vendorvalue: AXL F BK PN
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: bk-1
+|     
+|       ip_addr: 192.168.10.25
+|       mac_addr: 54:E3:B0:00:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x0200
+|       deviceId: 0x0200
+|       vendorvalue: JVL-MOTOR
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: motor-aufzug
+|     
+|       ip_addr: 192.168.10.22
+|       mac_addr: 00:30:DE:43:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x011D
+|       deviceId: 0x02EE
+|       vendorvalue: WAGO-I/O-SYSTEM 750/753
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: bk-2
+|     
+|       ip_addr: 192.168.10.23
+|       mac_addr: 00:60:34:1E:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x011F
+|       deviceId: 0x2A02
+|       vendorvalue: R-IL PN BK DI8 DO4 2TX
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: bk-3
+|     
+|       ip_addr: 192.168.10.7
+|       mac_addr: 8E:C1:2C:85:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x0202
+|       vendorvalue: SIMATIC-PC
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: tia-portal
+|     
+|       ip_addr: 192.168.10.13
+|       mac_addr: AC:64:17:48:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x0114
+|       vendorvalue: S7-1500
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: sps-3
+|     
+|       ip_addr: 192.168.10.31
+|       mac_addr: AC:64:17:4B:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x040D
+|       vendorvalue: TP700 Comfort
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: hmi-1
+|     
+|       ip_addr: 192.168.10.11
+|       mac_addr: AC:64:17:46:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x0113
+|       vendorvalue: S7-1500
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: sps-1
+|     
+|       ip_addr: 192.168.10.40
+|       mac_addr: AC:64:17:46:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x1303
+|       vendorvalue: S7-PC
+|       deviceRole: PNIO Device 0x00
+|       nameOfStation: sps-1-host
+|     
+|       ip_addr: 192.168.10.12
+|       mac_addr: E0:DC:A0:4A:FF:FF
+|       subnetmask: 255.255.255.0
+|       vendorId: 0x002A
+|       deviceId: 0x010D
+|       vendorvalue: S7-1200
+|       deviceRole: PNIO Device 0x00
+|_      nameOfStation: sps-2
+WARNING: No targets were specified, so 0 hosts scanned.
+# Nmap done at Mon Jun 26 11:34:04 2023 -- 0 IP addresses (0 hosts up) scanned in 3.05 seconds

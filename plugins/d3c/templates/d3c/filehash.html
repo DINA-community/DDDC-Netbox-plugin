@@ -1,0 +1,43 @@
+{% extends 'generic/object.html' %}
+{% load buttons %}
+{% load perms %}
+
+{% block controls %}
+  <div class="controls">
+    <div class="control-group">
+      {% if request.user|can_change:object %}
+        {% edit_button object %}
+      {% endif %}
+      {% if request.user|can_delete:object %}
+        {% delete_button object %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock controls %}
+
+{% block content %}
+    <div class="row mb-3">
+        <div class="col col-md-6">
+          <div class="card">
+            <h5 class="card-header">Filehash</h5>
+            <div class="card-body">
+              <table class="table table-hover attr-table">
+                    <tr>
+                      <th scope="row">Hash</th>
+                      <td>{{ object.hash|linkify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Algorithm</th>
+                      <td>{{ object.algorithm|placeholder }}</td>
+                    </tr>
+                  <tr>
+                      <th scope="row">Value</th>
+                      <td>{{ object.value }}</td>
+                    </tr>
+              </table>
+            </div>
+          </div>
+          {% include 'inc/panels/tags.html' %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+mac_address,ip_address,description,device_name,device_role,source,manufacturer,device_family
+EC:74:BA:52:A2:C4,192.168.10.1,,sw-process,Switch,testinput,Hirschmann,RSPE30
+AC:64:17:48:AC:0A,192.168.10.3,,sps-1,,testinput,Siemens,ET200-1515SP
+E0:DC:A0:4A:C0:94,192.168.10.12,,sps-2,,testinput,Siemens,S7-1200
+AC:64:17:48:AC:AD,192.168.10.13,,sps-3,,testinput,Siemens,ET200-1512SP
+AC:64:17:48:3A:89,192.168.10.14,,sps-safety,Safety SPS,testinput,Siemens,S7-314
+00:a0:45:a8:26:a8,192.168.10.7,PHOENIX_a8:26:a7,bk-1,media gateway,testinput,Phoenix Contact,AXL F BK PN
+00:30:DE:43:B5:C6,192.168.10.22,WAGOKont_43:b5:c0,bk-2,media gateway,testinput,Wago,750-375
+00:60:34:1E:EC:A5,192.168.10.23,RobertBo_1e:e8:af,bk-3,media gateway,testinput,Bosch-Rexroth,R-IL PN BK
+00:06:71:33:09:78,192.168.10.10,Softing_33:09:78,opcua-gw,media gateway,testinput,Sotfing,uaGate
+B8:27:EB:E1:5E:47,192.168.10.26,KUNBUS_01:16:d5,opcua-io-env,OPC UA Server,testinput,Kunbus,RevPi Core3
+54:E3:B0:00:D1:E3,192.168.10.24,,motor-scheibe,actuator,testinput,JVL,MIS340
+54:E3:B0:00:D1:E0,192.168.10.25,,motor-aufzug,actuator,testinput,JVL,MIS340
+AC:64:17:4B:4B:E6,192.168.10.31,,hmi,HMI,testinput,Siemens,Simatic TP700 Comfort
+00:07:46:80:EF:F2,192.168.10.27,,Io-device,,testinput,Turck,
+AC:64:17:46:C6:CA,192.168.10.11,,sps-1-host,,testinput,Siemens,ET200-1515SP

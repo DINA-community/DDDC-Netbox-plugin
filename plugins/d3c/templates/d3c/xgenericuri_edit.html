@@ -1,0 +1,54 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+{% load helpers %}
+{% load i18n %}
+
+{% block title %}
+  {% if object.pk %}
+    {% trans "Editing" %} XGenericURI {{ object }}
+  {% else %}
+      Add a new XGenericURI
+  {% endif %}
+{% endblock title %}
+
+{% block form %}
+    <div class="field-group my-5">
+      <div class="row mb-2">
+        <h5 class="offset-sm-3">Source</h5>
+      </div>
+      <div class="row mb-2">
+        <div class="offset-sm-3">
+          <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="devicetype_tab" data-bs-toggle="tab" aria-controls="devicetype" data-bs-target="#devicetype" class="nav-link {% if not form.initial.software %}active{% endif %}">
+                DeviceType
+              </button>
+            </li>
+            <li role="presentation" class="nav-item">
+              <button role="tab" type="button" id="software_tab" data-bs-toggle="tab" aria-controls="software" data-bs-target="#software" class="nav-link {% if form.initial.software %}active{% endif %}">
+                Software
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content p-0 border-0">
+        <div class="tab-pane {% if not form.initial.software %}active{% endif %}" id="devicetype" role="tabpanel" aria-labeled-by="devicetype_tab">
+          {% render_field form.devicetype %}
+        </div>
+        <div class="tab-pane {% if form.initial.software %}active{% endif %}" id="software" role="tabpanel" aria-labeled-by="software_tab">
+          {% render_field form.software %}
+        </div>
+      </div>
+    </div>
+
+   <div class="field-group my-5">
+      <div class="row mb-2">
+        <h5 class="offset-sm-3">Generic URI</h5>
+      </div>
+      {% render_field form.namespace %}
+      {% render_field form.uri %}
+      {% render_field form.tags %}
+    </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'generic/object_list.html' %}
+
+{% block title %}Device Findings
+{#    <a href="/static/d3c/help.pdf" target="_blank" class="btn btn-sm btn-outline-secondary" title="Documentation">#}
+{#      <i class="mdi mdi-help-circle"></i> Help#}
+{#    </a>#}
+{% endblock %}
+
+{% block extra_controls %}
+    <a href="{% url 'plugins:d3c:devicefinding_lookup' %}" type="button" class="btn btn-sm btn-danger">
+        <i class="mdi mdi-sync-alert"></i> Device Lookup
+    </a>
+
+    <a href="{% url 'plugins:d3c:devicefinding_std_import' %}" type="button" class="btn btn-sm btn-info">
+        <i class="mdi mdi-upload"></i> Import
+    </a>
+
+    <a href="{% url 'plugins:d3c:devicefinding_import' %}" type="button" class="btn btn-sm btn-primary">
+        <i class="mdi mdi-upload"></i> Import/Mapping
+    </a>
+{% endblock extra_controls %}
+
+{% block bulk_buttons %}
+    <button type="submit" name="_sync" formaction="{% url 'plugins:d3c:devicefinding_bulk_map' %}" class="btn btn-primary btn-sm">
+      <i class="mdi mdi-sync" aria-hidden="true"></i> Map Selected to Device
+    </button>
+
+    <button type="submit" name="_sync" formaction="{% url 'plugins:d3c:devicefinding_bulk_split' %}" class="btn btn-primary btn-sm">
+      <i class="mdi mdi-arrow-split-vertical" aria-hidden="true"></i> Split Selected
+    </button>
+
+     <button type="submit" name="_reject" formaction="{% url 'plugins:d3c:devicefinding_bulk_reject' %}" class="btn btn-danger btn-sm">
+      <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i> Reject Selected
+    </button>
+
+    <button type="submit" name="_delete" formaction="{% url 'plugins:d3c:devicefinding_bulk_delete' %}" class="btn btn-danger btn-sm">
+        <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i> Delete Selected
+    </button>
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.94 scan initiated Mon Jul  3 16:24:09 2023 as: nmap -n -p 5094 -&#45;script hartip-info.nse -oX hartip_result.xml 172.192.20.90 -->
+<nmaprun scanner="nmap" args="nmap -n -p 5094 -&#45;script hartip-info.nse -oX hartip_result.xml 172.197.20.90" start="1688394249" startstr="Mon Jul  3 16:24:09 2023" version="7.94" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="1" services="5094"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="172.16.10.90" addrtype="ipv4"/>
+<address addr="00:A0:45:DD:FF:FF" addrtype="mac" vendor="Phoenix Contact Electronics GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1688394249" endtime="1688394249"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="172.197.20.90" addrtype="ipv4"/>
+<address addr="00:A0:45:DD:FF:FF" addrtype="mac" vendor="Phoenix Contact Electronics GmbH"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="tcp" portid="5094"><state state="open" reason="syn-ack" reason_ttl="64"/><service name="hart-ip" method="table" conf="3"/><script id="hartip-info" output="&#xa;  Device Information: &#xa;    IP Address: 172.197.20.90&#xa;    Long Tag: ????????????????????????????????&#xa;    Expanded Device Type: GW PL ETH/UNI-BUS&#xa;    Manufacturer ID: Phoenix Contact&#xa;    Device ID: dd4ee3&#xa;    Device Revision: 1&#xa;    Software Revision: 1&#xa;    HART Protocol Major Revision: 7&#xa;    Private Label Distributor: Phoenix Contact&#xa;  Sub-Device Information: &#xa;    Error Code: 2"><table key="Device Information">
+<elem key="IP Address">172.197.20.90</elem>
+<elem key="Long Tag">????????????????????????????????</elem>
+<elem key="Expanded Device Type">GW PL ETH/UNI-BUS</elem>
+<elem key="Manufacturer ID">Phoenix Contact</elem>
+<elem key="Device ID">dd4fb3</elem>
+<elem key="Device Revision">1</elem>
+<elem key="Software Revision">1</elem>
+<elem key="HART Protocol Major Revision">7</elem>
+<elem key="Private Label Distributor">Phoenix Contact</elem>
+</table>
+<table key="Sub-Device Information">
+<elem key="Error Code">2</elem>
+</table>
+</script></port>
+</ports>
+<times srtt="1875" rttvar="4000" to="100000"/>
+</host>
+<runstats><finished time="1688394249" timestr="Mon Jul  3 16:24:09 2023" summary="Nmap done at Mon Jul  3 16:24:09 2023; 1 IP address (1 host up) scanned in 0.32 seconds" elapsed="0.32" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

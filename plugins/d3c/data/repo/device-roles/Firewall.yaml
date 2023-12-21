@@ -1,0 +1,4 @@
+---
+name: Firewall
+slug: firewall
+description: Monitors and controls incoming and outgoing network traffic based on predetermined security rules.

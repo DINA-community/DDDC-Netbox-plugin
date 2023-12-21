@@ -1,0 +1,150 @@
+{% extends 'base/layout.html' %}
+{% load buttons %}
+{% load helpers %}
+{% load plugins %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load i18n %}
+
+{% comment %}
+Blocks:
+  extra_controls: Additional action buttons
+  bulk_buttons: Additional bulk action buttons to display beneath the objects
+    list
+
+Context:
+  model: The model class being listed
+  table: The table class used for rendering the list of objects
+  actions: A list of buttons to display. This template checks for add, import,
+    export, bulk_edit, and bulk_delete.
+  filter_form: The bound filterset form for filtering the objects list (optional)
+  return_url: Return URL to use for bulk actions (optional)
+{% endcomment %}
+
+{% block title %}{{ model|meta:"verbose_name_plural"|bettertitle }}{% endblock %}
+
+{% block controls %}
+  <div class="controls">
+    <div class="control-group">
+      {% plugin_list_buttons model %}
+      {% block extra_controls %}{% endblock %}
+      {% if 'add' in actions %}
+        {% add_button model %}
+      {% endif %}
+      {% if 'import' in actions %}
+        {% import_button model %}
+      {% endif %}
+      {% if 'export' in actions %}
+        {% export_button model %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock controls %}
+
+{% block tabs %}
+  <ul class="nav nav-tabs px-3">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="object-list-tab" data-bs-toggle="tab" data-bs-target="#object-list" type="button" role="tab" aria-controls="edit-form" aria-selected="true">
+        {% trans "Results" %} {% badge table.page.paginator.count %}
+      </button>
+    </li>
+    {% if filter_form %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="filters-form-tab" data-bs-toggle="tab" data-bs-target="#filters-form" type="button" role="tab" aria-controls="object-list" aria-selected="false">
+          {% trans "Filters" %}
+          {% if filter_form %}{% badge filter_form.changed_data|length bg_color="primary" %}{% endif %}
+        </button>
+      </li>
+    {% endif %}
+  </ul>
+{% endblock tabs %}
+
+{% block content-wrapper %}
+  <div class="tab-content">
+
+    {# Object list #}
+    <div class="tab-pane show active" id="object-list" role="tabpanel" aria-labelledby="object-list-tab">
+
+      {# Applied filters #}
+      {% if filter_form %}
+        {% applied_filters model filter_form request.GET %}
+      {% endif %}
+
+      {# Object table controls #}
+      {#  {% include 'inc/table_controls_htmx.html' with table_modal="ObjectTable_config" %}#}
+
+      <form method="post" class="form form-horizontal">
+        {% csrf_token %}
+        {# "Select all" form #}
+        {% if table.paginator.num_pages > 1 %}
+          <div id="select-all-box" class="d-none card noprint">
+            <div class="form col-md-12">
+              <div class="card-body">
+                <div class="float-end">
+                  {% if 'bulk_edit' in actions %}
+                    {% bulk_edit_button model query_params=request.GET %}
+                  {% endif %}
+                  {% if 'bulk_delete' in actions %}
+                    {% bulk_delete_button model query_params=request.GET %}
+                  {% endif %}
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="select-all" name="_all" class="form-check-input" />
+                  <label for="select-all" class="form-check-label">
+                    {% blocktrans with count=table.rows|length object_type_plural=table.data.verbose_name_plural %}
+                      Select <strong>all {{ count }} {{ object_type_plural }}</strong> matching query
+                    {% endblocktrans %}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="form form-horizontal">
+          {% csrf_token %}
+          <input type="hidden" name="return_url" value="{% if return_url %}{{ return_url }}{% else %}{{ request.path }}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}{% endif %}" />
+
+          {# Object table #}
+
+              {% if prerequisite_model %}
+                {% include 'inc/missing_prerequisites.html' %}
+              {% endif %}
+
+          <div class="card">
+            <div class="card-body htmx-container table-responsive" id="object_list">
+              {% include 'htmx/table.html' %}
+            </div>
+          </div>
+
+          {# Form buttons #}
+          <div class="noprint bulk-buttons">
+            <div class="bulk-button-group">
+              {% block bulk_buttons %}
+                {% if 'bulk_edit' in actions %}
+                  {% bulk_edit_button model query_params=request.GET %}
+                {% endif %}
+                {% if 'bulk_delete' in actions %}
+                  {% bulk_delete_button model query_params=request.GET %}
+                {% endif %}
+              {% endblock %}
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+    {# Filter form #}
+    {% if filter_form %}
+      <div class="tab-pane show" id="filters-form" role="tabpanel" aria-labelledby="filters-form-tab">
+        {% include 'inc/filter_list.html' %}
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock content-wrapper %}
+
+{% block modals %}
+  {% table_config_form table table_name="ObjectTable" %}
+{% endblock modals %}
