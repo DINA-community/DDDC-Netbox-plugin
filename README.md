@@ -34,13 +34,13 @@ Therefore, for simplicity, a web browser should be available on the installed sy
     apt update
     apt install apt-transport-https ca-certificates curl software-properties-common
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
     apt-cache policy docker-ce
     apt install docker-ce
     ```
 
     ```text
-    git clone https:gitlab.cc-asp.fraunhofer.de/iosb/ilt/bsi/507/d3c.git
+    git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
     cd /home/d3c/
     docker compose build --no-cache
     docker compose up

@@ -187,7 +187,7 @@ PLUGINS = ['d3c']
 PLUGINS_CONFIG = {
       "d3c": {
           "top_level_menu": True,
-          "version": "0.9"
+          "version": "0.8"
     }
 }
 

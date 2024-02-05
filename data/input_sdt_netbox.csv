@@ -1,0 +1,7 @@
+description,name,role,manufacturer,device_type,site,status
+,sw-process,Switch L3,Hirschmann,Unspecified,PoC,active
+,sps-1,RTU-PLC,Siemens,Unspecified,PoC,active
+,sps-2,RTU-PLC,Siemens,Unspecified,PoC,active
+,sps-3,RTU-PLC,Siemens,Unspecified,PoC,active
+,sps-safety,RTU-PLC,Siemens,Unspecified,PoC,active
+PHOENIX_a8:26:a7,bk-1,Gateway Coupler,Phoenix Contact,Unspecified,PoC,active
