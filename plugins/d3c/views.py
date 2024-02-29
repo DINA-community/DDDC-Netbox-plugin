@@ -16,7 +16,8 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from extras.signals import clear_webhooks
+from extras.signals import clear_events
+# from extras.signals import clear_webhooks no longer available in v 3.7.0
 from netbox.views import generic
 from netbox.views.generic.base import BaseMultiObjectView
 from netbox.views.generic.mixins import TableMixin
@@ -752,7 +753,7 @@ class DeviceFindingApply(generic.ObjectEditView):
             except (AbortRequest, PermissionsViolation) as e:
                 logger.debug(e.message)
                 form.add_error(None, e.message)
-                clear_webhooks.send(sender=self)
+                clear_events.send(sender=self)
         else:
             logger.debug("Form validation failed")
 
@@ -860,7 +861,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
             except (AbortRequest, PermissionsViolation) as e:
                 logger.debug(e.message)
                 form.add_error(None, e.message)
-                clear_webhooks.send(sender=self)
+                clear_events.send(sender=self)
 
         else:
             logger.debug("Form validation failed")
@@ -950,7 +951,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
                    except (AbortRequest, PermissionsViolation) as e:
                        logger.debug(e.message)
                        form.add_error(None, e.message)
-                       clear_webhooks.send(sender=self)
+                       clear_events.send(sender=self)
                 else:
                     if mac and interface.mac_address is None:
                         try:
@@ -1036,10 +1037,10 @@ class FindingImportView(FormView):
 
                 except (AbortTransaction, ValidationError) as e:
                     form.add_error(None, e.message)
-                    clear_webhooks.send(sender=self)
+                    clear_events.send(sender=self)
                 except (AbortRequest, PermissionsViolation) as e:
                     form.add_error(None, e.message)
-                    clear_webhooks.send(sender=self)
+                    clear_events.send(sender=self)
                 except IntegrityError:
                     pass
                 return render(request, self.template_name, {'form': form, 'examples': examples})
