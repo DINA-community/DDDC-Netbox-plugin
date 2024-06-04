@@ -3,8 +3,7 @@
 """
 
 from django.conf import settings
-from extras.plugins import PluginMenu, PluginMenuButton, PluginMenuItem
-from utilities.choices import ButtonColorChoices
+from netbox.plugins import PluginMenu, PluginMenuButton, PluginMenuItem
 
 plugin_settings = settings.PLUGINS_CONFIG["d3c"]
 
@@ -13,19 +12,16 @@ finding_buttons = [
         link='plugins:d3c:devicefinding_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
     PluginMenuButton(
         link='plugins:d3c:devicefinding_std_import',
         title='Import',
         icon_class='mdi mdi-upload',
-        color=ButtonColorChoices.CYAN
     ),
     PluginMenuButton(
         link='plugins:d3c:devicefinding_import',
         title='Import/Mapping',
         icon_class='mdi mdi-upload',
-        color=ButtonColorChoices.BLUE
     )
 ]
 
@@ -41,13 +37,11 @@ communication_buttons = [
         link='plugins:d3c:communication_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
     PluginMenuButton(
         link='plugins:d3c:communication_import',
         title='Import',
         icon_class='mdi mdi-upload',
-        color=ButtonColorChoices.CYAN
     )
 ]
 
@@ -63,7 +57,6 @@ software_buttons = [
         link='plugins:d3c:software_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     )
 ]
 
@@ -78,7 +71,6 @@ productrel_buttons = [
         link='plugins:d3c:productrelationship_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
 ]
 
@@ -93,7 +85,6 @@ xgenericuri_buttons = [
         link='plugins:d3c:xgenericuri_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
 ]
 
@@ -108,7 +99,6 @@ hash_buttons = [
         link='plugins:d3c:hash_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
 ]
 
@@ -123,14 +113,12 @@ filehash_buttons = [
         link='plugins:d3c:filehash_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
 ]
 
 filehashItem = PluginMenuItem(
     link='plugins:d3c:filehash_list',
     link_text='FileHash',
-    buttons=filehash_buttons
 )
 
 ###
@@ -139,13 +127,11 @@ communication_finding_buttons = [
         link='plugins:d3c:communicationfinding_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     ),
     PluginMenuButton(
         link='plugins:d3c:communicationfinding_import',
         title='Bulk Add',
         icon_class='mdi mdi-upload',
-        color=ButtonColorChoices.CYAN
     )
 ]
 

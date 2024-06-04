@@ -1,4 +1,4 @@
-from extras.plugins import PluginTemplateExtension
+from netbox.plugins import PluginTemplateExtension
 from .models import XGenericUri
 from django.contrib.contenttypes.models import ContentType
 from dcim.models import DeviceType
