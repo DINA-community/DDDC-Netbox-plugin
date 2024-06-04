@@ -19,10 +19,8 @@ class DeviceFindingSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for DeviceFindings.
     """
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:d3c-api:devicefinding-detail'
-    )
-#    device = NestedDeviceSerializer()
+    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:d3c-api:devicefinding-detail')
+    #device = NestedDeviceSerializer(read_only=True)
 
     class Meta:
         model = DeviceFinding
@@ -53,7 +51,7 @@ class CommunicationSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='plugins-api:d3c-api:communication-detail'
     )
-    source_device = NestedDeviceSerializer()
+    source_device = NestedDeviceSerializer(read_only=True)
 
     class Meta:
         model = Communication

@@ -1,7 +1,6 @@
-version: '3.4'
 services:
   netbox: &netbox
-    # image: docker.io/netboxcommunity/netbox:${VERSION-v3.6-3.6.9}
+    image: docker.io/netboxcommunity/netbox:${VERSION-v4.0-2.9.1}
     depends_on:
     - postgres
     - redis
@@ -12,7 +11,7 @@ services:
       start_period: 350s
       timeout: 3s
       interval: 15s
-      test: "curl -f http://localhost:8080/api/ || exit 1"
+      test: "curl -f http://localhost:8080/login/ || exit 1"
     volumes:
     - ./docker-ci/configuration:/etc/netbox/config:z,ro
     - netbox-media-files:/opt/netbox/netbox/media:rw
@@ -47,7 +46,7 @@ services:
 
   # postgres
   postgres:
-    image: docker.io/postgres:15-alpine
+    image: docker.io/postgres:16-alpine
     env_file: docker-ci/env/postgres.env
     volumes:
     - netbox-postgres-data:/var/lib/postgresql/data
