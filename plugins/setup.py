@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='dddc',
+    name='d3c',
     version='0.8',
     description='DDDC plugin',
     # The fix version selection ensures the usage of Netbox 3.6.0:

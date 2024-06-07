@@ -86,7 +86,7 @@ class DDDCAdminSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for DDDCAdmin.
     """
-#    device = NestedDeviceSerializer()  
+#    device = NestedDeviceSerializer()
 
     class Meta:
         model = DDDCAdmin
