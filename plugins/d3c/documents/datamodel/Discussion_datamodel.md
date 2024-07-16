@@ -1,16 +1,19 @@
 # Datamodel within Netbox
 
-Using Netbox in industrial control systems, the [Data Model of Netbox](https://netboxlabs.com/docs/netbox/en/stable/) has to be modified by custom field and plugins. Still, there are some major adjustments to be made for the device type in order to use it for matching the asset data base with the Common Security Advisory Framework [CSAF](https://csaf.io).
+Using Netbox in industrial control systems (ICS), the [Data Model of Netbox](https://netboxlabs.com/docs/netbox/en/stable/) has to be modified by custom fields and plugins. Still, there are some major adjustments to be made for the device type in order to use it for matching the asset data base with the Common Security Advisory Framework [CSAF](https://csaf.io).
 
 ## Datamodel for OT environment
 
-With the [asset administration shell](https://webstore.iec.ch/publication/65628) there will be plenty of information about a device. However, which of those should be used for mapping vulnerabilities to a device? In the following table three documents of the IADT are used to identify attributes for vulnerability mapping with CSAF and where this attributes can or should be find in Netbox
+With the [asset administration shell](https://webstore.iec.ch/publication/65628), there will be plenty of information about a device. However, which of those should be used for mapping vulnerabilities to a device? In the following table three documents of the IDTA are used to identify attributes for vulnerability mapping with CSAF and where this attributes can or should be find in Netbox.
 
 ### Legend
 
-- :question: = There are questions about this use of this attribute. Furhter information when a link is given
-- :exclamation: = There is a conflict about this attribute which is addressed by the link
-- :information_source: = There is information about this attribute which is addressed by the link
+```markdown
+    * ❓ = The attribution is unclear
+    * ❗ = There is a conflict about this attribute which is addressed by the link
+    * ℹ️ = There is information about this attribute which is addressed by the link
+    * 🔨 = Adjustments to the current state of the DDDC plugin are necessary (used only in Table2)
+```
 
 *Table 1: Information for describing a device for vulnerability matching.*
 
@@ -22,7 +25,7 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 | Manufacturer Product Designation | :question: device:comments | optional [/document/notes_t/ (line 340-400)](https://github.com/oasis-tcs/csaf/blob/master/csaf_2.0/json_schema/csaf_json_schema.json) | short description of the product, product group or function | No | [IDTA 02003 1 2](#idta-02003-1-2) |
 | Manufacturer Product Root| :question: deviceType:Role | N/A | Top level of a 3 level manufacturer specific product hierarchy (e. g. flow meter) | No | [IDTA 02006-2-0](#idta-02006-2-0)  |
 | Manufacturer Product Family | [DeviceType:family](#device-family) | product_family |2nd level of a 3 level manufacturer specific product hierarchy | yes | [IDTA 02006-2-0](#idta-02006-2-0) |
-| Manufacturer Product Type | [DeviceType:model](#model-number)| product_name | Characteristic to differentiate between different products of a product family or special variants. :information_source: One of the two properties `product family` or `product Type`  must be provided according to EU Machine Directive 2006/42/EC.| Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
+| Manufacturer Product Type | [DeviceType:model](#model-number)| product_name | Characteristic to differentiate between different products of a product family or special variants. :information_source: One of the two properties Manufacturer `Product Family` or Manufacturer `Product Type`  must be provided according to EU Machine Directive 2006/42/EC.| Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
 | *unknown* | [device:Description](#device-description) | x_generic_uris | :information_source: own additional level to a 3 level manufacturer specific product hierarchy| Yes | *unknown* |
 | serial number| [Device:serial_number](#serial-number) | serial_number |unique combination of numbers and letters used to identify the device once it has been manufactured | Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
 | Year of Construction| [Device:YoC](#year-of-construct) | N/A| year as completion date of object | Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
@@ -30,7 +33,7 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 | HardwareVersion| DeviceType:hardware_version| product_version and product_version_range| :information_source: [Version](#version-number)  of the hardware supplied with the device|Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
 | FirmwareVersion| [Software:version](#version-number) + flag "is firmware"| product_version and product_version_range| :information_source: [Version](#version-number) of the firmware supplied with the device|Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
 | SoftwareVersion| [Software:version](#version-number)| product_version and product_version_range| :information_source: [Version](#version-number) of the software used by the device |Yes | [IDTA 02006-2-0](#idta-02006-2-0) |
-| URI | [URI](#x_generic_uris) | URI |Unique global identification of the product using a universal resource identifier (URI)| Yes | [IDTA 02007-1-0](#idta-02007-1-0) |
+| URI | [x_generic_uris](#x_generic_uris) | x_generic_uris |Unique global identification of the product using a universal resource identifier (URI)| Yes | [IDTA 02007-1-0](#idta-02007-1-0) |
 | SoftwareType | [SoftwareType](#software-type) | N/A |The type of the software (category, e.g. Runtime, Application, Firmware, Driver, etc.) | Yes | [IDTA 02007-1-0](#idta-02007-1-0) |
 | Version Name| [Software:version_name](#software-name) | x_generic_uris |The name this particular version is given (e. g. focal fossa) | Yes | [IDTA 02007-1-0](#idta-02007-1-0) |
 | Version Info| Version Info | N/A | Provides a textual description of most relevant characteristics of the version of the software | No | [IDTA 02007-1-0](#idta-02007-1-0) |
@@ -63,9 +66,9 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 - **Year**: 2023
 - **Source**: [IDTA Homepage](https://industrialdigitaltwin.org/wp-content/uploads/2023/08/IDTA-02007-1-0_Submodel_Software-Nameplate.pdf)
 
-## Datamodel in Netbox
+## Data model in Netbox
 
-*Table 2: Datamodel for Netbox plugins by DINA community.*
+*Table 2: Datam odel for Netbox plugins by DINA community.*
 |Name   | Netbox | Field | Desciption/Purpose | Example |
 | - | - | - | - | - |
 |Article Number         | :exclamation: DeviceType:part_number | :hammer: replace by part_number:hammer:| see [article number](#article-number---outdated)  --> delete :exclamation: | -|
@@ -76,21 +79,21 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 |Device Family          | DeviceType:device_family | custom /:exclamation:[Device Type](#discussion-device-type) | usually family a model is assigned to | [DeviceType](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicetype/)|
 |Model_number           | DeviceType:model  | core/:exclamation:[Device Type](#discussion-device-type) | Model number given by the manufacturer. One specification of a device_family | 6RA8096-4MV62-0AA0 [Details](#model-number) |
 |SKU                    | DeviceType:part_number   | core/:exclamation:[Device Type](#discussion-device-type) | SKU (stock keeping unit) also known as part number | [Details](#part-number) |
-|Device Description     | DeviceType:device_description | custom/:exclamation:[Device Type](#discussion-device-type) | additional, optional field for detailed device description| [device description](#device-description)|
+|Device Description     | DeviceType:device_description | custom/:exclamation:[Device Type](#discussion-device-type) | additional, optional field for detailed device description| [Device Description](#device-description)|
 |Hardware Name           |DeviceType:hardware_name  | :hammer:modify/custom/:exclamation:[Device Type](#discussion-device-type)  |HW  of device, not of installed software (flag must be set in Netbox) | -|
 |Hardware version        |DeviceType:hardware_version | :hammer:new/custom/:exclamation:[Device Type](#discussion-device-type) | Hardware version of the product; use "N/A" if just one version was build; use "unknown" if not known. The notations of the manufacturer should not be altered. | see Software version |
 |Software Manufacturer    |Software:manufacturer | :hammer: new :hammer: | distinguish between manufacturer of the device | |
 |Firmware Name           |Software:name       | custom  |FW of device, not of installed software (flag must be set in Netbox) | -|
 |Firmware Version        |Software:version    | :hammer: modify :hammer:  | FW version of device, not of installed software (flag must be set in Netbox). | see Software version |
 |Serial  Number         | Device:serial            | core | specific serial number of device | -|
-|Communication partner - IP| Communication:dst_ip_addr | core | not observed CP but expected one (truth of state) for IDS | - |
-|Communication partner - Protocol| Communication:transport_protocol| core | not observed CP but expected one (truth of state) |-|
+|Communication partner - IP| Communication:dst_ip_addr | core | not observed CP but expected one (source of truth) for IDS | - |
+|Communication partner - Protocol| Communication:transport_protocol| core | not observed CP but expected one (source of truth) |-|
 |Software Name           |Software:name       | custom   |The name this particular version is given| - |
-|Software Version        |[Software:version](#version-number)    | :hammer: modify :hammer: | :information_source: There are plenty of valid notations for version schema. Therefore, there is no common standard. | MAYOR.MINOR.PATCH.BUILD or YEAR.MONTH.DATE or hash value |
+|Software Version        |[Software:version](#version-number)    | :hammer: modify :hammer: | :information_source: There are plenty of valid notations for version schema. Therefore, there is no common standard. | MAYOR.MINOR.PATCH.BUILD or YEAR-MONTH-DATE or hash value |
 |Safety                  |Device:safety      | custom | device is used for safety functionality. Information also in CVSS available. |-|
 |Exposure                |Device:Exposure    | custom | exposure to other networks| see [exposure](#exposure)|
 |CPE                     |DeviceType:cpe     | custom | Common Platform Enumeration (CPE), is also used as CSAF product identification helper|[CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31331-full-product-name-type---product-identification-helper---cpe)|
-|Hashes                  |Software:Hashes    | custom | for firmware and applications software |[CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31332-full-product-name-type---product-identification-helper---hashes)|
+|Hashes                  |Software:Hashes    | custom | for firmware and applications software, is also used as CSAF product identification helper |[CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31332-full-product-name-type---product-identification-helper---hashes)|
 |purl                    |Software:Hashes    | custom | package URL (purl), is also used as CSAF product identification helper | [CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31334-full-product-name-type---product-identification-helper---purl)|
 |SBOM_URLs               |Software:sbom_urls | custom | The URL is a unique identifier. The content is secondary| [CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31335-full-product-name-type---product-identification-helper---sbom-urls)|
 |x_generic_uris          |Software:x_generic_uris AND DeviceType:x_generic_uris| custom |unique id given by the vendor (e.g. [#649](https://github.com/oasis-tcs/csaf/issues/649))| [CSAF-Standard 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/os/csaf-v2.0-os.html#31338-full-product-name-type---product-identification-helper---generic-uris)|
@@ -101,19 +104,19 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 
 ### Article Number - outdated
 
-Text fields added to the Device Type object. Specifies the stock keeping unit (SKU).  It can be the same as model number (NetBox: part\_number), especially when seller is the vendor itself.
+Text field is currently added to the Device Type object. Specifies the stock keeping unit (SKU).  It can be the same as model number (NetBox: part\_number), especially when seller is the vendor itself.
 
 ### Communication partner - IP
 
-not observed communication partner IP but expected one (truth of state)
+not observed communication partner IP but expected one (source of state)
 
 ### Communication partner - Protocol
 
-not observed communication partner protocol but expected one (truth of state)
+not observed communication partner protocol but expected one (source of state)
 
 ### CPE
 
-Text fields added to the Device Type object. Specifies the Common Platform Enumeration (CPE) string of the device type.
+Text field added to the Device Type object. Specifies the Common Platform Enumeration (CPE) string of the device type.
 
 ### Device Status
 
@@ -187,11 +190,11 @@ In the latter case, it is recommanded to use the version range specifier [vers](
 
 #### version-number - DINA
 
-Since a device has a specific version, the format of [semver](https://semver.org/) is used. Therefore, some adjustment must be made when importing a version number from AAS.
+There are plenty of valid notations for version schema. Therefore, there is no common standard
 
 ### x_generic_uris
 
-Unique name given by the vendor [example](https://github.com/oasis-tcs/csaf/issues/649). Hardware and software, can have one or more x_generic_uri. However, an x_generic_uri can only belong to one hardware resp. software.
+Unique name given by the vendor. The TC provides some [examples](https://github.com/oasis-tcs/csaf/issues/649). Hardware and software, can have one or more x_generic_uri. However, an x_generic_uri can only belong to one hardware resp. software.
 
 ### Year of Construct
 
@@ -204,7 +207,7 @@ The problem with the core field in Netbox for Device Type is that the model is u
 | attribute | Netbox | DDDC |
 |:---:|:----:|:---:|
 | manufacturer | Rockwell Automation| Rockwell Automation|
-| family | N/A | ControllLogix |
+| family | N/A | ControlLogix |
 | model (number) | ControlLogix Rack K - 10 Slot| Rack K -10 Slot|
 | part_number | 1756-A10K | 1756-A10K (sku)|
 | | | |
@@ -277,11 +280,11 @@ It can be the same as model_number, especially when seller is the vendor itself.
 
 ### Device Description
 
-Text fields added to the Device Type object. Intended as an additional reminder alongside the device type name (e.g. CPU 414-3 PN/DP Zentralbaugruppe mit: Arbeitsspeicher 4 MB ...). Could be partially part of full_product_name_t/name in a CSAF document.
+Text field added to the Device Type object. Intended as an additional reminder alongside the device type name (e.g. CPU 414-3 PN/DP central unit with 4 MB RAM...). Could be partially part of full_product_name_t/name in a CSAF document.
 
 ### Hardware Version
 
-Text fields added to the Device Type object. Specifies the hardware version of the device type. Hardware version can be “N/A” if just one version was build. Multiple products exist in multiple hardware versions (due to PCB layout changes or chip shortages or hardware improvements), which can have impact on the software that can be used with the device.
+Text field added to the Device Type object. Specifies the hardware version of the device type. Hardware version can be “N/A” if just one version was build. Multiple products exist in multiple hardware versions (due to PCB layout changes or chip shortages or hardware improvements), which can have impact on the software that can be used with the device.
 
 ## Approach 2 Recursiv DeviceTypes
 
@@ -311,8 +314,8 @@ Manufacturer
 
 Always use the model name for the description of model, submodel or specification. In that way
 
-- 1st model name describes the product family
-- 2nd model name can be used to differentiate between different products of this family.
+- 1st model name describes the product family,
+- 2nd model name can be used to differentiate between different products of this family,
 - 3th model name can be used to differentiate between different specifications or sub products of this product.
 
-the part number can also include the hardware version.
+In addition, the part number can also include the hardware version. This makes an additional custom field obsolete.
