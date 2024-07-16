@@ -71,17 +71,17 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 *Table 2: Datam odel for Netbox plugins by DINA community.*
 |Name   | Netbox | Field | Desciption/Purpose | Example |
 | - | - | - | - | - |
-|Article Number         | :exclamation: DeviceType:part_number | :hammer: replace by part_number:hammer:| see [article number](#article-number---outdated)  --> delete :exclamation: | -|
+|Article Number         | ❗ DeviceType:part_number | :hammer: replace by part_number:hammer:| see [article number](#article-number---outdated)  --> delete ❗ | -|
 |Device role (primary)  | DeviceRole:name          | core| used for characterization and future features |see [Device Roles](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicerole/) |
 |Device role (secondary)| DeviceRole:name_minor    | custom| used for characterization and future features |see [Device Roles](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicerole/) |
 |Manufacturer           | Manufacturer:name        | core| manufacturer **of device type**| ABB, Schneider Electric|
 |Device Type Name       | manufacturer + model     | N/A| used for assign a device to a device type.| [Details](#device-family) |
-|Device Family          | DeviceType:device_family | custom /:exclamation:[Device Type](#discussion-device-type) | usually family a model is assigned to | [DeviceType](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicetype/)|
-|Model_number           | DeviceType:model  | core/:exclamation:[Device Type](#discussion-device-type) | Model number given by the manufacturer. One specification of a device_family | 6RA8096-4MV62-0AA0 [Details](#model-number) |
-|SKU                    | DeviceType:part_number   | core/:exclamation:[Device Type](#discussion-device-type) | SKU (stock keeping unit) also known as part number | [Details](#part-number) |
-|Device Description     | DeviceType:device_description | custom/:exclamation:[Device Type](#discussion-device-type) | additional, optional field for detailed device description| [Device Description](#device-description)|
-|Hardware Name           |DeviceType:hardware_name  | :hammer:modify/custom/:exclamation:[Device Type](#discussion-device-type)  |HW  of device, not of installed software (flag must be set in Netbox) | -|
-|Hardware version        |DeviceType:hardware_version | :hammer:new/custom/:exclamation:[Device Type](#discussion-device-type) | Hardware version of the product; use "N/A" if just one version was build; use "unknown" if not known. The notations of the manufacturer should not be altered. | see Software version |
+|Device Family          | DeviceType:device_family | custom /❗[Device Type](#discussion-device-type) | usually family a model is assigned to | [DeviceType](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicetype/)|
+|Model_number           | DeviceType:model  | core/❗[Device Type](#discussion-device-type) | Model number given by the manufacturer. One specification of a device_family | 6RA8096-4MV62-0AA0 [Details](#model-number) |
+|SKU                    | DeviceType:part_number   | core/❗[Device Type](#discussion-device-type) | SKU (stock keeping unit) also known as part number | [Details](#part-number) |
+|Device Description     | DeviceType:device_description | custom/❗[Device Type](#discussion-device-type) | additional, optional field for detailed device description| [Device Description](#device-description)|
+|Hardware Name           |DeviceType:hardware_name  | :hammer:modify/custom/❗[Device Type](#discussion-device-type)  |HW  of device, not of installed software (flag must be set in Netbox) | -|
+|Hardware version        |DeviceType:hardware_version | :hammer:new/custom/❗[Device Type](#discussion-device-type) | Hardware version of the product; use "N/A" if just one version was build; use "unknown" if not known. The notations of the manufacturer should not be altered. | see Software version |
 |Software Manufacturer    |Software:manufacturer | :hammer: new :hammer: | distinguish between manufacturer of the device | |
 |Firmware Name           |Software:name       | custom  |FW of device, not of installed software (flag must be set in Netbox) | -|
 |Firmware Version        |Software:version    | :hammer: modify :hammer:  | FW version of device, not of installed software (flag must be set in Netbox). | see Software version |
