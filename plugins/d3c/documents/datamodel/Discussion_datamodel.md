@@ -10,9 +10,9 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 
 ```markdown
     * ❓ = The attribution is unclear
-    * ❗ = There is a conflict about this attribute which is addressed by the link
+    * ❗ = There is a conflict about this attribute which is addressed by the link. Adjustments are mandatory.
     * ℹ️ = There is information about this attribute which is addressed by the link
-    * 🔨 = Adjustments to the current state of the DDDC plugin are necessary (used only in Table2)
+    * 🔨 = Adjustments to the current state of the DDDC plugin are going to be performed by master-thesis (used only in Table2)
 ```
 
 *Table 1: Information for describing a device for vulnerability matching.*
@@ -80,8 +80,8 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 |Model_number           | DeviceType:model  | core/❗[Device Type](#discussion-device-type) | Model number given by the manufacturer. One specification of a device_family | 6RA8096-4MV62-0AA0 [Details](#model-number) |
 |SKU                    | DeviceType:part_number   | core/❗[Device Type](#discussion-device-type) | SKU (stock keeping unit) also known as part number | [Details](#part-number) |
 |Device Description     | DeviceType:device_description | custom/❗[Device Type](#discussion-device-type) | additional, optional field for detailed device description| [Device Description](#device-description)|
-|Hardware Name           |DeviceType:hardware_name  | :hammer:modify/custom/❗[Device Type](#discussion-device-type)  |HW  of device, not of installed software (flag must be set in Netbox) | -|
-|Hardware version        |DeviceType:hardware_version | :hammer:new/custom/❗[Device Type](#discussion-device-type) | Hardware version of the product; use "N/A" if just one version was build; use "unknown" if not known. The notations of the manufacturer should not be altered. | see Software version |
+|Hardware Name           |DeviceType:hardware_name  | custom/❗[Device Type](#discussion-device-type)  |HW  of device, not of installed software (flag must be set in Netbox) | -|
+|Hardware version        |DeviceType:hardware_version | custom/❗[Device Type](#discussion-device-type) | Hardware version of the product; use "N/A" if just one version was build; use "unknown" if not known. The notations of the manufacturer should not be altered. | see Software version |
 |Software Manufacturer    |Software:manufacturer | :hammer: new :hammer: | distinguish between manufacturer of the device | |
 |Firmware Name           |Software:name       | custom  |FW of device, not of installed software (flag must be set in Netbox) | -|
 |Firmware Version        |Software:version    | :hammer: modify :hammer:  | FW version of device, not of installed software (flag must be set in Netbox). | see Software version |

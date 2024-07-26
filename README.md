@@ -1,8 +1,7 @@
 # Netbox Plugin DDDC
 
-This repository contains the source code for the BSI Project 507 TP2. In this context, the DDDC plugin for Netbox was developed.
-The DDDC plugin takes input data from various sources, supports the processing and approval of this data to construct a device database
-within the framework of Netbox. As such, it is intended to support IT security management tasks such as device management, vulnerability management, and patch management.
+Even there are tools in Malcolm and [Netbox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into Netbox. This data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within Netbox.\\
+The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the Netbox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
 
 In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary Netbox environment.
 
