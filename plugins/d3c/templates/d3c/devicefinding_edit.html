@@ -6,7 +6,7 @@
 {% block title %}Edit DeviceFinding ({{ object.pk }}) or Interface of a Device {% endblock %}
 
 {% block tabs %}
-  <ul class="nav nav-tabs px-3">
+  <ul class="nav nav-tabs">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="edit-form-tab" data-bs-toggle="tab" data-bs-target="#edit-form" type="button" role="tab" aria-controls="edit-form" aria-selected="true">
         Edit
@@ -15,11 +15,10 @@
   </ul>
 {% endblock tabs %}
 
-{% block content-wrapper %}
-  <div class="tab-content">
+{% block content %}
     <div class="tab-pane show active" id="edit-form" role="tabpanel" aria-labelledby="object-list-tab">
 
-      <form action="" method="post" enctype="multipart/form-data" class="form-object-edit mt-5">
+      <form action="" method="post" enctype="multipart/form-data" class="object-edit">
         {% csrf_token %}
 
         <div id="form_fields">
@@ -56,6 +55,5 @@
         </div>
       </form>
     </div>
-  </div>
 
-{% endblock content-wrapper %}
+{% endblock content%}

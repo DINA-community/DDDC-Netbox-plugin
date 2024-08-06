@@ -71,7 +71,7 @@ class FileHashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.Hash, 'edit')
@@ -95,7 +95,7 @@ class HashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 class XGenericUriDeleteView(generic.ObjectDeleteView):
@@ -112,7 +112,7 @@ class XGenericUriListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.XGenericUri, 'edit')
@@ -150,7 +150,7 @@ class ProductRelationshipListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
     table = tables.ProductRelationshipTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.ProductRelationship, 'edit')
@@ -344,7 +344,7 @@ class FindingListForDeviceView(View, TableMixin):
             table.columns.hide('software')
 
     def get(self, request, **kwargs):
-        time_start('get')
+        #time_start('get')
         self.device = get_object_or_404(Device, **kwargs)
         self.queryset = models.DeviceFinding.objects.filter(device=self.kwargs["pk"])
         requestedStatus = request.GET.get('finding_status', 'NEW')
@@ -1220,7 +1220,7 @@ class SoftwareListView(generic.ObjectListView):
         return queryset
 
     table = tables.SoftwareTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 # Software view for one device
