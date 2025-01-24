@@ -15,7 +15,6 @@ from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm, NetBoxModelI
 from utilities.choices import ChoiceSet
 from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES
-from utilities.forms.mixins import BootstrapMixin
 from xml.etree.ElementTree import ParseError
 from django.contrib.postgres.forms import SimpleArrayField
 from extras.models import CustomFieldChoiceSet
@@ -222,7 +221,7 @@ class DeviceFindingForm(NetBoxModelForm):
             raise forms.ValidationError({'ip_address': 'Even one of IP Address or MAC Address should have a value.'})
 
 
-class DeviceFindingCreateDeviceForm(BootstrapMixin, forms.Form):
+class DeviceFindingCreateDeviceForm(forms.Form):
     """
     Input Form for the DeviceFinding model.
     """
@@ -242,7 +241,7 @@ class DeviceFindingCreateDeviceForm(BootstrapMixin, forms.Form):
         return data
 
 
-class DeviceFindingApplyForm(BootstrapMixin, forms.Form):
+class DeviceFindingApplyForm(forms.Form):
     """
     Input Form for the ApplyFinding functionality of a single DeviceFinding.
     """

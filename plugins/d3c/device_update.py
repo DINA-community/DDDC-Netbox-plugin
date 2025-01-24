@@ -25,7 +25,7 @@ def get_current_value_for_device(device, findingField):
     if ff == 'manufacturer':
         return str(device.device_type.manufacturer.name)
     if ff == 'device_role':
-        return str(device.device_role)
+        return str(device.role)
     if ff == 'device_type':
         return str(device.device_type)
     if ff == 'device_name':
@@ -167,8 +167,8 @@ def change_device_role(device, value):
         else:
             role, _ = DeviceRole.objects.get_or_create(name=value, slug=slugify(value))
 
-        if device.device_role and device.device_role.pk != role.pk:
-            device.device_role = role
+        if device.role and device.role.pk != role.pk:
+            device.role = role
             device.save()
         return True
 

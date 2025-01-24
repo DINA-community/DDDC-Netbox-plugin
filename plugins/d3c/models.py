@@ -19,7 +19,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 class DDDCAdmin(NetBoxModel):
     """
     A dummy model which enables the plugin to track whether it was already initialized.
-    Such an object will be created in the __init__.py.
+    Such an object will be created through django's request_started-signal in __init__.py.
     """
     initialized = models.BooleanField(default=False)
 

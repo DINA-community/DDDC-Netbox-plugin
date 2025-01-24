@@ -17,15 +17,14 @@ from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from extras.signals import clear_events
-# from extras.signals import clear_webhooks no longer available in v 3.7.0
 from netbox.views import generic
 from netbox.views.generic.base import BaseMultiObjectView
 from netbox.views.generic.mixins import TableMixin
 from netbox.views.generic.utils import get_prerequisite_model
 from utilities.exceptions import AbortRequest, AbortTransaction, PermissionsViolation
 from utilities.forms import restrict_form_fields
-from utilities.htmx import is_htmx
-from utilities.utils import normalize_querydict
+from utilities.htmx import htmx_partial
+from utilities.querydict import normalize_querydict
 from utilities.views import ViewTab, register_model_view
 from utilities.views import GetReturnURLMixin
 from .device_update import *
@@ -72,7 +71,7 @@ class FileHashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.Hash, 'edit')
@@ -96,7 +95,7 @@ class HashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 class XGenericUriDeleteView(generic.ObjectDeleteView):
@@ -113,7 +112,7 @@ class XGenericUriListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.XGenericUri, 'edit')
@@ -151,7 +150,7 @@ class ProductRelationshipListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
     table = tables.ProductRelationshipTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.ProductRelationship, 'edit')
@@ -187,7 +186,11 @@ class DeviceFindingListView(generic.ObjectListView):
     filterset = filtersets.DeviceFindingFilterSet
     filterset_form = forms.DeviceFindingFilterForm
     template_name = 'd3c/devicefinding_list.html'
-    actions = ('export', 'add', 'edit', 'bulk_sync')
+    actions = {
+        'add': {'add'},
+        'edit': {'change'},
+        'export': set(),
+        'bulk_sync': {'sync'}}
 
 
 class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
@@ -341,7 +344,7 @@ class FindingListForDeviceView(View, TableMixin):
             table.columns.hide('software')
 
     def get(self, request, **kwargs):
-        time_start('get')
+        #time_start('get')
         self.device = get_object_or_404(Device, **kwargs)
         self.queryset = models.DeviceFinding.objects.filter(device=self.kwargs["pk"])
         requestedStatus = request.GET.get('finding_status', 'NEW')
@@ -355,9 +358,9 @@ class FindingListForDeviceView(View, TableMixin):
             table.setStringCheckerEnabled(True)
 
         self.hideEmptyColumns(table.data, table)
-        time_end()
+        #time_end()
 
-        if is_htmx(request):
+        if htmx_partial(request):
             return render(request, 'htmx/table.html', {
                 'object': self.device,
                 'table': table,
@@ -528,7 +531,7 @@ class DeviceFindingApply(generic.ObjectEditView):
         result['type_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["device_type"], "Device Type",
                                    str(self.device.device_type), self.finding.device_type)
         result['role_c'] = get_sug(rsp, S_NORMALIZER, None, "Device Role",
-                                   str(self.device.device_role), self.finding.device_role)
+                                   str(self.device.role), self.finding.device_role)
         result['name_c'] = [(0, str(self.device.name)), (1, str(self.finding.device_name))]
 
         result['family_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["device_family"], "Device Family",
@@ -834,7 +837,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
                 with transaction.atomic():
                     device.site, _ = Site.objects.get_or_create(name='PoC')
                     device.manufacturer, _ = Manufacturer.objects.get_or_create(name='Unspecified')
-                    device.device_role, _ = DeviceRole.objects.get_or_create(name='Unspecified')
+                    device.role, _ = DeviceRole.objects.get_or_create(name='Unspecified')
                     device.device_type, _ = DeviceType.objects.get_or_create(manufacturer=device.manufacturer,
                                                                              model='Unspecified')
                     device.name = form.cleaned_data['device_name']
@@ -1217,7 +1220,7 @@ class SoftwareListView(generic.ObjectListView):
         return queryset
 
     table = tables.SoftwareTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 # Software view for one device
@@ -1550,7 +1553,12 @@ class CommunicationFindingListView(generic.ObjectListView):
     filterset = filtersets.CommunicationFindingFilterSet
     filterset_form = forms.CommunicationFindingFilterForm
     template_name = 'd3c/communicationfinding_list.html'
-    actions = ('export', 'add', 'edit', 'import', 'bulk_sync')
+    actions = {
+        'add': {'add'},
+        'import': {'add'},
+        'edit': {'change'},
+        'export': set(),
+        'bulk_sync': {'sync'}}
 
 
 # Communication import view
