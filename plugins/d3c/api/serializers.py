@@ -4,7 +4,7 @@
 from rest_framework import serializers
 
 from netbox.api.serializers import NetBoxModelSerializer
-from dcim.api.nested_serializers import NestedDeviceSerializer, NestedDeviceTypeSerializer, NestedInterfaceSerializer
+from dcim.api.serializers import DeviceSerializer
 from ..models import (DDDCAdmin, DeviceFinding, Software, Communication,
                       CommunicationFinding, Mapping, ProductRelationship, PRODCUT_PARENT_MODELS,
                       XGENERICURI_PARENT_MODELS, XGenericUri, FileHash, Hash)
@@ -20,7 +20,6 @@ class DeviceFindingSerializer(NetBoxModelSerializer):
     REST API Model Serializer for DeviceFindings.
     """
     url = serializers.HyperlinkedIdentityField(view_name='plugins-api:d3c-api:devicefinding-detail')
-    #device = NestedDeviceSerializer(read_only=True)
 
     class Meta:
         model = DeviceFinding
@@ -51,7 +50,7 @@ class CommunicationSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='plugins-api:d3c-api:communication-detail'
     )
-    source_device = NestedDeviceSerializer(read_only=True)
+    source_device = DeviceSerializer(read_only=True, nested=True)
 
     class Meta:
         model = Communication
@@ -86,7 +85,6 @@ class DDDCAdminSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for DDDCAdmin.
     """
-#    device = NestedDeviceSerializer()
 
     class Meta:
         model = DDDCAdmin
@@ -177,10 +175,3 @@ class HashSerializer(NetBoxModelSerializer):
     class Meta:
         model = Hash
         fields = ('id', 'filename', 'tags')
-
-
-
-
-
-
-

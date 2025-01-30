@@ -26,24 +26,32 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 ### Installation for developing and testing purposes
 
-1. Execute the following commands for [ubuntu 22-04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04):
+1. Execute the following commands for [ubuntu](https://docs.docker.com/engine/install/ubuntu/):
 
     ```text
-    cd /home/
-    apt update
-    apt install apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    # Add Docker's official GPG key:
     sudo apt-get update
-    apt-cache policy docker-ce
-    apt-get install docker-ce
+    sudo apt-get install ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+
+    sudo apt-get install docker-ce docker-ce-cli containerd.io \
+     docker-buildx-plugin docker-compose-plugin
     ```
 
     ```text
     git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
     cd /home/d3c/
-    docker-compose build --no-cache
-    docker-compose up
+    docker compose build --no-cache
+    docker compose up
     ```
 
 2. Wait until `Initialisation is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).

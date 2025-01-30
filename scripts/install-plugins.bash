@@ -16,7 +16,7 @@
 
 echo "Installing starting..."
 
-git config --global user.name "Joerg Kippe"
+git config --global user.name "Joerg Mustermann"
 
 /usr/bin/cp -r /home/d3c/plugins/d3c /opt/netbox/
 /usr/bin/rm -rf /opt/netbox/d3c/migrations/

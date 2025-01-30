@@ -13,7 +13,7 @@ class NetBoxDDCConfig(PluginConfig):
 
     name = 'd3c'
     verbose_name = 'NetBox D3C'
-    description = 'Manage D3C in NetBox'
+    description = 'Manage Device Detection and Device Chrateriszation in NetBox'
     version = '0.9'
     base_url = 'd3c'
 

@@ -8,7 +8,6 @@
 #
 #####################################################
 #
-#  Jörg Kippe
 #  Fraunhofer IOSB
 #  Fraunhoferstr. 1
 #  D-76131 Karlsruhe

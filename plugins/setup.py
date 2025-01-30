@@ -1,11 +1,10 @@
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 
 setup(
     name='d3c',
     version='0.8',
     description='DDDC plugin',
-    # The fix version selection ensures the usage of Netbox 3.6.0:
-    install_requires=['defusedxml', 'numpy==1.24.0', 'pandas==2.0.1', 'openpyxl', 'pyspellchecker==0.7.2', 'regex==2023.8.8'],
+    install_requires=['defusedxml', 'pandas', 'openpyxl', 'pyspellchecker==0.7.2'],
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
