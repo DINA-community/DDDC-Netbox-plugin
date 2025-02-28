@@ -16,7 +16,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.contenttypes.fields import GenericRelation
 
 
-class DDDCAdmin(NetBoxModel):
+class Dummy(NetBoxModel):
     """
     A dummy model which enables the plugin to track whether it was already initialized.
     Such an object will be created through django's request_started-signal in __init__.py.

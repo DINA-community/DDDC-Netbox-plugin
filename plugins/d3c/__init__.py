@@ -20,6 +20,7 @@ class NetBoxDDCConfig(PluginConfig):
     def ready(self):
         """ Initializes the Plugin."""
         request_started.connect(init_custom_fields)
+
         return super().ready()
 
 
@@ -27,9 +28,9 @@ config = NetBoxDDCConfig
 
 
 def init_custom_fields(sender, environ, **kwargs):
-    from .models import DDDCAdmin
+    from .models import Dummy
 
-    admin, created = DDDCAdmin.objects.get_or_create()
+    admin, created = Dummy.objects.get_or_create()
     print(admin, " ", created)
 
     if created:
