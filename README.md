@@ -32,16 +32,16 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 ```bash
 cd /home/
 apt update
-apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
+apt install apt-transport-https ca-certificates curl
+echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
+curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
 apt-cache policy docker-ce
 apt install docker-ce
 ```
 
 ```bash
 git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
-cd /home/d3c/
+cd /home/DDDC-Netbox-plugin/
 docker compose build --no-cache
 docker compose up
 ```
