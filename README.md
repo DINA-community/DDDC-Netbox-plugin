@@ -1,13 +1,13 @@
 # Netbox Plugin DDDC
 
-Even there are tools in Malcolm and [Netbox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into Netbox. This data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within Netbox.\\
+Even if there are tools in Malcolm and [Netbox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into Netbox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within Netbox.\\
 The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the Netbox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
 
 In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary Netbox environment.
 
 ## Installation of the DDDC Plugin
 
-As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). This plugin is compatible with Netbox version 3.7.x and ensured by plugins `setup.py` file.  
+As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). This plugin is compatible with Netbox version 4.1.x and ensured by plugins `setup.py` file.  
 
 Additionally, this repository contains files from the community-driven Docker image to set up Netbox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up Netbox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -28,28 +28,19 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 1. Execute the following commands for [ubuntu](https://docs.docker.com/engine/install/ubuntu/):
 
-    ```text
-    # Add Docker's official GPG key:
-    sudo apt-get update
-    sudo apt-get install ca-certificates curl
-    sudo install -m 0755 -d /etc/apt/keyrings
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-    # Add the repository to Apt sources:
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-
-    sudo apt-get install docker-ce docker-ce-cli containerd.io \
-     docker-buildx-plugin docker-compose-plugin
+   ```bash
+    # Add official GPG key from docker
+    apt update
+    apt install apt-transport-https ca-certificates curl
+    echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+    curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
+    apt-cache policy docker-ce
+    apt-get install docker-ce
     ```
 
-    ```text
+    ```bash
     git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
-    cd /home/d3c/
+    cd DDDC-Netbox-plugin/
     docker compose build --no-cache
     docker compose up
     ```
