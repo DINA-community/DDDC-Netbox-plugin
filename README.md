@@ -28,7 +28,7 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 1. Execute the following commands for [ubuntu](https://docs.docker.com/engine/install/ubuntu/):
 
-   ```bash
+    ```bash
     # Add official GPG key from docker
     apt update
     apt install apt-transport-https ca-certificates curl
