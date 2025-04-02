@@ -1,0 +1,6 @@
+mac_address,ip_address,device_role,manufacturer,device_family,confidence,source,exposure
+00:01:e6:44:19:ff,,IODevice2,Packard,SPS-5001,0.067,IPadded,no IP
+00:01:e6:44:19:af;00:01:e6:44:19:bf;00:01:e6:44:19:cf;00:01:e6:44:19:df,192.168.10.47,IODevice2,Packard,SPS-5001,0.067,IPadded, more MACS
+00:01:e6:44:19:af;00:01:e6:44:19:bf;00:01:e6:44:19:cf;00:01:e6:44:19:df,192.168.10.47;192.168.10.48;192.168.10.49;192.168.10.50,IODevice2,Packard,SPS-5001,0.067,IPadded, equal
+00:01:e6:44:19:af;00:01:e6:44:19:bf;00:01:e6:44:19:cf,192.168.10.47;192.168.10.48;192.168.10.49;192.168.10.50,IODevice2,Packard,SPS-5001,0.067,IPadded, more IPs
+00:01:e6:44:19:ff,192.168.10.47,IODevice2,Packard,SPS-15001,0.067,IPadded,device_family leads to siemens (missing use-case)
