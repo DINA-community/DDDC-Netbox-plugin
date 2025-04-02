@@ -12,7 +12,7 @@
     background: #363f3f;
   }
   td.highlight {
-    background: #D6EEEE;
+    background: #758a8a;
   }
   #object_list label {
     display: inline;
@@ -27,18 +27,18 @@
     {% with table_modal="ObjectTable_config" %}
     <div class="row mb-3">
       <div class="col-auto table-controls noprint">
-        <a class="btn btn-sm {% if requestedStatus == 'ALL' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=ALL&spelchecker={{ requestedSpelchecker }}">ALL</a>&nbsp;
-        <a class="btn btn-sm {% if requestedStatus == 'NEW' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=NEW&spelchecker={{ requestedSpelchecker }}">NEW</a>&nbsp;
-        <a class="btn btn-sm {% if requestedStatus == 'DONE' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=DONE&spelchecker={{ requestedSpelchecker }}">DONE</a>
+        <a class="btn {% if requestedStatus == 'ALL' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=ALL&spelchecker={{ requestedSpelchecker }}">ALL</a>&nbsp;
+        <a class="btn {% if requestedStatus == 'NEW' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=NEW&spelchecker={{ requestedSpelchecker }}">NEW</a>&nbsp;
+        <a class="btn {% if requestedStatus == 'DONE' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status=DONE&spelchecker={{ requestedSpelchecker }}">DONE</a>
         &nbsp;&nbsp;
-        <a class="btn btn-sm {% if requestedSpelchecker == '0' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status={{ requestedStatus }}&spelchecker=0">Basic Spellchecker</a>&nbsp;
-        <a class="btn btn-sm {% if requestedSpelchecker == '1' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status={{ requestedStatus }}&spelchecker=1">Full Spellchecker</a>
+        <a class="btn {% if requestedSpelchecker == '0' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status={{ requestedStatus }}&spelchecker=0">Basic Spellchecker</a>&nbsp;
+        <a class="btn {% if requestedSpelchecker == '1' %}btn-info{% else %}btn-success{% endif %}" role="button" href="{{ request.path }}?finding_status={{ requestedStatus }}&spelchecker=1">Full Spellchecker</a>
       </div>
       <div class="col-auto ms-auto table-controls noprint">
         {% if request.user.is_authenticated and table_modal %}
-          <div class="table-configure input-group input-group-sm">
+          <div class="table-configure input-group">
             <button type="button" data-bs-toggle="modal" title="{% trans "Configure Table" %}" data-bs-target="#{{ table_modal }}"
-              class="btn btn-sm btn-outline-dark">
+              class="btn">
               <i class="mdi mdi-cog"></i> {% trans "Configure Table" %}
             </button>
           </div>
@@ -51,7 +51,7 @@
 
       {# "Select all" form #}
       {% if table.paginator.num_pages > 1 %}
-        <div id="select-all-box" class="d-none card noprint">
+        <div id="select-all-box" class="d-none card d-print-none">
           <div class="form col-md-12">
             <div class="card-body">
               <div class="float-end">
@@ -65,9 +65,9 @@
               <div class="form-check">
                 <input type="checkbox" id="select-all" name="_all" class="form-check-input" />
                 <label for="select-all" class="form-check-label">
-                  {% blocktrans with count=table.rows|length object_type_plural=table.data.verbose_name_plural %}
-                    Select <strong>all {{ count }} {{ object_type_plural }}</strong> matching query
-                  {% endblocktrans %}
+                  {% blocktrans trimmed with count=table.page.paginator.count object_type_plural=table.data.verbose_name_plural %}
+                      Select <strong>all <span class="total-object-count">{{ count }}</span> {{ object_type_plural }}</strong> matching query
+                    {% endblocktrans %}
                 </label>
               </div>
             </div>
@@ -76,6 +76,7 @@
       {% endif %}
 
       <div class="form form-horizontal">
+        {% csrf_token %}
         <input type="hidden" name="return_url" value="{% if return_url %}{{ return_url }}{% else %}{{ request.path }}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}{% endif %}" />
 
         {# Object table #}
@@ -85,7 +86,7 @@
             {% endif %}
 
         <div class="card">
-          <div class="card-body htmx-container table-responsive" id="object_list">
+          <div class="htmx-container table-responsive" id="object_list">
             {% include 'htmx/table.html' %}
           </div>
         </div>
@@ -93,7 +94,7 @@
         {# Form buttons #}
         <div class="noprint bulk-buttons">
           <div class="bulk-button-group">
-            <button type="submit" name="_sync" class="btn btn-primary btn-sm">
+            <button type="submit" name="_sync" class="btn btn-primary">
               <i class="mdi mdi-sync" aria-hidden="true"></i> Apply Selected to Device
             </button>
             {% block bulk_buttons %}

@@ -11,15 +11,16 @@ from re import sub as re_sub
 
 def get_value(key, data):
     if key in data.keys():
-        return(data[key])
+        return data[key]
     else:
-        return (None)
+        return None
 
 
 class REPO:
     """
     This class parses the YAML files located in 'd3c\data\repo'.
     """
+
     def __init__(self, repo_path):
         self.repo_path = repo_path
         self.cwd = os.getcwd()
@@ -69,9 +70,8 @@ class REPO:
         for x in files:
             sites.append(base_path + x)
         return sites
-        
-    
-    def parse_files(self, files: list, slugs: list = None):       
+
+    def parse_files(self, files: list, slugs: list = None):
         deviceTypes = []
         for file in files:
             with open(file, 'r') as stream:
@@ -83,10 +83,10 @@ class REPO:
                 manufacturer = data['manufacturer']
                 data['manufacturer'] = {
                     'name': manufacturer, 'slug': self.slug_format(manufacturer)}
-            
+
                 # Save file location to resolve any relative paths for images
                 data['src'] = file
-            
+
             if slugs and True not in [True if s.casefold() in data['slug'].casefold() else False for s in slugs]:
                 handle.verbose_log(f"Skipping {data['model']}")
                 continue
@@ -94,10 +94,10 @@ class REPO:
             deviceTypes.append(data)
         return deviceTypes
 
-    def parse_roles(self, files: list, slugs: list = None):       
+    def parse_roles(self, files: list, slugs: list = None):
         deviceRoles = []
         for file in files:
-            print (file)
+            print(file)
             with open(file, 'r') as stream:
                 try:
                     data = yaml.safe_load(stream)
@@ -107,10 +107,10 @@ class REPO:
             deviceRoles.append(data)
         return deviceRoles
 
-    def parse_sites(self, files: list, slugs: list = None):       
+    def parse_sites(self, files: list, slugs: list = None):
         sites = []
         for file in files:
-            print (file)
+            print(file)
             with open(file, 'r') as stream:
                 try:
                     data = yaml.safe_load(stream)
@@ -123,14 +123,14 @@ class REPO:
     def start(self):
         from dcim.models import DeviceRole, DeviceType, Manufacturer, Site
         from django.db.models import Q
-        files,vendors = self.get_devices(self.get_devices_path())
+        files, vendors = self.get_devices(self.get_devices_path())
         for x in vendors:
-            name = get_value('name',x)
-            slug = get_value('slug',x)
+            name = get_value('name', x)
+            slug = get_value('slug', x)
             manufacturer = Manufacturer.objects.filter(Q(name=name) | Q(slug=slug))
             if not manufacturer.exists():
-                manufacturer,created = Manufacturer.objects.get_or_create(name=name, slug=slug)
-            
+                manufacturer, created = Manufacturer.objects.get_or_create(name=name, slug=slug)
+
         device_types = self.parse_files(files)
         for x in device_types:
             manufacturer = get_value('name', get_value('manufacturer', x))
@@ -143,25 +143,24 @@ class REPO:
             if not dt.exists():
                 device_type, created = DeviceType.objects.get_or_create(model=model, manufacturer=manufacturer_obj,
                                                                         slug=slug, u_height=1)
-                device_type.custom_field_data["device_family"]=device_family
-                device_type.custom_field_data["article_number"]=article_number
+                device_type.custom_field_data["device_family"] = device_family
+                device_type.custom_field_data["article_number"] = article_number
                 device_type.save()
 
         roles = self.parse_roles(self.get_roles(self.get_roles_path()))
         for x in roles:
-            name = get_value('name',x)
-            slug = get_value('slug',x)
+            name = get_value('name', x)
+            slug = get_value('slug', x)
             description = get_value('description', x)
             dr = DeviceRole.objects.filter(Q(name=name) | Q(slug=slug))
             if not dr.exists():
-                devicerole,created = DeviceRole.objects.get_or_create(name=name, slug=slug, description=description)
+                devicerole, created = DeviceRole.objects.get_or_create(name=name, slug=slug, description=description)
 
         sites = self.parse_sites(self.get_sites(self.get_sites_path()))
         for x in sites:
-            name = get_value('name',x)
-            status = get_value('status',x)
-            slug = get_value('slug',x)
+            name = get_value('name', x)
+            status = get_value('status', x)
+            slug = get_value('slug', x)
             dr = Site.objects.filter(Q(name=name) | Q(slug=slug))
             if not dr.exists():
                 site, created = Site.objects.get_or_create(name=name, status=status, slug=slug)
-
