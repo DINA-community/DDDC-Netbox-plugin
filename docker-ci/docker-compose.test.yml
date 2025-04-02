@@ -1,7 +1,6 @@
-version: '3.4'
 services:
   netbox: &netbox
-    image: docker.io/netboxcommunity/netbox:${VERSION-v3.6-2.7.0}
+    image: docker.io/netboxcommunity/netbox:${VERSION-v4.1-3.0.2}
     depends_on:
     - postgres
     - redis
@@ -18,7 +17,7 @@ services:
 
   # postgres
   postgres:
-    image: docker.io/postgres:15-alpine
+    image: docker.io/postgres:16-alpine
     env_file: env/postgres.env
     volumes:
     - netbox-postgres-data:/var/lib/postgresql/data
