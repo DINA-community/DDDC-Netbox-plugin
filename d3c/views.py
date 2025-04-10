@@ -469,7 +469,7 @@ class FindingListForDeviceView(View, TableMixin):
             result_device &= change_device_hcpe(self.device, device_hcpe)
 
         for service in groupsData.get('service'):
-            result_service &= add_service(self.device, service.get('ip_address'),
+            result_service &= add_service(self.device, service.get('ip_address'), service.get('ip_netmask'),
                                           service.get('network_protocol'), service.get('transport_protocol'),
                                           service.get('application_protocol'), service.get('port'))
 
@@ -722,7 +722,7 @@ class DeviceFindingApply(generic.ObjectEditView):
 
                     service_option = form.cleaned_data.get('add_service', False)
                     if service_option:
-                        result_service = add_service(self.device, self.finding.ip_address,
+                        result_service = add_service(self.device, self.finding.ip_address, self.finding.ip_netmask,
                                                      self.finding.network_protocol, self.finding.transport_protocol,
                                                      self.finding.application_protocol, self.finding.port)
 
@@ -787,7 +787,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
         df_pk = initial_data["df"]
         df = models.DeviceFinding.objects.get(pk=df_pk)
 
-        ip = get_ip(df.ip_address)
+        ip = get_ip(df.ip_address, df.ip_netmask)
         mac = get_mac(df.mac_address)
 
         if not ip and not mac:
@@ -824,7 +824,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
         initial_data = normalize_querydict(request.GET)
         df = models.DeviceFinding.objects.get(pk=initial_data["df"])
 
-        ip = get_ip(df.ip_address)
+        ip = get_ip(df.ip_address, df.ip_netmask)
         mac = get_mac(df.mac_address)
 
         if form.is_valid() and (ip or mac):
@@ -887,12 +887,13 @@ class DeviceFindingEditView(generic.ObjectEditView):
         device_finding = self.get_object(**kwargs)
         form = self.form(data=request.POST)
 
-        ip = get_ip(device_finding.ip_address)
+        ip = get_ip(device_finding.ip_address, device_finding.ip_netmask)
         mac = get_mac(device_finding.mac_address)
         if form.is_valid():
             logger.debug("Form validation was successful")
 
             device_finding.ip_address = form.cleaned_data["ip_address"]
+            device_finding.ip_netmask = form.cleaned_data["ip_netmask"]
             device_finding.mac_address = form.cleaned_data["mac_address"]
             device_finding.save()
 
@@ -904,7 +905,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
                 messages.success(request, f"Updated Addresses.")
                 return redirect(self.default_return_url)
 
-            ip = get_ip(device_finding.ip_address)
+            ip = get_ip(device_finding.ip_address, device_finding.ip_netmask)
             mac = get_mac(device_finding.mac_address)
 
             if device or interface_name:
@@ -1626,6 +1627,7 @@ def DeviceFindingImport(request):
             device_type = get_value_or_none('device_type', x)
             hw_version = get_value_or_none('hw_version', x)
             ip_address = get_value_or_none('ip_address', x)
+            ip_netmask = get_value_or_none('ip_netmask', x)
             is_firmware = get_value_or_none('is_firmware', x)
             is_router = get_value_or_none('is_router', x)
             location = get_value_or_none('location', x)
@@ -1649,6 +1651,7 @@ def DeviceFindingImport(request):
                                                                         device_type=device_type,
                                                                         hardware_version=hw_version,
                                                                         ip_address=ip_address,
+                                                                        ip_netmask=ip_netmask,
                                                                         is_firmware=is_firmware,
                                                                         is_router=is_router,
                                                                         location=location,

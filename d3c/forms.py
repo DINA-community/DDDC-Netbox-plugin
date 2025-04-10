@@ -207,7 +207,7 @@ class DeviceFindingForm(NetBoxModelForm):
 
     class Meta:
         model = DeviceFinding
-        fields = ('id', 'source', 'confidence', 'ip_address', 'mac_address',
+        fields = ('id', 'source', 'confidence', 'ip_address', 'ip_netmask', 'mac_address',
                   'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'device_role', 'is_safety_critical',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port',
@@ -460,7 +460,7 @@ class DeviceFindingEditForm(NetBoxModelForm):
 
     class Meta:
         model = DeviceFinding
-        fields = ('id', 'device', 'interface_name', 'ip_address', 'mac_address')
+        fields = ('id', 'device', 'interface_name', 'ip_address', 'ip_netmask', 'mac_address')
 
     def clean_ip_address(self):
         if self.cleaned_data['ip_address']:
@@ -520,7 +520,7 @@ class FindingImportForm(forms.Form):
     fieldNames = ('source', 'confidence',
                   'description', 'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'device_type', 'serial_number', 'device_role', 'is_safety_critical',
-                  'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
+                  'ip_address', 'ip_netmask', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
                   'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure')
     templates = {}
@@ -825,7 +825,7 @@ class DeviceFindingImportForm(NetBoxModelImportForm):
         fields = ('id', 'device', 'source', 'confidence',
                   'description', 'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'device_type', 'serial_number', 'device_role', 'is_safety_critical',
-                  'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
+                  'ip_address', 'ip_netmask', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
                   'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure',)
 

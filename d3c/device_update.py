@@ -436,7 +436,7 @@ def find_interface(device, mac, ip):
     return None
 
 
-def add_service(device, ip_address, network_protocol, transport_protocol, application_protocol, port):
+def add_service(device, ip_address, ip_netmask, network_protocol, transport_protocol, application_protocol, port):
     """
     This function creates a new Service object.
     """
@@ -450,7 +450,7 @@ def add_service(device, ip_address, network_protocol, transport_protocol, applic
                                                          name=application_protocol,
                                                          protocol=transport_protocol,
                                                          ports=[int(port)])
-        ip = get_ip(ip_address)
+        ip = get_ip(ip_address, ip_netmask)
         if ip and created:
             ips = IPAddress.objects.filter(address=ip)
             if ips.exists():

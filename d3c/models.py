@@ -476,6 +476,13 @@ class DeviceFinding(NetBoxModel):
         null=True,
         verbose_name='IP Address'
     )
+    ip_netmask = models.CharField(
+        max_length=1000,
+        blank=True,
+        null=True,
+        default='24',
+        verbose_name='IP Netmask'
+    )
     # InterfaceExtra
     is_router = models.CharField(
         max_length=50,
@@ -581,7 +588,7 @@ class DeviceFinding(NetBoxModel):
                           self.application_protocol, self.port, self.is_router, self.manufacturer, self.oui,
                           self.hardware_version, self.hardware_cpe, self.software_name, self.device_name,
                           self.part_number, self.is_firmware, self.version, self.article_number, self.rack,
-                          self.location, self.exposure)
+                          self.location, self.exposure, self.ip_netmask)
         for x in attribute_list:
             if x != None:
                 return False
@@ -631,7 +638,7 @@ class DeviceFinding(NetBoxModel):
         if self.ip_address:
             res = ipv4_pattern.search(self.ip_address)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = f'{res[0]}/{self.ip_netmask}'
                 device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.mac_address:

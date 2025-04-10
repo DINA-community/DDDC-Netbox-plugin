@@ -149,7 +149,7 @@ class UnassignedDeviceFindingTable(NetBoxTable):
         model = DeviceFinding
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'device_role', 'is_safety_critical',
-                  'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
+                  'ip_address', 'ip_netmask', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
                   'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version',
                   'exposure', 'device', 'has_predicted_device', 'predicted_device', 'finding_status')
@@ -359,19 +359,19 @@ class DeviceFindingForDeviceTable(NetBoxTable):
     class Meta(NetBoxTable.Meta):
         model = DeviceFinding
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
-                  'description', 'device_type', 'serial_number', 'is_safety_critical', 'mac_address', 'ip_address',
+                  'description', 'device_type', 'serial_number', 'is_safety_critical', 'mac_address', 'ip_address', 'ip_netmask',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port', 'manufacturer',
                   'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',  'hardware_cpe',
                   'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
         default_columns = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack',
                            'location','description', 'device_type', 'serial_number', 'is_safety_critical',
-                           'mac_address', 'service', 'ip_address', 'network_protocol', 'transport_protocol',
+                           'mac_address', 'service', 'ip_address', 'ip_netmask', 'network_protocol', 'transport_protocol',
                            'application_protocol', 'port', 'manufacturer', 'oui', 'device_family',
                            'article_number', 'part_number', 'hardware_version', 'hardware_cpe', 'software', 'software_name',
                            'is_firmware', 'version', 'cpe', 'exposure',)
         sequence = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                     'description', 'device_type', 'serial_number', 'is_safety_critical', 'mac_address', 'service',
-                    'ip_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
+                    'ip_address', 'ip_netmask', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
                     'manufacturer', 'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',
                     'hardware_cpe', 'software', 'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
 
@@ -394,7 +394,7 @@ class DeviceFindingTable(NetBoxTable):
     class Meta(NetBoxTable.Meta):
         model = DeviceFinding
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
-                  'description', 'device_type', 'serial_number', 'is_safety_critical', 'ip_address', 'mac_address',
+                  'description', 'device_type', 'serial_number', 'is_safety_critical', 'ip_address', 'ip_netmask', 'mac_address',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port', 'is_router',
                   'manufacturer', 'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',
                   'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
