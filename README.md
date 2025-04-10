@@ -70,7 +70,7 @@ However, an important aspect of an installation in a production environment is t
 
 ### Testing
 
-The unit tests of netbox can be executed via *./test.sh*
+The unit tests of netbox can be executed via `./docker-ci/test.sh`.
 
 ## Help
 

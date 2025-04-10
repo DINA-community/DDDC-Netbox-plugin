@@ -1,7 +1,7 @@
 """
     This file provides functionality to initialize the D3C-Plugin's Device Roles and default Manufacturers,
     Devices, and Device Types with the value 'Unspecified.'
-    This is done by parsing the YAML files located in 'd3c\data\repo'.
+    This is done by parsing the YAML files located in 'd3c/data/repo'.
 """
 import yaml
 import os
@@ -18,7 +18,7 @@ def get_value(key, data):
 
 class REPO:
     """
-    This class parses the YAML files located in 'd3c\data\repo'.
+    This class parses the YAML files located in 'd3c/data/repo'.
     """
 
     def __init__(self, repo_path):
@@ -27,7 +27,7 @@ class REPO:
         self.yaml_extensions = ['yaml', 'yml']
 
     def slug_format(self, name):
-        return re_sub('\W+', '-', name.lower())
+        return re_sub(r'\W+', '-', name.lower())
 
     def get_relative_path(self):
         return self.repo_path
