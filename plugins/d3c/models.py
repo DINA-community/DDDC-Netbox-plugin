@@ -811,7 +811,7 @@ class CommunicationFinding(NetBoxModel):
         self.has_predicted_dst_device = bool(self.predicted_dst_device)
 
         self.has_2_predicted_devices = self.has_predicted_src_device and self.has_predicted_dst_device
-        
+
         if save:
             self.save()
 
@@ -849,7 +849,7 @@ def communicationfinding_check_asignment(sender, instance, **kwargs):
                 CommunicationFinding.objects.filter(pk=instance.pk).update(has_predicted_dst_device=False)
     except BaseException as e:
         pass
-    
+
 
 class Mapping(NetBoxModel):
     """
@@ -859,7 +859,7 @@ class Mapping(NetBoxModel):
         max_length=50,
         blank=False,
         null=False
-    ) 
+    )
     type = models.CharField(
         max_length=10,
         blank=False,

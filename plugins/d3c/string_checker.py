@@ -8,9 +8,9 @@ import os
 DEFAULT_CORPUS_FILE = os.path.join(os.path.dirname(__file__), "data/device_list.xlsx")
 # Default list of columns to use from the corpus file. Add or remove column entries from the list to limit or extend the string checking. Column spelling need to match the corpus file.
 DEFAULT_CORPUS_COLUMNS = ["Manufacturer", "Device Family", "Device Type", "Article Number"]
-# Default list of columns from the corpus, splitted at special chars to enrich the dictionary of custom words.
+# Default list of columns from the corpus, split at special chars to enrich the dictionary of custom words.
 DEFAULT_COLUMNS_SPELL_SPLIT = ["Manufacturer", "Device Family", "Device Type"]
-# Default list of columns from the corpus, splitted at whitespaces to enrich the dictionary of custom words
+# Default list of columns from the corpus, split at whitespaces to enrich the dictionary of custom words
 DEFAULT_COLUMNS_WHITESPACE_SPLIT = ["Device Family", "Device Type"]
 # Default flag to enable column specific spell checking, e.g. Manufacturer specific.
 DEFAULT_SPECIFIC_CHECKING_ENABLED = False
@@ -40,8 +40,8 @@ class StringChecker:
         - additional_language: str, additional language to be used for spell checking (default: "")
         - corpus_file: str, path to corpus files for loading custom words (default: DEFAULT_CORPUS_FILE)
         - corpus_cols_to_use: list, A list of columns to use from the corpus file. Add or remove column entries from the list to limit or extend the string checking. (default: DEFAULT_COLUMNS)
-        - corpus_cols_spell_split: list, A list of columns from the corpus, splitted at special chars to enrich the dictionary of custom words. (default: DEFAULT_COLUMNS_SPELL_SPLIT)
-        - corpus_cols_whitespace_split: list, A list of columns from the corpus, splitted at whitespaces to enrich the dictionary of custom words. (default: DEFAULT_COLUMNS_WHITESPACE_SPLIT)
+        - corpus_cols_spell_split: list, A list of columns from the corpus, split at special chars to enrich the dictionary of custom words. (default: DEFAULT_COLUMNS_SPELL_SPLIT)
+        - corpus_cols_whitespace_split: list, A list of columns from the corpus, split at whitespaces to enrich the dictionary of custom words. (default: DEFAULT_COLUMNS_WHITESPACE_SPLIT)
         - specific_checkers: bool, flag to enable specific checkers (default: DEFAULT_SPECIFIC_CHECKERS_ENABLED)
         - specific_checkers_id: str, column name for specific checkers' identifiers (default: DEFAULT_SPECIFIC_CHECKERS_ID)
         """
@@ -120,10 +120,10 @@ class StringChecker:
         self, df: pd.DataFrame, col_names: list = [], spell_checker_key: str = "all", use_spell_split: bool = False
     ):
         """
-        Loads splitted words from a DataFrame into the spell checker.
+        Loads split words from a DataFrame into the spell checker.
 
         Parameters:
-        - df: pd.DataFrame, the DataFrame containing the splitted words
+        - df: pd.DataFrame, the DataFrame containing the split words
         - col_names: list, list of column names to load from (default: [])
         - spell_checker_key: str, key for the spell checker to load into (default: "all")
         - use_spell_split: bool, flag to indicate whether to use spell splitting or whitespace splitting (default: False)

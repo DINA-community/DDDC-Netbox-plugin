@@ -58,17 +58,17 @@ class FileHashEditView(generic.ObjectEditView):
 
 
 class FileHashDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the FileHash model. """
+    """ This view handles the delete requests for the FileHash model. """
     queryset = models.FileHash.objects.all()
 
 
 class FileHashView(generic.ObjectView):
-    """ This view handels the request for displaying a FileHash. """
+    """ This view handles the request for displaying a FileHash. """
     queryset = models.FileHash.objects.all()
 
 
 class FileHashListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple FileHashes as a table. """
+    """ This view handles the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
 
@@ -81,40 +81,40 @@ class HashEditView(generic.ObjectEditView):
 
 
 class HashDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the Hash model. """
+    """ This view handles the delete requests for the Hash model. """
     queryset = models.Hash.objects.all()
 
 
 class HashView(generic.ObjectView):
-    """ This view handels the request for displaying a single Hash. """
+    """ This view handles the request for displaying a single Hash. """
     queryset = models.Hash.objects.all()
 
 
 class HashListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple Hashes as a table. """
+    """ This view handles the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
 
 
 class XGenericUriDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the XGenericUri model. """
+    """ This view handles the delete requests for the XGenericUri model. """
     queryset = models.XGenericUri.objects.all()
 
 
 class XGenericUriView(generic.ObjectView):
-    """ This view handels the request for displaying a single XGenericUri. """
+    """ This view handles the request for displaying a single XGenericUri. """
     queryset = models.XGenericUri.objects.all()
 
 
 class XGenericUriListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple XGenericUris as a table. """
+    """ This view handles the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
 
 
 @register_model_view(models.XGenericUri, 'edit')
 class XGenericUriEditView(generic.ObjectEditView):
-    """ This view handels the request for editing the XGenericUri model. """
+    """ This view handles the request for editing the XGenericUri model. """
     queryset = models.XGenericUri.objects.all()
     form = forms.XGenericUriForm
     template_name = 'd3c/xgenericuri_edit.html'
@@ -134,17 +134,17 @@ class XGenericUriEditView(generic.ObjectEditView):
 
 
 class ProductRelationshipDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the ProductRelationship model. """
+    """ This view handles the delete requests for the ProductRelationship model. """
     queryset = models.ProductRelationship.objects.all()
 
 
 class ProductRelationshipView(generic.ObjectView):
-    """ This view handels the request for displaying a single ProductRelationship. """
+    """ This view handles the request for displaying a single ProductRelationship. """
     queryset = models.ProductRelationship.objects.all()
 
 
 class ProductRelationshipListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple ProductRelationships as a table. """
+    """ This view handles the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
     table = tables.ProductRelationshipTable
     #template_name = 'd3c/object_list_custom.html'
@@ -152,7 +152,7 @@ class ProductRelationshipListView(generic.ObjectListView):
 
 @register_model_view(models.ProductRelationship, 'edit')
 class ProductRelationshipEditView(generic.ObjectEditView):
-    """ This view handels the request for editing the ProductRelationship model. """
+    """ This view handles the request for editing the ProductRelationship model. """
     queryset = models.ProductRelationship.objects.all()
     form = forms.ProductRelationshipForm
     template_name = 'd3c/productrelationship_edit.html'
@@ -172,12 +172,12 @@ class ProductRelationshipEditView(generic.ObjectEditView):
 
 
 class DeviceFindingView(generic.ObjectView):
-    """ This view handels the request for displaying a single DeviceFinding. """
+    """ This view handles the request for displaying a single DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
 
 
 class DeviceFindingListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple DeviceFindings as a table. """
+    """ This view handles the request for displaying multiple DeviceFindings as a table. """
     queryset = models.DeviceFinding.objects.filter(device__isnull=True).filter(finding_status="NEW")
     table = tables.UnassignedDeviceFindingTable
     filterset = filtersets.DeviceFindingFilterSet
@@ -191,7 +191,7 @@ class DeviceFindingListView(generic.ObjectListView):
 
 
 class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for mapping DeviceFindings. """
+    """ This view handles the request for mapping DeviceFindings. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -225,7 +225,7 @@ class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingReject(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for rejecting DeviceFindings. """
+    """ This view handles the request for rejecting DeviceFindings. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -251,7 +251,7 @@ class DeviceFindingReject(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for splitting DeviceFindings w.r.t. IP and MAC Addresses. """
+    """ This view handles the request for splitting DeviceFindings w.r.t. IP and MAC Addresses. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -266,7 +266,7 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
             processed_counter = 0
             failed_counter = 0
             for df in selected_objects:
-             	if "," in df.ip_address or "," in df.mac_address:
+                if "," in df.ip_address or "," in df.mac_address:
                     processed_counter += 1
                     ips = [ip.strip() for ip in df.ip_address.split(',')]
                     macs = [mac.strip() for mac in df.mac_address.split(',')]
@@ -290,7 +290,7 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
 
 
             if failed_counter == 0:
-                messages.success(request, f"{processed_counter} DeviceFinding(s) splitted")
+                messages.success(request, f"{processed_counter} DeviceFinding(s) split")
             else:
                 msg = f"Split failed for {failed_counter} out of {processed_counter} DeviceFinding(s)"
                 messages.error(request, msg)
@@ -299,14 +299,14 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingLookupView(View):
-    """ This view handels the request for performing the Device Lookup. """
+    """ This view handles the request for performing the Device Lookup. """
     def get(self, request, *args, **kwargs):
         with transaction.atomic():
             result = models.df_device_lookup()
             if result:
                 messages.success(request, f"Device Lookup finished")
             else:
-                messages.error(request, f"Exception occured while lookup")
+                messages.error(request, f"Exception occurred while lookup")
 
         return redirect(reverse('plugins:d3c:devicefinding_list'))
 
@@ -485,7 +485,7 @@ class FindingListForDeviceView(View, TableMixin):
                     finding.finding_status = "DONE"
                     finding.save()
         else:
-            msg = f'Some error occured while updating Device'
+            msg = f'Some error occurred while updating Device'
         logger.info(f"{msg} {self.device} (PK: {self.device.pk})")
 
         fullPath = request.get_full_path()
@@ -736,11 +736,11 @@ class DeviceFindingApply(generic.ObjectEditView):
                             self.finding.finding_status = "DONE"
                             self.finding.save()
                         except Exception as e:
-                            msg = f'Error occured changing status of DeviceFinding'
+                            msg = f'Error occurred changing status of DeviceFinding'
                         else:
                             msg = f'Updated {self.queryset.model._meta.verbose_name}'
                     else:
-                        msg = f'Some error occured while updating {self.queryset.model._meta.verbose_name}'
+                        msg = f'Some error occurred while updating {self.queryset.model._meta.verbose_name}'
 
                     logger.info(f"{msg} {self.device} (PK: {self.device.pk})")
                     if hasattr(self.device, 'get_absolute_url'):
@@ -1383,7 +1383,7 @@ class ClientCommunicationListForDeviceView(View):
 
     def get(self, request, **kwargs):
         obj = get_object_or_404(Device, **kwargs)
-        communication = models.Communication.objects.filter(source_device=self.kwargs["pk"]) 
+        communication = models.Communication.objects.filter(source_device=self.kwargs["pk"])
         communication_table = tables.CommunicationTable(communication)
         return render(request, self.template_name, {
             'object': obj,
@@ -1444,7 +1444,7 @@ class DeviceListForCommunicationView(View):
 
 
 ipv4_pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-    
+
 # Communication edit view
 class CommunicationEditView(generic.ObjectEditView):
     """ Handles the request for editing Communications. """
@@ -1622,7 +1622,7 @@ def DeviceFindingImport(request):
             description = get_value_or_none('description', x)
             device_family = get_value_or_none('device_family', x)
             device_name = get_value_or_none('device_name', x)
-            device_role = get_value_or_none('device_role', x)           
+            device_role = get_value_or_none('device_role', x)
             device_type = get_value_or_none('device_type', x)
             hw_version = get_value_or_none('hw_version', x)
             ip_address = get_value_or_none('ip_address', x)
@@ -1632,7 +1632,7 @@ def DeviceFindingImport(request):
             mac_address = get_value_or_none('mac_address', x)
             manufacturer = get_value_or_none('manufacturer', x)
             oui = get_value_or_none('oui', x)
-            network_protocol = get_value_or_none('network_protocol', x)    
+            network_protocol = get_value_or_none('network_protocol', x)
             port = get_value_or_none('port', x)
             serial_number = get_value_or_none('serial_number', x)
             source = get_value_or_none('source', x)
@@ -1695,7 +1695,7 @@ def CommunicationFindingImport(request):
                                                                                application_protocol=application_protocol)
     else:
         print("not authenticated")
-    return HttpResponse()    
+    return HttpResponse()
 
 ######
 
