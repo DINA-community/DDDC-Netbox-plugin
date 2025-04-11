@@ -935,7 +935,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
                 if interface == None:
                    try:
                         with transaction.atomic():
-                                create_and_assign_interface(device, interface_name, ip, mac)
+                            create_and_assign_interface(device, interface_name, ip, mac)
 
                         msg = f'Created interface {interface_name} for {device.name} '
 
