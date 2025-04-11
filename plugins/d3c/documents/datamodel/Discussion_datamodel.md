@@ -69,7 +69,7 @@ With the [asset administration shell](https://webstore.iec.ch/publication/65628)
 ## Data model in Netbox
 
 *Table 2: Datam odel for Netbox plugins by DINA community.*
-|Name   | Netbox | Field | Desciption/Purpose | Example |
+|Name   | Netbox | Field | Description/Purpose | Example |
 | - | - | - | - | - |
 |Article Number         | ❗ DeviceType:part_number | :hammer: replace by part_number:hammer:| see [article number](#article-number---outdated)  --> delete ❗ | -|
 |Device role (primary)  | DeviceRole:name          | core| used for characterization and future features |see [Device Roles](https://netboxlabs.com/docs/netbox/en/stable/models/dcim/devicerole/) |
@@ -186,7 +186,7 @@ CSAF provides two attributes for version information:
 - product_version
 - product_version_range
 
-In the latter case, it is recommanded to use the version range specifier [vers](https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst).
+In the latter case, it is recommended to use the version range specifier [vers](https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst).
 
 #### version-number - DINA
 
@@ -214,7 +214,7 @@ The problem with the core field in Netbox for Device Type is that the model is u
 
 In the following, some solutions for this problem is addressed
 
-- [Enhance the deviceType describtion](#approach-1-model-name)
+- [Enhance the deviceType description](#approach-1-model-name)
 - [Make the deviceType recursiv](#approach-2-recursiv-devicetypes)
 
 ## Approach 1 Model Name
