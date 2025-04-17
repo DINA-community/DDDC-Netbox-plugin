@@ -215,6 +215,13 @@ class DeviceFindingForm(NetBoxModelForm):
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version',
                   'exposure', 'finding_status')
 
+    def clean_ip_netmask(self):
+        if self.cleaned_data['ip_netmask']:
+            cleaned = self.cleaned_data['ip_netmask'].lstrip('/')
+            if not (0 <= int(cleaned) <= 32):
+                raise forms.ValidationError('IP Netmask must be between 0 and 32.')
+            return cleaned
+
     def clean(self):
         cleaned_data = super().clean()
         if not self.cleaned_data.get('ip_address') and not self.cleaned_data.get('mac_address'):
@@ -468,6 +475,13 @@ class DeviceFindingEditForm(NetBoxModelForm):
             if False in ip_list:
                 raise forms.ValidationError('Invalid IP Address')
         return self.cleaned_data['ip_address']
+
+    def clean_ip_netmask(self):
+        if self.cleaned_data['ip_netmask']:
+            cleaned = self.cleaned_data['ip_netmask'].lstrip('/')
+            if not (0 <= int(cleaned) <= 32):
+                raise forms.ValidationError('IP Netmask must be between 0 and 32.')
+            return cleaned
 
     def clean_mac_address(self):
         if self.cleaned_data['mac_address']:
@@ -828,6 +842,13 @@ class DeviceFindingImportForm(NetBoxModelImportForm):
                   'ip_address', 'ip_netmask', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
                   'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure',)
+
+    def clean_ip_netmask(self):
+        if self.cleaned_data['ip_netmask']:
+            cleaned = self.cleaned_data['ip_netmask'].lstrip('/')
+            if not (0 <= int(cleaned) <= 32):
+                raise forms.ValidationError('IP Netmask must be between 0 and 32.')
+            return cleaned
 
 
 class CommunicationFindingEditForm(NetBoxModelForm):
