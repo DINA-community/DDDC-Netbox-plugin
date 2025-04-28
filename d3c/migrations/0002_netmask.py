@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='DeviceFinding',
             name='ip_netmask',
-            field=models.CharField(blank=True, max_length=1000, null=True),
+            field=models.CharField(blank=True, max_length=2, null=True),
         ),
     ]

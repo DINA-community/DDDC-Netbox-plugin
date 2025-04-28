@@ -477,7 +477,7 @@ class DeviceFinding(NetBoxModel):
         verbose_name='IP Address'
     )
     ip_netmask = models.CharField(
-        max_length=1000,
+        max_length=2,
         blank=True,
         null=True,
         default='24',
