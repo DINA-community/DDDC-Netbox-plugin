@@ -7,7 +7,7 @@ In addition to the plugin code, this repository contains additional files for th
 
 ## Installation of the DDDC Plugin
 
-As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). This plugin is compatible with Netbox version 4.1.x and ensured by plugins `setup.py` file.  
+As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). This plugin is compatible with Netbox version 4.1.x and ensured the `Dockerfile` file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up Netbox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up Netbox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -28,22 +28,22 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 1. Execute the following commands for [ubuntu](https://docs.docker.com/engine/install/ubuntu/):
 
-    ```bash
-    # Add official GPG key from docker
-    apt update
-    apt install apt-transport-https ca-certificates curl
-    echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
-    curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
-    apt-cache policy docker-ce
-    apt-get install docker-ce
-    ```
+   ```bash
+   # Add official GPG key from docker
+   apt update
+   apt install apt-transport-https ca-certificates curl
+   echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+   curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
+   apt-cache policy docker-ce
+   apt-get install docker-ce
+   ```
 
-    ```bash
-    git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
-    cd DDDC-Netbox-plugin/
-    docker compose build --no-cache
-    docker compose up
-    ```
+   ```bash
+   git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
+   cd DDDC-Netbox-plugin/
+   docker compose build --no-cache
+   docker compose up
+   ```
 
 2. Wait until `Initialisation is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
 3. Login as
