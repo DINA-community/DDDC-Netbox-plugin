@@ -45,12 +45,12 @@ Therefore, for simplicity, a web browser should be available on the installed sy
    docker compose up
    ```
 
-2. Wait until `Initialisation is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
+2. Wait until `Initialization is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
 3. Login as
-    - BN: admin
-    - PW: admin
+   - BN: admin
+   - PW: admin
 
-After testing, the containers can be stopped by pressing Ctrl+C and restarted using *docker-compose up*
+After testing, the containers can be stopped by pressing `Ctrl+C` and restarted using `docker-compose up`.
 
 ### Notes regarding the installation of this plugin via the provided files
 
