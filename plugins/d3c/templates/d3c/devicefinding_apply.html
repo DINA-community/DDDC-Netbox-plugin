@@ -1,12 +1,13 @@
-{% extends 'base/layout.html' %}
+{% extends 'generic/object_edit.html' %}
 {% load helpers %}
 {% load form_helpers %}
+{% load i18n %}
 
 {% block title %}{{ form.title }}{% endblock %}
 
 {% block controls %}
-<div class="controls">
-    <a class="btn btn-sm btn-warning" href="{% url 'plugins:d3c:devicefinding_apply'%}?device={{ device.pk }}&finding={{ finding.pk }}&rsp={{ rsp }}&return_url={{ return_url }}" role="button">
+<div class="btn-list">
+    <a class="btn btn-warning" href="{% url 'plugins:d3c:devicefinding_apply'%}?device={{ device.pk }}&finding={{ finding.pk }}&rsp={{ rsp }}&return_url={{ return_url }}" role="button">
         {% if rsp %}
             Enable Spell Checker
         {% else %}
@@ -18,10 +19,10 @@
 
 
 {% block tabs %}
-<ul class="nav nav-tabs px-3">
+<ul class="nav nav-tabs">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="data-import-tab" data-bs-toggle="tab" data-bs-target="#data-import-form"
-      data-href="#tab_data-import-form" type="button" role="tab" aria-controls="data-import-form" aria-selected="true">
+    <button class="nav-link active" id="edit-form-tab" data-bs-toggle="tab" data-bs-target="#edit-form"
+      type="button" role="tab" aria-controls="edit-form" aria-selected="true">
       Edit Device {% if finding.confidence %}with Confidence {{ finding.confidence }}{% endif %},
       Interface:  {% if interface %} {{ interface |linkify}} {% else %} Not Found {% endif %}
     </button>
@@ -29,19 +30,19 @@
 </ul>
 {% endblock tabs %}
 
-{% block content-wrapper %}
+{% block content %}
   <div class="tab-content">
     <div class="tab-pane show active" id="edit-form" role="tabpanel" aria-labelledby="object-list-tab">
 
-      <form action="" method="post" enctype="multipart/form-data" class="form-object-edit mt-5">
+      <form action="" method="post" enctype="multipart/form-data" class="object-edit mt-5">
         {% csrf_token %}
         <div id="form_fields">
             {% render_errors form %}
             <div class="field-group my-5">
             {% if not empty %}
                 {% if finding.device_name or finding.manufacturer or finding.device_type or finding.device_role or finding.device_family or finding.description or finding.article_number or finding.part_number or finding.serial_number or finding.is_router %}
-                    <div class="row mb-2">
-                        <h5 class="offset-sm-3">Device Properties (Current | Finding)</h5>
+                    <div class="row">
+                        <h5 class="col-9 offset-3">Device Properties (Current | Finding)</h5>
                     </div>
                     {% if finding.device_name %}
                     <div class="row mb-3">
@@ -247,7 +248,7 @@
                 {% if finding.network_protocol or finding.transport_protocol or finding.application_protocol or finding.port %}
                 <div class="field-group my-5">
                     <div class="row mb-2">
-                        <h5 class="offset-sm-3">Add Service</h5>
+                        <h5 class="col-9 offset-3">Add Service</h5>
                     </div>
                     {% if finding.ip_address%}
                     <div class="row mb-3">
@@ -285,7 +286,7 @@
                 {% if finding.software_name or finding.is_firmware or finding.version %}
                 <div class="field-group my-5">
                     <div class="row mb-2">
-                        <h5 class="offset-sm-3">Add Software</h5>
+                        <h5 class="col-9 offset-3">Add Software</h5>
                     </div>
                     {% if finding.software_name%}
                     <div class="row mb-3">
@@ -310,10 +311,10 @@
                 {% endif %}
             {% endif %}
                 <div class="text-end my-3">
+                    <a href="{{ return_url }}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
                     <button type="submit" name="_update" class="btn btn-primary">
                         Apply
                     </button>
-                    <a class="btn btn-outline-danger" href="{{ return_url }}">Cancel</a>
                 </div>
             </div>
         </div>
@@ -321,4 +322,4 @@
     </div>
   </div>
 
-{% endblock content-wrapper %}
+{% endblock content%}

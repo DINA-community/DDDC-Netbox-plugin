@@ -4,8 +4,8 @@
 from rest_framework import serializers
 
 from netbox.api.serializers import NetBoxModelSerializer
-from dcim.api.nested_serializers import NestedDeviceSerializer, NestedDeviceTypeSerializer, NestedInterfaceSerializer
-from ..models import (DDDCAdmin, DeviceFinding, Software, Communication,
+from dcim.api.serializers import DeviceSerializer
+from ..models import (Dummy, DeviceFinding, Software, Communication,
                       CommunicationFinding, Mapping, ProductRelationship, PRODCUT_PARENT_MODELS,
                       XGENERICURI_PARENT_MODELS, XGenericUri, FileHash, Hash)
 from django.db.models import Q
@@ -19,10 +19,7 @@ class DeviceFindingSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for DeviceFindings.
     """
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:d3c-api:devicefinding-detail'
-    )
-#    device = NestedDeviceSerializer()
+    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:d3c-api:devicefinding-detail')
 
     class Meta:
         model = DeviceFinding
@@ -53,7 +50,8 @@ class CommunicationSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='plugins-api:d3c-api:communication-detail'
     )
-    source_device = NestedDeviceSerializer()
+
+    source_device = DeviceSerializer(read_only=True, nested=True)
 
     class Meta:
         model = Communication
@@ -84,14 +82,13 @@ class MappingSerializer(NetBoxModelSerializer):
         fields = ('id', 'type', 'name', 'data', 'display')
 
 
-class DDDCAdminSerializer(NetBoxModelSerializer):
+class DummySerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for DDDCAdmin.
     """
-#    device = NestedDeviceSerializer()  
 
     class Meta:
-        model = DDDCAdmin
+        model = Dummy
         fields = ('id', 'initialized')
 
 
@@ -113,30 +110,20 @@ class ProductRelationshipSerializer(NetBoxModelSerializer):
 
     @extend_schema_field(serializers.JSONField(allow_null=True))
     def get_source(self, obj):
-        if obj.source is None:
-            return None
-        prefix = 'Nested'
-        if type(obj.source) is Software:
-            prefix = ''
-        serializer = get_serializer_for_model(obj.source, prefix=prefix)
+        serializer = get_serializer_for_model(obj.source)
         context = {'request': self.context['request']}
-        return serializer(obj.source, context=context).data
+        return serializer(obj.source, nested=True, context=context).data
 
     @extend_schema_field(serializers.JSONField(allow_null=True))
     def get_destination(self, obj):
-        if obj.destination is None:
-            return None
-        prefix = 'Nested'
-        if type(obj.destination) is Software:
-            prefix = ''
-        serializer = get_serializer_for_model(obj.destination, prefix=prefix)
+        serializer = get_serializer_for_model(obj.destination)
         context = {'request': self.context['request']}
-        return serializer(obj.destination, context=context).data
+        return serializer(obj.destination, nested=True,context=context).data
 
 
 class XGenericUriSerializer(NetBoxModelSerializer):
     """
-    REST API Model Serializer for ProductRelationship.
+    REST API Model Serializer for XGenericUri.
     """
     content_type = ContentTypeField(
         queryset=ContentType.objects.filter(XGENERICURI_PARENT_MODELS),
@@ -153,14 +140,9 @@ class XGenericUriSerializer(NetBoxModelSerializer):
 
     @extend_schema_field(serializers.JSONField(allow_null=True))
     def get_content_object(self, obj):
-        if obj.content_object is None:
-            return None
-        prefix = 'Nested'
-        if type(obj.content_object) is Software:
-            prefix = ''
-        serializer = get_serializer_for_model(obj.content_object, prefix=prefix)
+        serializer = get_serializer_for_model(obj.content_object)
         context = {'request': self.context['request']}
-        return serializer(obj.content_object, context=context).data
+        return serializer(obj.content_object, nested=True, context=context).data
 
 
 class FileHashSerializer(NetBoxModelSerializer):
@@ -179,10 +161,3 @@ class HashSerializer(NetBoxModelSerializer):
     class Meta:
         model = Hash
         fields = ('id', 'filename', 'tags')
-
-
-
-
-
-
-

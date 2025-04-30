@@ -8,7 +8,6 @@
 #
 #####################################################
 #
-#  Jörg Kippe
 #  Fraunhofer IOSB
 #  Fraunhoferstr. 1
 #  D-76131 Karlsruhe
@@ -48,7 +47,7 @@ mkdir -p /opt/netbox/
 cd /opt/netbox/
 
 ###git clone -b v3.5.4 --depth 1 https://github.com/netbox-community/netbox.git .
-git clone -b master --depth 1 https://github.com/netbox-community/netbox.git .
+git clone -b v4.1.11 https://github.com/netbox-community/netbox.git .
 
 adduser --system --group netbox
 chown --recursive netbox /opt/netbox/netbox/media/

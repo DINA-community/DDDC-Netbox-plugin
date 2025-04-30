@@ -86,6 +86,9 @@ REDIS = {
     'tasks': {
         'HOST': environ.get('REDIS_HOST', 'localhost'),
         'PORT': _environ_get_and_map('REDIS_PORT', 6379, _AS_INT),
+        'SENTINELS': [tuple(uri.split(':')) for uri in _environ_get_and_map('REDIS_SENTINELS', '', _AS_LIST) if uri != ''],
+        'SENTINEL_SERVICE': environ.get('REDIS_SENTINEL_SERVICE', 'default'),
+        'SENTINEL_TIMEOUT': _environ_get_and_map('REDIS_SENTINEL_TIMEOUT', 10, _AS_INT),
         'USERNAME': environ.get('REDIS_USERNAME', ''),
         'PASSWORD': _read_secret('redis_password', environ.get('REDIS_PASSWORD', '')),
         'DATABASE': _environ_get_and_map('REDIS_DATABASE', 0, _AS_INT),
@@ -95,6 +98,8 @@ REDIS = {
     'caching': {
         'HOST': environ.get('REDIS_CACHE_HOST', environ.get('REDIS_HOST', 'localhost')),
         'PORT': _environ_get_and_map('REDIS_CACHE_PORT', environ.get('REDIS_PORT', '6379'), _AS_INT),
+        'SENTINELS': [tuple(uri.split(':')) for uri in _environ_get_and_map('REDIS_CACHE_SENTINELS', '', _AS_LIST) if uri != ''],
+        'SENTINEL_SERVICE': environ.get('REDIS_CACHE_SENTINEL_SERVICE', environ.get('REDIS_SENTINEL_SERVICE', 'default')),
         'USERNAME': environ.get('REDIS_CACHE_USERNAME', environ.get('REDIS_USERNAME', '')),
         'PASSWORD': _read_secret('redis_cache_password', environ.get('REDIS_CACHE_PASSWORD', environ.get('REDIS_PASSWORD', ''))),
         'DATABASE': _environ_get_and_map('REDIS_CACHE_DATABASE', '1', _AS_INT),
@@ -141,8 +146,11 @@ if 'CHANGELOG_RETENTION' in environ:
     CHANGELOG_RETENTION = _environ_get_and_map('CHANGELOG_RETENTION', None, _AS_INT)
 
 # Maximum number of days to retain job results (scripts and reports). Set to 0 to retain job results in the database indefinitely. (Default: 90)
-if 'JOBRESULT_RETENTION' in environ:
-    JOBRESULT_RETENTION = _environ_get_and_map('JOBRESULT_RETENTION', None, _AS_INT)
+if 'JOB_RETENTION' in environ:
+    JOB_RETENTION = _environ_get_and_map('JOB_RETENTION', None, _AS_INT)
+# JOBRESULT_RETENTION was renamed to JOB_RETENTION in the v3.5.0 release of NetBox. For backwards compatibility, map JOBRESULT_RETENTION to JOB_RETENTION
+elif 'JOBRESULT_RETENTION' in environ:
+    JOB_RETENTION = _environ_get_and_map('JOBRESULT_RETENTION', None, _AS_INT)
 
 # API Cross-Origin Resource Sharing (CORS) settings. If CORS_ORIGIN_ALLOW_ALL is set to True, all origins will be
 # allowed. Otherwise, define a list of allowed origins using either CORS_ORIGIN_WHITELIST or
@@ -154,7 +162,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [re.compile(r) for r in _environ_get_and_map('CORS
 # Set to True to enable server debugging. WARNING: Debugging introduces a substantial performance penalty and may reveal
 # sensitive information about your installation. Only enable debugging while performing testing.
 # Never enable debugging on a production system.
-DEBUG = _environ_get_and_map('DEBUG', 'True', _AS_BOOL)
+DEBUG = _environ_get_and_map('DEBUG', 'False', _AS_BOOL)
 
 # This parameter serves as a safeguard to prevent some potentially dangerous behavior,
 # such as generating new database schema migrations.
@@ -180,15 +188,22 @@ EMAIL = {
 if 'ENFORCE_GLOBAL_UNIQUE' in environ:
     ENFORCE_GLOBAL_UNIQUE = _environ_get_and_map('ENFORCE_GLOBAL_UNIQUE', None, _AS_BOOL)
 
+# By default, netbox sends census reporting data using a single HTTP request each time a worker starts.
+# This data enables the project maintainers to estimate how many NetBox deployments exist and track the adoption of new versions over time.
+# The only data reported by this function are the NetBox version, Python version, and a pseudorandom unique identifier.
+# To opt out of census reporting, set CENSUS_REPORTING_ENABLED to False.
+if 'CENSUS_REPORTING_ENABLED' in environ:
+    CENSUS_REPORTING_ENABLED = _environ_get_and_map('CENSUS_REPORTING_ENABLED', None, _AS_BOOL)
+
 # Exempt certain models from the enforcement of view permissions. Models listed here will be viewable by all users and
 # by anonymous users. List models in the form `<app>.<model>`. Add '*' to this list to exempt all models.
 EXEMPT_VIEW_PERMISSIONS = _environ_get_and_map('EXEMPT_VIEW_PERMISSIONS', '', _AS_LIST)
 
 # HTTP proxies NetBox should use when sending outbound HTTP requests (e.g. for webhooks).
-# HTTP_PROXIES = {
-#     'http': 'http://10.10.1.10:3128',
-#     'https': 'http://10.10.1.10:1080',
-# }
+HTTP_PROXIES = {
+    'http': environ.get('HTTP_PROXY', None),
+    'https': environ.get('HTTPS_PROXY', None),
+}
 
 # IP addresses recognized as internal to the system. The debugging toolbar will be available only to clients accessing
 # NetBox from an internal IP.
@@ -206,9 +221,9 @@ if 'GRAPHQL_ENABLED' in environ:
 # authenticated to NetBox indefinitely.
 LOGIN_PERSISTENCE = _environ_get_and_map('LOGIN_PERSISTENCE', 'False', _AS_BOOL)
 
-# Setting this to True will permit only authenticated users to access any part of NetBox. By default, anonymous users
-# are permitted to access most data in NetBox (excluding secrets) but not make any changes.
-LOGIN_REQUIRED = _environ_get_and_map('LOGIN_REQUIRED', 'False', _AS_BOOL)
+# When enabled, only authenticated users are permitted to access any part of NetBox.
+# Disabling this will allow unauthenticated users to access most areas of NetBox (but not make any changes).
+LOGIN_REQUIRED = _environ_get_and_map('LOGIN_REQUIRED', 'True', _AS_BOOL)
 
 # The length of time (in seconds) for which a user will remain logged into the web UI before being prompted to
 # re-authenticate. (Default: 1209600 [14 days])
@@ -251,6 +266,7 @@ PLUGINS_CONFIG = {
     }
 }
 
+
 # When determining the primary IP address for a device, IPv6 is preferred over IPv4 by default. Set this to True to
 # prefer IPv4 instead.
 if 'PREFER_IPV4' in environ:
@@ -275,12 +291,23 @@ if 'RACK_ELEVATION_DEFAULT_UNIT_WIDTH' in environ:
     RACK_ELEVATION_DEFAULT_UNIT_WIDTH = _environ_get_and_map('RACK_ELEVATION_DEFAULT_UNIT_WIDTH', None, _AS_INT)
 
 # Remote authentication support
-REMOTE_AUTH_ENABLED = _environ_get_and_map('REMOTE_AUTH_ENABLED', 'False', _AS_BOOL)
-REMOTE_AUTH_BACKEND = environ.get('REMOTE_AUTH_BACKEND', 'netbox.authentication.RemoteUserBackend')
-REMOTE_AUTH_HEADER = environ.get('REMOTE_AUTH_HEADER', 'HTTP_REMOTE_USER')
-REMOTE_AUTH_AUTO_CREATE_USER = _environ_get_and_map('REMOTE_AUTH_AUTO_CREATE_USER', 'True', _AS_BOOL)
+REMOTE_AUTH_AUTO_CREATE_GROUPS = _environ_get_and_map('REMOTE_AUTH_AUTO_CREATE_GROUPS', 'False', _AS_BOOL)
+REMOTE_AUTH_AUTO_CREATE_USER = _environ_get_and_map('REMOTE_AUTH_AUTO_CREATE_USER', 'False', _AS_BOOL)
+REMOTE_AUTH_BACKEND = _environ_get_and_map('REMOTE_AUTH_BACKEND', 'netbox.authentication.RemoteUserBackend', _AS_LIST)
 REMOTE_AUTH_DEFAULT_GROUPS = _environ_get_and_map('REMOTE_AUTH_DEFAULT_GROUPS', '', _AS_LIST)
-# REMOTE_AUTH_DEFAULT_PERMISSIONS = {}
+# REMOTE_AUTH_DEFAULT_PERMISSIONS = {} # dicts can't be configured via environment variables. See extra.py instead.
+REMOTE_AUTH_ENABLED = _environ_get_and_map('REMOTE_AUTH_ENABLED', 'False', _AS_BOOL)
+REMOTE_AUTH_GROUP_HEADER = _environ_get_and_map('REMOTE_AUTH_GROUP_HEADER', 'HTTP_REMOTE_USER_GROUP')
+REMOTE_AUTH_GROUP_SEPARATOR = _environ_get_and_map('REMOTE_AUTH_GROUP_SEPARATOR', '|')
+REMOTE_AUTH_GROUP_SYNC_ENABLED = _environ_get_and_map('REMOTE_AUTH_GROUP_SYNC_ENABLED', 'False', _AS_BOOL)
+REMOTE_AUTH_HEADER = environ.get('REMOTE_AUTH_HEADER', 'HTTP_REMOTE_USER')
+REMOTE_AUTH_USER_EMAIL = environ.get('REMOTE_AUTH_USER_EMAIL', 'HTTP_REMOTE_USER_EMAIL')
+REMOTE_AUTH_USER_FIRST_NAME = environ.get('REMOTE_AUTH_USER_FIRST_NAME', 'HTTP_REMOTE_USER_FIRST_NAME')
+REMOTE_AUTH_USER_LAST_NAME = environ.get('REMOTE_AUTH_USER_LAST_NAME', 'HTTP_REMOTE_USER_LAST_NAME')
+REMOTE_AUTH_SUPERUSER_GROUPS = _environ_get_and_map('REMOTE_AUTH_SUPERUSER_GROUPS', '', _AS_LIST)
+REMOTE_AUTH_SUPERUSERS = _environ_get_and_map('REMOTE_AUTH_SUPERUSERS', '', _AS_LIST)
+REMOTE_AUTH_STAFF_GROUPS = _environ_get_and_map('REMOTE_AUTH_STAFF_GROUPS', '', _AS_LIST)
+REMOTE_AUTH_STAFF_USERS = _environ_get_and_map('REMOTE_AUTH_STAFF_USERS', '', _AS_LIST)
 
 # This repository is used to check whether there is a new release of NetBox available. Set to None to disable the
 # version check or use the URL below to check for release in the official NetBox repository.
@@ -301,6 +328,23 @@ CSRF_TRUSTED_ORIGINS = _environ_get_and_map('CSRF_TRUSTED_ORIGINS', '', _AS_LIST
 # The name to use for the session cookie.
 SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME', 'sessionid')
 
+# If true, the `includeSubDomains` directive will be included in the HTTP Strict Transport Security (HSTS) header.
+# This directive instructs the browser to apply the HSTS policy to all subdomains of the current domain.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = _environ_get_and_map('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False', _AS_BOOL)
+
+# If true, the `preload` directive will be included in the HTTP Strict Transport Security (HSTS) header.
+# This directive instructs the browser to preload the site in HTTPS. Browsers that use the HSTS preload list will force the
+# site to be accessed via HTTPS even if the user types HTTP in the address bar.
+SECURE_HSTS_PRELOAD = _environ_get_and_map('SECURE_HSTS_PRELOAD', 'False', _AS_BOOL)
+
+# If set to a non-zero integer value, the SecurityMiddleware sets the HTTP Strict Transport Security (HSTS) header on all
+# responses that do not already have it. This will instruct the browser that the website must be accessed via HTTPS,
+# blocking any HTTP request.
+SECURE_HSTS_SECONDS = _environ_get_and_map('SECURE_HSTS_SECONDS', 0, _AS_INT)
+
+# If true, all non-HTTPS requests will be automatically redirected to use HTTPS.
+SECURE_SSL_REDIRECT = _environ_get_and_map('SECURE_SSL_REDIRECT', 'False', _AS_BOOL)
+
 # By default, NetBox will store session data in the database. Alternatively, a file path can be specified here to use
 # local file storage instead. (This can be useful for enabling authentication on a standby instance with read-only
 # database access.) Note that the user as which NetBox runs must have read and write permissions to this path.
@@ -309,11 +353,5 @@ SESSION_FILE_PATH = environ.get('SESSION_FILE_PATH', environ.get('SESSIONS_ROOT'
 # Time zone (default: UTC)
 TIME_ZONE = environ.get('TIME_ZONE', 'UTC')
 
-# Date/time formatting. See the following link for supported formats:
-# https://docs.djangoproject.com/en/stable/ref/templates/builtins/#date
-DATE_FORMAT = environ.get('DATE_FORMAT', 'N j, Y')
-SHORT_DATE_FORMAT = environ.get('SHORT_DATE_FORMAT', 'Y-m-d')
-TIME_FORMAT = environ.get('TIME_FORMAT', 'g:i a')
-SHORT_TIME_FORMAT = environ.get('SHORT_TIME_FORMAT', 'H:i:s')
-DATETIME_FORMAT = environ.get('DATETIME_FORMAT', 'N j, Y g:i a')
-SHORT_DATETIME_FORMAT = environ.get('SHORT_DATETIME_FORMAT', 'Y-m-d H:i')
+# If true disables miscellaneous functionality which depends on access to the Internet.
+ISOLATED_DEPLOYMENT = _environ_get_and_map('ISOLATED_DEPLOYMENT', 'False', _AS_BOOL)

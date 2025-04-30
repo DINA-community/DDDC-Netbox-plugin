@@ -1,14 +1,14 @@
-# Netbox Plugin D3C
+# Netbox Plugin DDDC
 
-This repository contains the source code for the BSI Project 507 TP2. In this context, the D3C plugin for Netbox was developed.
-The D3C plugin takes input data from various sources, supports the processing and approval of this data to construct a device database
-within the framework of Netbox. As such, it is intended to support IT security management tasks such as device management, vulnerability management, and patch management.
+Even if there are tools in Malcolm and [Netbox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into Netbox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within Netbox.\\
+The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the Netbox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
 
-In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the D3C Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary Netbox environment.
+In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary Netbox environment.
 
-## Installation of the D3C Plugin
+## Installation of the DDDC Plugin
 
-As the D3C plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). This plugin is compatible with Netbox version 3.6.x and ensured by plugins `setup.py` file.
+As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). 
+This plugin is compatible with Netbox version 4.1.x and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up Netbox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up Netbox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -16,7 +16,7 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Prerequisites
 
-This Dockerfile simply extends the [netbox-docker](https://github.com/netbox-community/netbox-docker) project with the custom D3C-plugin. Therefore, the dependencies of the netbox-docker project also apply for this installation:
+This Dockerfile simply extends the [netbox-docker](https://github.com/netbox-community/netbox-docker) project with the custom DDDC-plugin. Therefore, the dependencies of the netbox-docker project also apply for this installation:
 
 Recommendation: Install docker with the Compose v2 already integrated into the Docker CLI platform.
 
@@ -27,31 +27,31 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 ### Installation for developing and testing purposes
 
-1. Execute the following commands:
+1. Execute the following commands for [ubuntu](https://docs.docker.com/engine/install/ubuntu/):
 
-```bash
-cd /home/
-apt update
-apt install apt-transport-https ca-certificates curl
-echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
-curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
-apt-cache policy docker-ce
-apt install docker-ce
-```
+   ```bash
+   # Add official GPG key from docker
+   apt update
+   apt install apt-transport-https ca-certificates curl
+   echo "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+   curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
+   apt-cache policy docker-ce
+   apt-get install docker-ce
+   ```
 
-```bash
-git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
-cd /home/DDDC-Netbox-plugin/
-docker compose build --no-cache
-docker compose up
-```
+   ```bash
+   git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
+   cd DDDC-Netbox-plugin/
+   docker compose build --no-cache
+   docker compose up
+   ```
 
-2. Wait until `Initialisation is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
+2. Wait until `Initialization is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
 3. Login as
-    - BN: admin
-    - PW: admin
+   - BN: admin
+   - PW: admin
 
-After testing, the containers can be stopped by pressing Ctrl+C and restarted using *docker-compose up*
+After testing, the containers can be stopped by pressing `Ctrl+C` and restarted using `docker-compose up`.
 
 ### Notes regarding the installation of this plugin via the provided files
 

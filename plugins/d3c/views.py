@@ -16,15 +16,15 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from extras.signals import clear_webhooks
+from core.signals import clear_events
 from netbox.views import generic
 from netbox.views.generic.base import BaseMultiObjectView
 from netbox.views.generic.mixins import TableMixin
 from netbox.views.generic.utils import get_prerequisite_model
 from utilities.exceptions import AbortRequest, AbortTransaction, PermissionsViolation
 from utilities.forms import restrict_form_fields
-from utilities.htmx import is_htmx
-from utilities.utils import normalize_querydict
+from utilities.htmx import htmx_partial
+from utilities.querydict import normalize_querydict
 from utilities.views import ViewTab, register_model_view
 from utilities.views import GetReturnURLMixin
 from .device_update import *
@@ -71,7 +71,6 @@ class FileHashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
-    template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.Hash, 'edit')
@@ -95,7 +94,6 @@ class HashListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
-    template_name = 'd3c/object_list_custom.html'
 
 
 class XGenericUriDeleteView(generic.ObjectDeleteView):
@@ -112,7 +110,6 @@ class XGenericUriListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
-    template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.XGenericUri, 'edit')
@@ -150,7 +147,7 @@ class ProductRelationshipListView(generic.ObjectListView):
     """ This view handels the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
     table = tables.ProductRelationshipTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 @register_model_view(models.ProductRelationship, 'edit')
@@ -186,7 +183,11 @@ class DeviceFindingListView(generic.ObjectListView):
     filterset = filtersets.DeviceFindingFilterSet
     filterset_form = forms.DeviceFindingFilterForm
     template_name = 'd3c/devicefinding_list.html'
-    actions = ('export', 'add', 'edit', 'bulk_sync')
+    actions = {
+        'add': {'add'},
+        'edit': {'change'},
+        'export': set(),
+        'bulk_sync': {'sync'}}
 
 
 class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
@@ -340,7 +341,7 @@ class FindingListForDeviceView(View, TableMixin):
             table.columns.hide('software')
 
     def get(self, request, **kwargs):
-        time_start('get')
+        #time_start('get')
         self.device = get_object_or_404(Device, **kwargs)
         self.queryset = models.DeviceFinding.objects.filter(device=self.kwargs["pk"])
         requestedStatus = request.GET.get('finding_status', 'NEW')
@@ -354,9 +355,9 @@ class FindingListForDeviceView(View, TableMixin):
             table.setStringCheckerEnabled(True)
 
         self.hideEmptyColumns(table.data, table)
-        time_end()
+        #time_end()
 
-        if is_htmx(request):
+        if htmx_partial(request):
             return render(request, 'htmx/table.html', {
                 'object': self.device,
                 'table': table,
@@ -527,7 +528,7 @@ class DeviceFindingApply(generic.ObjectEditView):
         result['type_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["device_type"], "Device Type",
                                    str(self.device.device_type), self.finding.device_type)
         result['role_c'] = get_sug(rsp, S_NORMALIZER, None, "Device Role",
-                                   str(self.device.device_role), self.finding.device_role)
+                                   str(self.device.role), self.finding.device_role)
         result['name_c'] = [(0, str(self.device.name)), (1, str(self.finding.device_name))]
 
         result['family_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["device_family"], "Device Family",
@@ -752,7 +753,7 @@ class DeviceFindingApply(generic.ObjectEditView):
             except (AbortRequest, PermissionsViolation) as e:
                 logger.debug(e.message)
                 form.add_error(None, e.message)
-                clear_webhooks.send(sender=self)
+                clear_events.send(sender=self)
         else:
             logger.debug("Form validation failed")
 
@@ -833,7 +834,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
                 with transaction.atomic():
                     device.site, _ = Site.objects.get_or_create(name='PoC')
                     device.manufacturer, _ = Manufacturer.objects.get_or_create(name='Unspecified')
-                    device.device_role, _ = DeviceRole.objects.get_or_create(name='Unspecified')
+                    device.role, _ = DeviceRole.objects.get_or_create(name='Unspecified')
                     device.device_type, _ = DeviceType.objects.get_or_create(manufacturer=device.manufacturer,
                                                                              model='Unspecified')
                     device.name = form.cleaned_data['device_name']
@@ -860,8 +861,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
             except (AbortRequest, PermissionsViolation) as e:
                 logger.debug(e.message)
                 form.add_error(None, e.message)
-                clear_webhooks.send(sender=self)
-
+                clear_events.send(sender=self)
         else:
             logger.debug("Form validation failed")
 
@@ -950,7 +950,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
                    except (AbortRequest, PermissionsViolation) as e:
                        logger.debug(e.message)
                        form.add_error(None, e.message)
-                       clear_webhooks.send(sender=self)
+                       clear_events.send(sender=self)
                 else:
                     if mac and interface.mac_address is None:
                         try:
@@ -1036,10 +1036,10 @@ class FindingImportView(FormView):
 
                 except (AbortTransaction, ValidationError) as e:
                     form.add_error(None, e.message)
-                    clear_webhooks.send(sender=self)
+                    clear_events.send(sender=self)
                 except (AbortRequest, PermissionsViolation) as e:
                     form.add_error(None, e.message)
-                    clear_webhooks.send(sender=self)
+                    clear_events.send(sender=self)
                 except IntegrityError:
                     pass
                 return render(request, self.template_name, {'form': form, 'examples': examples})
@@ -1216,7 +1216,7 @@ class SoftwareListView(generic.ObjectListView):
         return queryset
 
     table = tables.SoftwareTable
-    template_name = 'd3c/object_list_custom.html'
+    #template_name = 'd3c/object_list_custom.html'
 
 
 # Software view for one device
@@ -1549,7 +1549,12 @@ class CommunicationFindingListView(generic.ObjectListView):
     filterset = filtersets.CommunicationFindingFilterSet
     filterset_form = forms.CommunicationFindingFilterForm
     template_name = 'd3c/communicationfinding_list.html'
-    actions = ('export', 'add', 'edit', 'import', 'bulk_sync')
+    actions = {
+        'add': {'add'},
+        'import': {'add'},
+        'edit': {'change'},
+        'export': set(),
+        'bulk_sync': {'sync'}}
 
 
 # Communication import view
@@ -1611,31 +1616,53 @@ def DeviceFindingImport(request):
         uploaded_file = request.FILES['files']
         help = json.loads(uploaded_file.read().decode('utf8'))
         for x in help:
-            is_router = get_value_or_none('is_router', x)
-            ip_address = get_value_or_none('ip_address', x)
-            mac_address = get_value_or_none('mac_address', x)
-            confidence = get_value_or_none('confidence', x)
-            device_role = get_value_or_none('device_role', x)
-            device_type = get_value_or_none('device_type', x)
-            manufacturer = get_value_or_none('manufacturer', x)
-            source = get_value_or_none('source', x)
             application_protocol = get_value_or_none('application_protocol', x)
-            transport_protocol = get_value_or_none('transport_protocol', x)
-            network_protocol = get_value_or_none('network_protocol', x)
+            article_number = get_value_or_none('article_number', x)
+            confidence = get_value_or_none('confidence', x)
+            description = get_value_or_none('description', x)
+            device_family = get_value_or_none('device_family', x)
+            device_name = get_value_or_none('device_name', x)
+            device_role = get_value_or_none('device_role', x)           
+            device_type = get_value_or_none('device_type', x)
+            hw_version = get_value_or_none('hw_version', x)
+            ip_address = get_value_or_none('ip_address', x)
+            is_firmware = get_value_or_none('is_firmware', x)
+            is_router = get_value_or_none('is_router', x)
+            location = get_value_or_none('location', x)
+            mac_address = get_value_or_none('mac_address', x)
+            manufacturer = get_value_or_none('manufacturer', x)
+            oui = get_value_or_none('oui', x)
+            network_protocol = get_value_or_none('network_protocol', x)    
             port = get_value_or_none('port', x)
-
-            found, created = models.DeviceFinding.objects.get_or_create(is_router=is_router,
-                                                                        ip_address=ip_address,
-                                                                        mac_address=mac_address,
+            serial_number = get_value_or_none('serial_number', x)
+            source = get_value_or_none('source', x)
+            software_name = get_value_or_none('software_name', x)
+            sw_version = get_value_or_none('sw_version', x)
+            transport_protocol = get_value_or_none('transport_protocol', x)
+            found, created = models.DeviceFinding.objects.get_or_create(application_protocol=application_protocol,
+                                                                        article_number=article_number,
                                                                         confidence=confidence,
+                                                                        description=description,
+                                                                        device_family=device_family,
+                                                                        device_name=device_name,
                                                                         device_role=device_role,
                                                                         device_type=device_type,
+                                                                        hardware_version=hw_version,
+                                                                        ip_address=ip_address,
+                                                                        is_firmware=is_firmware,
+                                                                        is_router=is_router,
+                                                                        location=location,
+                                                                        mac_address=mac_address,
                                                                         manufacturer=manufacturer,
-                                                                        source=source,
-                                                                        application_protocol=application_protocol,
-                                                                        transport_protocol=transport_protocol,
+                                                                        oui=oui,
                                                                         network_protocol=network_protocol,
-                                                                        port=port)
+                                                                        port=port,
+                                                                        serial_number=serial_number,
+                                                                        source=source,
+                                                                        software_name=software_name,
+                                                                        transport_protocol=transport_protocol,
+                                                                        version=sw_version
+                                                                        )
     else:
         print("not authenticated")
     return HttpResponse()
