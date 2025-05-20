@@ -245,4 +245,4 @@ DATETIME_FORMAT = 'N j, Y g:i a'
 SHORT_DATETIME_FORMAT = 'Y-m-d H:i'
 
 # If true disables miscellaneous functionality which depends on access to the Internet.
-ISOLATED_DEPLOYMENT = _environ_get_and_map('ISOLATED_DEPLOYMENT', 'True', _AS_BOOL)
+#ISOLATED_DEPLOYMENT = _environ_get_and_map('ISOLATED_DEPLOYMENT', 'True', _AS_BOOL)

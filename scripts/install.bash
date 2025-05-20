@@ -22,14 +22,14 @@ apt-get update
 
 # 1. PostgreSQL
 
-cd /home/d3c
+cd /home/DDDC-Netbox-plugin
 apt install -y postgresql
 systemctl start postgresql
 systemctl enable postgresql
 
-cp /home/d3c/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+cp /home/DDDC-Netbox-plugin/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 
-sudo -i -u postgres psql -f /home/d3c/scripts/initdb.sql
+sudo -i -u postgres psql -f /home/DDDC-Netbox-plugin/scripts/initdb.sql
  
 # 2. Redis
 
@@ -54,7 +54,7 @@ chown --recursive netbox /opt/netbox/netbox/media/
 #python3 /opt/netbox/netbox/generate_secret_key.py > /home/netbox/secret_key
 
 # cd /opt/netbox/netbox/netbox/
-cp /home/d3c/scripts/configuration.py /opt/netbox/netbox/netbox/configuration.py
+cp /home/DDDC-Netbox-plugin/scripts/configuration.py /opt/netbox/netbox/netbox/configuration.py
 
 # #edit configuration.py
 
