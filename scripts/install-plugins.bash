@@ -19,6 +19,8 @@ echo "Installing starting..."
 git config --global user.name "Joerg Mustermann"
 
 /opt/netbox/venv/bin/pip3 install setuptools
+/opt/netbox/venv/bin/pip3 install pyspellchecker==0.7.2
+/opt/netbox/venv/bin/pip3 install numpy
 
 /usr/bin/cp -r /home/DDDC-Netbox-plugin/plugins/d3c /opt/netbox/
 /usr/bin/rm -rf /opt/netbox/d3c/migrations/
