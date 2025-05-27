@@ -2,7 +2,9 @@
     This file provides functionalities for editing a device based on new values provided by a DeviceFinding.
 """
 
-from dcim.models import Interface, Manufacturer, DeviceType, DeviceRole, Site, Rack, Location, Device
+from typing import Optional
+
+from dcim.models import Interface, Manufacturer, DeviceType, DeviceRole, Site, Rack, Location, Device, MACAddress
 from django.db.models import Q
 from django.utils.text import slugify
 from ipam.models import IPAddress, Service
@@ -59,24 +61,26 @@ def get_current_value_for_device(device, findingField):
     return findingField
 
 
-def create_and_assign_interface(device, iname, ip, mac):
+def create_and_assign_interface(device: Device, interface_name: str,
+                                ip_address: Optional[str] = None,
+                                mac_address: Optional[str] = None):
     """
-    This function creates a new Interface for a given device with the provided interface name (iname), IP address (ip),
-    and MAC address (mac).
+    This function creates a new Interface for a given device (object, required)
+    with the provided interface name (string), IP address (string, optional),
+    and MAC address (string, optional).
     """
-    try:
-        interface = None
-        if mac:
-            interface = Interface.objects.create(name=iname, device=device, type="other", mac_address=mac)
-        else:
-            interface = Interface.objects.create(name=iname, device=device, type="other")
+    interface = Interface.objects.create(name=interface_name, device=device, type="other")
 
-        if ip:
-            ipaddr = IPAddress(address=ip, assigned_object=interface)
-            ipaddr.save()
+    if ip_address:
+        ipaddr = IPAddress(address=ip_address, assigned_object=interface)
+        ipaddr.save()
 
-    except Exception as e:
-        pass
+    if mac_address:
+        macaddr = MACAddress.objects.create(mac_address=mac_address, assigned_object=interface)
+        interface.primary_mac_address = macaddr
+        macaddr.save()
+
+    interface.save()
 
 
 def change_manufacturer_of_device_type(device, value):
@@ -353,15 +357,15 @@ def change_device_description(device, value):
     return False
 
 
-# def change_device_article_number(device, value):
-#     """
-#     This function assigns an article number to a device.
-#     """
-#     if device and value:
-#         device.device_type.custom_field_data['article_number'] = value
-#         device.device_type.save()
-#         return True
-#     return False
+def change_device_article_number(device, value):
+    """
+    This function assigns an article number to a device.
+    """
+    if device and value:
+        device.device_type.custom_field_data['article_number'] = value
+        device.device_type.save()
+        return True
+    return False
 
 
 def change_device_model_number(device, value):

@@ -11,9 +11,9 @@
               <th scope="row">id</th>
               <td>{{ object.id }}</td>
             </tr>
-	          <tr>
+              <tr>
               <th scope="row">Device</th>
-	            <td>{{ object.device|linkify }}</td>
+                <td>{{ object.device|linkify }}</td>
             </tr>
             <tr>
               <th scope="row">Source</th>
@@ -42,15 +42,15 @@
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">Mac Address</th>
-      	      <td>{{ object.mac_address|placeholder }}</td>
+              <td>{{ object.mac_address|placeholder }}</td>
             </tr>
             <tr>
               <th scope="row">IP Address</th>
-      	      <td>{{ object.ip_address }}</td>
+              <td>{{ object.ip_address }}</td>
             </tr>
             <tr>
               <th scope="row">Is a Router</th>
-      	      <td>{{ object.is_router }}</td>
+              <td>{{ object.is_router }}</td>
             </tr>
           </table>
       </div>
@@ -61,19 +61,19 @@
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">Network Protocol</th>
-      	      <td>{{ object.network_protocol|placeholder }}</td>
+              <td>{{ object.network_protocol|placeholder }}</td>
             </tr>
             <tr>
               <th scope="row">Transport Protocol</th>
-      	      <td>{{ object.transport_protocol|placeholder }}</td>
+              <td>{{ object.transport_protocol|placeholder }}</td>
             </tr>
             <tr>
               <th scope="row">Application Protocol</th>
-      	      <td>{{ object.application_protocol|placeholder }}</td>
+              <td>{{ object.application_protocol|placeholder }}</td>
             </tr>
-	    <tr>
+            <tr>
               <th scope="row">Port</th>
-      	      <td>{{ object.port|placeholder }}</td>
+              <td>{{ object.port|placeholder }}</td>
             </tr>
           </table>
       </div>
@@ -88,19 +88,19 @@
             </tr>
             <tr>
               <th scope="row">Device Role</th>
-	            <td>{{ object.device_role }}</td>
+                <td>{{ object.device_role }}</td>
             </tr>
             <tr>
               <th scope="row">Device Type</th>
-      	      <td>{{ object.device_type }}</td>
+              <td>{{ object.device_type }}</td>
             </tr>
             <tr>
               <th scope="row">Serial Number</th>
-      	      <td>{{ object.serial_number }}</td>
+              <td>{{ object.serial_number }}</td>
             </tr>
             <tr>
               <th scope="row">Is Safety Critical</th>
-      	      <td>{{ object.is_safety_critical|placeholder }}</td>
+              <td>{{ object.is_safety_critical|placeholder }}</td>
             </tr>
           </table>
       </div>
@@ -113,23 +113,23 @@
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">Manufacturer</th>
-      	      <td>{{ object.manufacturer }}</td>
+              <td>{{ object.manufacturer }}</td>
             </tr>
             <tr>
               <th scope="row">Part Number</th>
-      	      <td>{{ object.part_number }}</td>
+              <td>{{ object.part_number }}</td>
             </tr>
             <tr>
               <th scope="row">Article Number</th>
-      	      <td>{{ object.article_number }}</td>
+              <td>{{ object.article_number }}</td>
             </tr>
             <tr>
               <th scope="row">Hardware Version</th>
-      	      <td>{{ object.hardware_version }}</td>
+              <td>{{ object.hardware_version }}</td>
             </tr>
             <tr>
               <th scope="row">hardware_cpe</th>
-      	      <td>{{ object.cpe }}</td>
+              <td>{{ object.cpe }}</td>
             </tr>
           </table>
         </div>
@@ -143,21 +143,21 @@
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">name</th>
-      	      <td>{{ object.software_name }}</td>
+              <td>{{ object.software_name }}</td>
             </tr>
             <tr>
               <th scope="row">is_firmware</th>
-      	      <td>{{ object.is_firmware }}</td>
+              <td>{{ object.is_firmware }}</td>
             </tr>
             <tr>
               <th scope="row">version</th>
-      	      <td>{{ object.version }}</td>
+              <td>{{ object.version }}</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
-    
+
   </div>
 
 {% endblock content %}
