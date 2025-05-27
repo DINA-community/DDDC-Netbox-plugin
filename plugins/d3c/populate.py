@@ -137,14 +137,14 @@ class REPO:
             model = get_value('model', x)
             slug = get_value('slug', x)
             device_family = get_value('device_family', x)
-            article_number = get_value('article_number', x)
+#            article_number = get_value('article_number', x)
             manufacturer_obj = Manufacturer.objects.get(name=manufacturer)
             dt = DeviceType.objects.filter(model=model, manufacturer=manufacturer_obj, slug=slug, u_height=1)
             if not dt.exists():
                 device_type, created = DeviceType.objects.get_or_create(model=model, manufacturer=manufacturer_obj,
                                                                         slug=slug, u_height=1)
                 device_type.custom_field_data["device_family"] = device_family
-                device_type.custom_field_data["article_number"] = article_number
+#                device_type.custom_field_data["article_number"] = article_number
                 device_type.save()
 
         roles = self.parse_roles(self.get_roles(self.get_roles_path()))

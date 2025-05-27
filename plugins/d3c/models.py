@@ -508,12 +508,12 @@ class DeviceFinding(NetBoxModel):
         null=True,
         verbose_name='Device Family'
     )
-    article_number = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        verbose_name='Article Number'
-    )
+    # article_number = models.CharField(
+    #     max_length=50,
+    #     blank=True,
+    #     null=True,
+    #     verbose_name='Article Number'
+    # )
     hardware_version = models.CharField(
         max_length=50,
         blank=True,
@@ -580,7 +580,7 @@ class DeviceFinding(NetBoxModel):
                           self.device_role, self.is_safety_critical, self.network_protocol, self.transport_protocol,
                           self.application_protocol, self.port, self.is_router, self.manufacturer, self.oui,
                           self.hardware_version, self.hardware_cpe, self.software_name, self.device_name,
-                          self.part_number, self.is_firmware, self.version, self.article_number, self.rack,
+                          self.part_number, self.is_firmware, self.version, self.rack,
                           self.location, self.exposure)
         for x in attribute_list:
             if x != None:
