@@ -12,7 +12,7 @@ class NetBoxDDCConfig(PluginConfig):
 
     name = 'd3c'
     verbose_name = 'NetBox D3C'
-    description = 'Manage Device Detection and Device Characterization in NetBox'
+    description = 'Manage Device Detection and Device Chrateriszation in NetBox'
     version = '0.9'
     base_url = 'd3c'
     min_version = '4.2'
@@ -66,10 +66,22 @@ def work():
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
 
         cf, created = CustomField.objects.update_or_create(
-            name='article_number',
+            name='inventory_number',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
-        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+        cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+
+        cf, created = CustomField.objects.update_or_create(
+            name='year',
+            type=CustomFieldTypeChoices.TYPE_TEXT,
+            required=False)
+        cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+
+        # cf, created = CustomField.objects.update_or_create(
+        #     name='article_number',
+        #     type=CustomFieldTypeChoices.TYPE_TEXT,
+        #     required=False)
+        # cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
 
         cf, created = CustomField.objects.update_or_create(
             name='device_family',
@@ -79,7 +91,19 @@ def work():
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
 
         cf, created = CustomField.objects.update_or_create(
+            name='hardware_name',
+            type=CustomFieldTypeChoices.TYPE_TEXT,
+            required=False)
+        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+
+        cf, created = CustomField.objects.update_or_create(
             name='hardware_version',
+            type=CustomFieldTypeChoices.TYPE_TEXT,
+            required=False)
+        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+
+        cf, created = CustomField.objects.update_or_create(
+            name='model_number',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
