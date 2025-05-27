@@ -9,6 +9,10 @@ router.register('software-list', views.SoftwareViewSet)
 router.register('communication-list', views.CommunicationViewSet)
 router.register('communicationfinding-list', views.CommunicationFindingViewSet)
 router.register('mapping-list', views.MappingViewSet)
+router.register('productrelationship-list', views.ProductRelationshipViewSet)
+router.register('xgenericuri-list', views.XGenericUriViewSet)
+router.register('hash-list', views.HashViewSet)
+router.register('filehash-list', views.FileHashViewSet)
 
 urlpatterns = router.urls
 

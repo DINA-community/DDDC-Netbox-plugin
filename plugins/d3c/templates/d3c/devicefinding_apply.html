@@ -112,17 +112,17 @@
                         </div>
                     </div>
                     {% endif %}
-                    {% if finding.article_number and form.device_article.field.choices|length %}
-                    <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_article.label }}:</label>
-                        <div class="col-sm-8">
-                        {% for article in form.device_article %}
-                            {{ article.tag }}
-                            <label class="btn btn-outline-danger mt-1" for="{{ article.id_for_label }}">{{ article.choice_label|truncatechars:34 }}</label>
-                        {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
+                    <!-- {% if finding.article_number and form.device_article.field.choices|length %} -->
+                    <!-- <div class="row mb-3"> -->
+                    <!--     <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_article.label }}:</label> -->
+                    <!--     <div class="col-sm-8"> -->
+                    <!--     {% for article in form.device_article %} -->
+                    <!--         {{ article.tag }} -->
+                    <!--         <label class="btn btn-outline-danger mt-1" for="{{ article.id_for_label }}">{{ article.choice_label|truncatechars:34 }}</label> -->
+                    <!--     {% endfor %} -->
+                    <!--     </div> -->
+                    <!-- </div> -->
+                    <!-- {% endif %} -->
                     {% if finding.part_number and form.device_model.field.choices|length %}
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label text-lg-end" for="id_test_field">{{ form.device_model.label }}:</label>
@@ -250,7 +250,7 @@
                     <div class="row mb-2">
                         <h5 class="col-9 offset-3">Add Service</h5>
                     </div>
-                    {% if finding.ip_address %}
+                    {% if finding.ip_address%}
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">IP Address:</label>
                         <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.ip_address}} </label>

@@ -1,7 +1,7 @@
 """
     This file provides functionality to initialize the D3C-Plugin's Device Roles and default Manufacturers,
     Devices, and Device Types with the value 'Unspecified.'
-    This is done by parsing the YAML files located in 'd3c/data/repo'.
+    This is done by parsing the YAML files located in 'd3c\data\repo'.
 """
 import yaml
 import os
@@ -18,7 +18,7 @@ def get_value(key, data):
 
 class REPO:
     """
-    This class parses the YAML files located in 'd3c/data/repo'.
+    This class parses the YAML files located in 'd3c\data\repo'.
     """
 
     def __init__(self, repo_path):
@@ -27,7 +27,7 @@ class REPO:
         self.yaml_extensions = ['yaml', 'yml']
 
     def slug_format(self, name):
-        return re_sub(r'\W+', '-', name.lower())
+        return re_sub('\W+', '-', name.lower())
 
     def get_relative_path(self):
         return self.repo_path
@@ -137,14 +137,14 @@ class REPO:
             model = get_value('model', x)
             slug = get_value('slug', x)
             device_family = get_value('device_family', x)
-            article_number = get_value('article_number', x)
+#            article_number = get_value('article_number', x)
             manufacturer_obj = Manufacturer.objects.get(name=manufacturer)
             dt = DeviceType.objects.filter(model=model, manufacturer=manufacturer_obj, slug=slug, u_height=1)
             if not dt.exists():
                 device_type, created = DeviceType.objects.get_or_create(model=model, manufacturer=manufacturer_obj,
                                                                         slug=slug, u_height=1)
                 device_type.custom_field_data["device_family"] = device_family
-                device_type.custom_field_data["article_number"] = article_number
+#                device_type.custom_field_data["article_number"] = article_number
                 device_type.save()
 
         roles = self.parse_roles(self.get_roles(self.get_roles_path()))

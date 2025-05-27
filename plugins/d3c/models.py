@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from ipam.models import IPAddress
-from dcim.models import Interface, MACAddress
+from dcim.models import Interface
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.urls.exceptions import NoReverseMatch
 import re
@@ -31,6 +31,12 @@ class Software(NetBoxModel):
     """
     name = models.CharField(
         max_length=50,
+        blank=False,
+        null=False
+    )
+    manufacturer = models.ForeignKey(
+        to='dcim.Manufacturer',
+        on_delete=models.CASCADE,
         blank=False,
         null=False
     )
@@ -243,18 +249,20 @@ class ProductRelationship(NetBoxModel):
     https://docs.djangoproject.com/en/4.2/ref/contrib/contenttypes/#generic-relations
     """
     source_type = models.ForeignKey(
-        to=ContentType,
+        ContentType,
         on_delete=models.CASCADE,
         limit_choices_to=PRODCUT_PARENT_MODELS,
-        related_name='sourceProduct',
+        related_name='sourceProduct'
     )
 
     source_id = models.PositiveBigIntegerField()
 
-    source = GenericForeignKey(
-        ct_field='source_type',
-        fk_field='source_id'
-    )
+    source = GenericForeignKey("source_type", "source_id")
+
+    # source = GenericForeignKey(
+    #     ct_field='source_type',
+    #     fk_field='source_id'
+    # )
 
     category = models.CharField(
         max_length=30,
@@ -262,7 +270,7 @@ class ProductRelationship(NetBoxModel):
     )
 
     destination_type = models.ForeignKey(
-        to=ContentType,
+        ContentType,
         on_delete=models.CASCADE,
         limit_choices_to=PRODCUT_PARENT_MODELS,
         related_name='destinationProduct',
@@ -270,10 +278,20 @@ class ProductRelationship(NetBoxModel):
 
     destination_id = models.PositiveBigIntegerField()
 
-    destination = GenericForeignKey(
-        ct_field='destination_type',
-        fk_field='destination_id'
-    )
+    destination = GenericForeignKey("destination_type", "destination_id")
+
+    # destination = models.ForeignKey(
+    #     to='dcim.Device',
+    #     on_delete=models.CASCADE,
+    #     related_name='destination',
+    #     blank=True,
+    #     null=True
+    # )
+
+    # destination = GenericForeignKey(
+    #     ct_field='destination_type',
+    #     fk_field='destination_id'
+    # )
 
     def get_absolute_url(self):
         return reverse('plugins:d3c:productrelationship', args=[self.pk])
@@ -602,18 +620,14 @@ class DeviceFinding(NetBoxModel):
         except (ObjectDoesNotExist, MultipleObjectsReturned, ValidationError, NoReverseMatch) as error:
             return None
 
-    def get_device_by_mac(self, mac_address):
+    def get_device_by_mac(self, mac):
         """
         Performs a lookup for devices with the specified MAC-Address.
-        :param mac_address: string, the MAC-Address used for the lookup.
+        :param mac: string, the MAC-Address used for the lookup.
         :return: The Device associated  with this MAC-Address.
         """
         try:
-            source = MACAddress.objects.get(mac_address=mac_address,
-                                            assigned_object_type=ContentType.objects.get_for_model(Interface))
-            if source:
-                return Interface.objects.get(id=source.assigned_object_id).device
-            return None
+            return Interface.objects.get(mac_address=mac).device
         except (ObjectDoesNotExist, MultipleObjectsReturned, ValidationError, NoReverseMatch) as error:
             return None
 
@@ -811,7 +825,7 @@ class CommunicationFinding(NetBoxModel):
         self.has_predicted_dst_device = bool(self.predicted_dst_device)
 
         self.has_2_predicted_devices = self.has_predicted_src_device and self.has_predicted_dst_device
-
+        
         if save:
             self.save()
 
@@ -849,7 +863,7 @@ def communicationfinding_check_asignment(sender, instance, **kwargs):
                 CommunicationFinding.objects.filter(pk=instance.pk).update(has_predicted_dst_device=False)
     except BaseException as e:
         pass
-
+    
 
 class Mapping(NetBoxModel):
     """
@@ -859,7 +873,7 @@ class Mapping(NetBoxModel):
         max_length=50,
         blank=False,
         null=False
-    )
+    ) 
     type = models.CharField(
         max_length=10,
         blank=False,

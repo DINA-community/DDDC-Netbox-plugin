@@ -4,7 +4,7 @@
 from rest_framework import serializers
 
 from netbox.api.serializers import NetBoxModelSerializer
-from dcim.api.serializers import DeviceSerializer
+from dcim.api.serializers import DeviceSerializer, ManufacturerSerializer
 from ..models import (Dummy, DeviceFinding, Software, Communication,
                       CommunicationFinding, Mapping, ProductRelationship, PRODCUT_PARENT_MODELS,
                       XGENERICURI_PARENT_MODELS, XGenericUri, FileHash, Hash)
@@ -36,10 +36,13 @@ class SoftwareSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for Software.
     """
+    manufacturer = ManufacturerSerializer(read_only=False, nested=True)
     class Meta:
         model = Software
-        fields = ('id', 'display', 'name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',
+        brief_fields = ('id', 'url', 'display', 'name')
+        fields = ('id', 'display', 'url', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',
                   'custom_fields', 'created', 'last_updated')
+        
 
 
 ##
@@ -102,10 +105,16 @@ class ProductRelationshipSerializer(NetBoxModelSerializer):
     )
     source = serializers.SerializerMethodField(read_only=True)
 
+    destination_type = ContentTypeField(
+        queryset=ContentType.objects.filter(PRODCUT_PARENT_MODELS),
+        required=True
+    )
+    destination = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = ProductRelationship
         fields = [
-            'id', 'source_type', 'source_id', 'source', 'category', 'destination_type', 'destination_id', 'destination',
+            'id', 'source_type', 'source_id', 'source', 'category', 'destination_type', 'destination_id', 'destination'
         ]
 
     @extend_schema_field(serializers.JSONField(allow_null=True))
@@ -145,19 +154,20 @@ class XGenericUriSerializer(NetBoxModelSerializer):
         return serializer(obj.content_object, nested=True, context=context).data
 
 
-class FileHashSerializer(NetBoxModelSerializer):
-    """
-    REST API Model Serializer for FileHash.
-    """
-    class Meta:
-        model = FileHash
-        fields = ('id', 'algorithm', 'value', 'hash', 'tags')
-
-
 class HashSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for Hash.
     """
+    software = SoftwareSerializer(read_only=True, nested=True)
     class Meta:
         model = Hash
-        fields = ('id', 'filename', 'tags')
+        fields = ('id', 'software', 'filename', 'tags')
+
+class FileHashSerializer(NetBoxModelSerializer):
+    """
+    REST API Model Serializer for FileHash.
+    """
+    hash = HashSerializer(read_only=True, nested=False)
+    class Meta:
+        model = FileHash
+        fields = ('id', 'algorithm', 'value', 'hash', 'tags')

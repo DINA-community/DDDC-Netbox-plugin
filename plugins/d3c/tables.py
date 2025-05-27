@@ -418,9 +418,9 @@ class SoftwareTable(NetBoxTable):
 
     class Meta(NetBoxTable.Meta):
         model = Software
-        fields = ('id', 'name', 'is_firmware', 'version', 'cpe',  'purl',
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe',  'purl',
                   'sbom_url_count', 'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
-        default_columns = ('id', 'name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_url_count',
+        default_columns = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_url_count',
                            'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
 
     def render_sbom_url_count(self, record):

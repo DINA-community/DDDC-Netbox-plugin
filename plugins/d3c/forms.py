@@ -6,7 +6,7 @@ import csv
 from .models import DeviceFinding, Software, Communication, \
     CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
-from dcim.models.devices import Device, DeviceType
+from dcim.models.devices import Device, DeviceType, Manufacturer
 from ipam.models import IPAddress
 from django import forms
 from django.forms import ModelForm
@@ -289,12 +289,12 @@ class DeviceFindingApplyForm(forms.Form):
         widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
     )
 
-    device_article = forms.ChoiceField(
-        initial='0',
-        required=False,
-        label="Article Number",
-        widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
-    )
+    # device_article = forms.ChoiceField(
+    #     initial='0',
+    #     required=False,
+    #     label="Article Number",
+    #     widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
+    # )
 
     device_model = forms.ChoiceField(
         initial='0',
@@ -390,7 +390,7 @@ class DeviceFindingApplyForm(forms.Form):
         device_name_choices = kwargs.pop('name_c', None)
         device_family_choices = kwargs.pop('family_c', None)
         device_description_choices = kwargs.pop('description_c', None)
-        device_article_choices = kwargs.pop('article_c', None)
+#        device_article_choices = kwargs.pop('article_c', None)
         device_model_choices = kwargs.pop('model_c', None)
         device_serial_choices = kwargs.pop('serial_c', None)
         device_status_choices = kwargs.pop('status_c', None)
@@ -415,8 +415,8 @@ class DeviceFindingApplyForm(forms.Form):
             self.fields['device_family'].choices = device_family_choices
         if device_description_choices:
             self.fields['device_description'].choices = device_description_choices
-        if device_article_choices:
-            self.fields['device_article'].choices = device_article_choices
+#        if device_article_choices:
+#            self.fields['device_article'].choices = device_article_choices
         if device_model_choices:
             self.fields['device_model'].choices = device_model_choices
         if device_serial_choices:
@@ -673,6 +673,12 @@ class SoftwareForm(NetBoxModelForm):
     """
     Input Form for the Software model.
     """
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=True,
+        label="Manufacturer"
+    )
+        
     cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
 
     purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
@@ -686,7 +692,7 @@ class SoftwareForm(NetBoxModelForm):
 
     class Meta:
         model = Software
-        fields = ('id', 'name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
 
 
 class SoftwareFilterForm(NetBoxModelFilterSetForm):
