@@ -46,7 +46,7 @@ apt install -y python3 python3-pip python3-venv python3-dev build-essential libx
 mkdir -p /opt/netbox/
 cd /opt/netbox/
 
-git clone -b v4.2.6 https://github.com/netbox-community/netbox.git .
+git clone -b v4.3.1 https://github.com/netbox-community/netbox.git .
 
 adduser --system --group netbox
 chown --recursive netbox /opt/netbox/netbox/media/
