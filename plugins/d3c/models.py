@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from ipam.models import IPAddress
-from dcim.models import Interface
+from dcim.models import Interface, MACAddress
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.urls.exceptions import NoReverseMatch
 import re
@@ -602,14 +602,18 @@ class DeviceFinding(NetBoxModel):
         except (ObjectDoesNotExist, MultipleObjectsReturned, ValidationError, NoReverseMatch) as error:
             return None
 
-    def get_device_by_mac(self, mac):
+    def get_device_by_mac(self, mac_address):
         """
         Performs a lookup for devices with the specified MAC-Address.
-        :param mac: string, the MAC-Address used for the lookup.
+        :param mac_address: string, the MAC-Address used for the lookup.
         :return: The Device associated  with this MAC-Address.
         """
         try:
-            return Interface.objects.get(mac_address=mac).device
+            source = MACAddress.objects.get(mac_address=mac_address,
+                                            assigned_object_type=ContentType.objects.get_for_model(Interface))
+            if source:
+                return Interface.objects.get(id=source.assigned_object_id).device
+            return None
         except (ObjectDoesNotExist, MultipleObjectsReturned, ValidationError, NoReverseMatch) as error:
             return None
 
@@ -807,7 +811,7 @@ class CommunicationFinding(NetBoxModel):
         self.has_predicted_dst_device = bool(self.predicted_dst_device)
 
         self.has_2_predicted_devices = self.has_predicted_src_device and self.has_predicted_dst_device
-        
+
         if save:
             self.save()
 
@@ -845,7 +849,7 @@ def communicationfinding_check_asignment(sender, instance, **kwargs):
                 CommunicationFinding.objects.filter(pk=instance.pk).update(has_predicted_dst_device=False)
     except BaseException as e:
         pass
-    
+
 
 class Mapping(NetBoxModel):
     """
@@ -855,7 +859,7 @@ class Mapping(NetBoxModel):
         max_length=50,
         blank=False,
         null=False
-    ) 
+    )
     type = models.CharField(
         max_length=10,
         blank=False,

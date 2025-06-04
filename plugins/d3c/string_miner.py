@@ -321,7 +321,7 @@ if __name__ == "__main__":
     for l in test_nmap:
         print(sm.match_levenshtein(l, threshold=0.85, vendor_filter="Siemens"))
 
-    # ----------- Some manual test string provied by BSI ----------- #
+    # ----------- Some manual test string provided by BSI ----------- #
     test_all("SSA-350757: Improper Access Control [...] Related ET200 CPUs and SIPLUS variants.")
     test_all("SSA-350757: Improper Access Control [...] Related ET 200 CPUs and SIPLUS variants.")
     test_all("SIMATIC CP 1623 (6GK1162-3AA00)")

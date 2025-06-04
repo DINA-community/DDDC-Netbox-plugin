@@ -52,7 +52,7 @@ class ImportDevice(Script):
         field_order = []
 
     def create_or_update_device(self, data):
-        
+
         new_tag, created = Tag.objects.get_or_create(name='NEW')
         approved_tag, created = Tag.objects.get_or_create(name='APPROVED')
         rejected_tag, created = Tag.objects.get_or_create(name='REJECTED')
@@ -64,7 +64,7 @@ class ImportDevice(Script):
             comm_rel = data['communications']
             source_ip = comm_rel['source_ip'] + "/24"
             target_ip = comm_rel['destination_ip'] + "/24"
-            
+
             try:
                 source = IPAddress.objects.get(address=source_ip)
                 self.log_success(f"Found source_ip {source_ip} {source}")
@@ -73,7 +73,7 @@ class ImportDevice(Script):
             except ObjectDoesNotExist:
                 self.log_warning(f"source does not exist")
                 return (None)
-            
+
             try:
                 target = IPAddress.objects.get(address=target_ip)
                 self.log_success(f"Found target_ip {target_ip} {target}")
@@ -82,7 +82,7 @@ class ImportDevice(Script):
             except ObjectDoesNotExist:
                 self.log_warning(f"target does not exist")
                 return (None)
-            
+
             a_comm, created = Communication.objects.get_or_create(
                 source_device=source_device_id,
                 target_device=target_device_id,
@@ -99,7 +99,7 @@ class ImportDevice(Script):
             return(None)
 
         ##############
-        
+
         if 'ipv4-services' in data.keys():
             for a_service in data['ipv4-services']:
                 an_ip, created = IPAddress.objects.get_or_create(address=a_service['ip-addr'] + "/24")
@@ -110,7 +110,7 @@ class ImportDevice(Script):
                     an_ip.tags.add("NEW")
                     self.log_success(f"Created IP Address {a_service['ip-addr']}")
 
-                        
+
         new_mac_addresses = []
         device_id_mac = False
         if 'mac-addresses' in data.keys():
@@ -135,7 +135,7 @@ class ImportDevice(Script):
             new_device = Device(
                 site=Site.objects.get(name='PoC'),
                 device_type=DeviceType.objects.get(manufacturer=Manufacturer.objects.get(name='Unspecified'), model='Unspecified'),
-                device_role=DeviceRole.objects.get(name='Unspecified')) 
+                device_role=DeviceRole.objects.get(name='Unspecified'))
             new_device.save()
             new_device.tags.add("NEW")
             device_id = new_device.id

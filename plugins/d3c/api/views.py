@@ -20,7 +20,7 @@ class SoftwareViewSet(NetBoxModelViewSet):
     """
     ViewSet for Software.
     """
-    queryset = models.Software.objects.all() 
+    queryset = models.Software.objects.all()
     serializer_class = SoftwareSerializer
     filterset_class = filtersets.SoftwareFilterSet
 
@@ -29,7 +29,7 @@ class CommunicationViewSet(NetBoxModelViewSet):
     """
     ViewSet for Communication.
     """
-    queryset = models.Communication.objects.all() 
+    queryset = models.Communication.objects.all()
     serializer_class = CommunicationSerializer
     filterset_class = filtersets.CommunicationFilterSet
 
@@ -38,7 +38,7 @@ class CommunicationFindingViewSet(NetBoxModelViewSet):
     """
     ViewSet for CommunicationFinding.
     """
-    queryset = models.CommunicationFinding.objects.all() 
+    queryset = models.CommunicationFinding.objects.all()
     serializer_class = CommunicationFindingSerializer
     filterset_class = filtersets.CommunicationFindingFilterSet
 

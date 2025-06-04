@@ -19,7 +19,7 @@ class DeviceFindingFilterSet(NetBoxModelFilterSet):
 
     def search(self, queryset, name, value):
         """
-        This method is excecuted when the QuickSearch input field is used.
+        This method is executed when the QuickSearch input field is used.
         """
         if not value.strip():
             return queryset
