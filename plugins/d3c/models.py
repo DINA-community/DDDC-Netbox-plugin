@@ -34,6 +34,14 @@ class Software(NetBoxModel):
         blank=False,
         null=False
     )
+    # Software/Manufacturer
+    manufacturer = models.ForeignKey(
+        to='dcim.Manufacturer',
+        on_delete=models.CASCADE,
+        related_name='softwareManufacturer',
+        blank=True,
+        null=True
+    )
     is_firmware = models.BooleanField(
         null=True,
         blank=True
