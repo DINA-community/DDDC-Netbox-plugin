@@ -13,7 +13,7 @@ def get_value(key, data):
     if key in data.keys():
         return data[key]
     else:
-        return None
+        return ''
 
 
 class REPO:
@@ -134,17 +134,34 @@ class REPO:
         device_types = self.parse_files(files)
         for x in device_types:
             manufacturer = get_value('name', get_value('manufacturer', x))
-            model = get_value('model', x)
-            slug = get_value('slug', x)
+            part_number = get_value('part_number', x)
             device_family = get_value('device_family', x)
-#            article_number = get_value('article_number', x)
+            cpe = get_value('cpe', x)
+            device_description = get_value('device_description', x)
+            hardware_name = get_value('hardware_name', x)
+            hardware_version = get_value('hardware_version', x)
+            model_number = get_value('model_number', x)
             manufacturer_obj = Manufacturer.objects.get(name=manufacturer)
-            dt = DeviceType.objects.filter(model=model, manufacturer=manufacturer_obj, slug=slug, u_height=1)
+            if part_number == '' and hardware_version == '':
+                model = device_family + " " + model_number
+            elif part_number == '' and hardware_version != '':
+                model = device_family + " " + model_number + " " + hardware_version
+            elif part_number != '' and hardware_version =='':
+                model = device_family + " " + model_number + " " + part_number
+            else:
+                model = device_family + " " + model_number + " " + part_number + " " + hardware_version
+            slug = model
+            dt = DeviceType.objects.filter(model=model, manufacturer=manufacturer_obj, slug=slug)
             if not dt.exists():
                 device_type, created = DeviceType.objects.get_or_create(model=model, manufacturer=manufacturer_obj,
                                                                         slug=slug, u_height=1)
+                device_type.part_number = part_number
+                device_type.custom_field_data["device_description"] = device_description
                 device_type.custom_field_data["device_family"] = device_family
-#                device_type.custom_field_data["article_number"] = article_number
+                device_type.custom_field_data["part_number"] = part_number
+                device_type.custom_field_data["hardware_name"] = hardware_name
+                device_type.custom_field_data["hardware_version"] = hardware_version
+                device_type.custom_field_data["model_number"] = model_number
                 device_type.save()
 
         roles = self.parse_roles(self.get_roles(self.get_roles_path()))

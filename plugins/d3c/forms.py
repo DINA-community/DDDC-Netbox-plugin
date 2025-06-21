@@ -6,21 +6,25 @@ import csv
 from .models import DeviceFinding, Software, Communication, \
     CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
-from dcim.models.devices import Device, DeviceType, Manufacturer
+from dcim.models.devices import Device, DeviceType, Manufacturer, Platform
 from ipam.models import IPAddress
 from django import forms
 from django.forms import ModelForm
+from django.utils.translation import gettext_lazy as _
 from io import StringIO
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm, NetBoxModelImportForm
 from utilities.choices import ChoiceSet
-from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
+from utilities.forms.rendering import FieldSet
+from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField, SlugField
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES
+from utilities.forms.widgets import APISelect, ClearableFileInput, HTMXSelect, NumberWithOptions, SelectWithPK
 from xml.etree.ElementTree import ParseError
 from django.contrib.postgres.forms import SimpleArrayField
 from extras.models import CustomFieldChoiceSet
 from django.core.exceptions import ObjectDoesNotExist
 from netaddr import valid_mac, valid_ipv4
 
+DEVICETYPE_IMAGE_FORMATS = 'image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp'
 
 class HashForm(NetBoxModelForm):
     """
@@ -865,3 +869,53 @@ class MappingForm(NetBoxModelForm):
 class MappingFilterForm(NetBoxModelFilterSetForm):
     """Form for filtering Mappings."""
     model = Mapping
+
+
+# DeviceType
+class MyDeviceTypeForm(NetBoxModelForm):
+    manufacturer = DynamicModelChoiceField(
+        label=_('Manufacturer'),
+        queryset=Manufacturer.objects.all(),
+        quick_add=True
+    )
+    default_platform = DynamicModelChoiceField(
+        label=_('Default platform'),
+        queryset=Platform.objects.all(),
+        required=False,
+        selector=True,
+        query_params={
+            'manufacturer_id': ['$manufacturer', 'null'],
+        }
+    )
+    slug = SlugField(
+        label=_('Slug'),
+        slug_source='device_family',
+        required=False
+    )
+    comments = CommentField()
+    model = forms.CharField (required=False)
+
+    fieldsets = (
+        FieldSet('manufacturer', 'slug', 'default_platform', 'description', 'tags', name=_('Device Type')),
+        FieldSet(
+            'u_height', 'exclude_from_utilization', 'is_full_depth', 'part_number', 'subdevice_role', 'airflow',
+            'weight', 'weight_unit', name=_('Chassis')
+        ),
+        FieldSet('front_image', 'rear_image', name=_('Images')),
+    )
+
+    class Meta:
+        model = DeviceType
+        fields = [
+            'manufacturer', 'slug', 'default_platform', 'part_number', 'u_height', 'exclude_from_utilization',
+            'is_full_depth', 'subdevice_role', 'airflow', 'weight', 'weight_unit', 'front_image', 'rear_image',
+            'description', 'comments', 'tags',
+        ]
+        widgets = {
+            'front_image': ClearableFileInput(attrs={
+                'accept': DEVICETYPE_IMAGE_FORMATS
+            }),
+            'rear_image': ClearableFileInput(attrs={
+                'accept': DEVICETYPE_IMAGE_FORMATS
+            }),
+        }
