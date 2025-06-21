@@ -1,7 +1,9 @@
 import json
 import logging
-from dcim.models import Device, DeviceRole, Site
+from dcim.models import Device, DeviceType, DeviceRole, Site, Platform
+from extras.models import Tag
 from dcim.tables.devices import DeviceTable
+from dcim.forms.model_forms import DeviceTypeForm
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
@@ -36,6 +38,9 @@ from .utils import fillTemplate, get_ip, get_mac, time_start, time_end
 from . import filtersets, forms, models, tables
 import re
 from netaddr import valid_mac, valid_ipv4
+from extras.utils import image_upload
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 # Four StringChecker modules are created, each one for the attributes
@@ -1457,6 +1462,98 @@ class ServerCommunicationListForDeviceView(View):
 
 
 ipv4_pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+
+
+# DeviceType add/edit view
+@register_model_view(DeviceType, 'add', detail=False)
+@register_model_view(DeviceType, 'edit')
+class DeviceTypeEditView(generic.ObjectEditView):
+    """ This view handles the edit requests for the DeviceType model. """
+    queryset = DeviceType.objects.all()
+    form = forms.MyDeviceTypeForm
+    
+    def post(self, request, *args, **kwargs):
+        device_type = self.get_object(**kwargs)
+        manufacturer = request.POST['manufacturer']
+        model_number = request.POST['cf_model_number']
+        hardware_version = request.POST['cf_hardware_version']
+        device_family = request.POST['cf_device_family']
+        part_number = request.POST['part_number']
+        default_platform = request.POST['default_platform']
+        if request.POST['exclude_from_utilization'] == "on":
+            exclude_from_utilization = True
+        else:
+            exclude_from_utilization = False
+        if request.POST['is_full_depth'] == "on":
+            is_full_depth = True
+        else:
+            is_full_depth = False
+
+        weight = request.POST['weight']
+        if weight == '':
+            weight = float(0)
+        else:
+            weigth = float(weight)
+        if 'create' in request.POST.keys():
+            created = request.POST['create']
+            print (created)
+        if part_number == '' and hardware_version == '':
+             model = device_family + " " + model_number
+        elif part_number == '' and hardware_version != '':
+            model = device_family + " " + model_number + " " + hardware_version
+        elif part_number != '' and hardware_version =='':
+            model = device_family + " " + model_number + " " + part_number
+        else:
+            model = device_family + " " + model_number + " " + part_number + " " + hardware_version
+
+        with transaction.atomic():
+            if device_type.id:
+                a_devicetype = DeviceType.objects.get(id=device_type.id)
+                a_devicetype.manufacturer = Manufacturer.objects.get(id=manufacturer)
+                a_devicetype.model = model
+                a_devicetype.slug = model
+            else:
+                a_devicetype = DeviceType.objects.create(manufacturer=Manufacturer.objects.get(id=manufacturer), model=model)
+                a_devicetype.slug = model  
+                
+            a_devicetype.custom_field_data['model_number'] = model_number
+            a_devicetype.custom_field_data['hardware_version'] = hardware_version
+            a_devicetype.custom_field_data['hardware_name'] = request.POST['cf_hardware_name']
+            a_devicetype.custom_field_data['cpe'] = request.POST['cf_cpe']
+            a_devicetype.custom_field_data['device_description'] = request.POST['cf_device_description']
+            a_devicetype.custom_field_data['device_family'] = device_family
+            a_devicetype.part_number = part_number
+            if default_platform:
+                a_devicetype.default_platform = Platform.objects.get(id=default_platform)
+            a_devicetype.description = request.POST['description']
+            a_devicetype.u_height = request.POST['u_height']
+            a_devicetype.exclude_for_utilization = exclude_from_utilization
+            a_devicetype.is_full_depth = is_full_depth
+            a_devicetype.subdevice_role = request.POST['subdevice_role']
+            a_devicetype.airflow = request.POST['airflow']
+            a_devicetype.weight = weight
+            a_devicetype.weight_unit = request.POST['weight_unit']
+            a_devicetype.comments = request.POST['comments']
+            if 'front_image-clear' in request.POST.keys():
+                print ("front_image_clear:", request.POST.get('front_image-clear'))
+                a_devicetype.front_image=None
+            if 'front_image' in request._files.keys():
+                a_devicetype.front_image=default_storage.save(str(request._files.get('front_image')),ContentFile(request._files.get('front_image').read()))
+            if 'rear_image-clear' in request.POST.keys():
+                print ("rear_image_clear:", request.POST.get('rear_image-clear'))
+                a_devicetype.rear_image=None
+            if 'rear_image' in request._files.keys():
+                a_devicetype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
+            if 'update' in request.POST.keys():
+                a_devicetype.update = request.POST['update']
+            a_devicetype.tags.clear()
+            if 'tags' in request.POST.keys():
+                print ("new:", request.POST.getlist('tags'))
+                for a_tag in request.POST.getlist('tags'):
+                    a_devicetype.tags.add (Tag.objects.get(id=a_tag))
+            a_devicetype.save()
+            messages.success(request, f"DeviceType record stored")
+        return redirect(self.get_return_url(request))
     
 # Communication edit view
 @register_model_view(models.Communication, name='add', detail=False)

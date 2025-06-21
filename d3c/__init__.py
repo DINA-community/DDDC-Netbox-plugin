@@ -77,17 +77,11 @@ def work():
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
 
-        # cf, created = CustomField.objects.update_or_create(
-        #     name='article_number',
-        #     type=CustomFieldTypeChoices.TYPE_TEXT,
-        #     required=False)
-        # cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
-
         cf, created = CustomField.objects.update_or_create(
             name='device_family',
             label='Device Family',
             type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
 
         cf, created = CustomField.objects.update_or_create(
@@ -105,7 +99,7 @@ def work():
         cf, created = CustomField.objects.update_or_create(
             name='model_number',
             type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
 
         cf, created = CustomField.objects.update_or_create(
