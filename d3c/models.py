@@ -26,7 +26,7 @@ class Dummy(NetBoxModel):
 
 class Software(NetBoxModel):
     """
-    Software represents a program installed on a device or as a subcomponent of another software.
+    Software represents a program installed on a device or as a sub component of another software.
     Relationships between devices and software can be modeled through ProductRelationships.
     """
     name = models.CharField(
@@ -300,12 +300,26 @@ class Communication(NetBoxModel):
         blank=True,
         null=True
     )
+    source_ip_netmask = models.CharField(
+        max_length=2,
+        blank=True,
+        null=True,
+        default='24',
+        verbose_name='IP Netmask of source'
+    )
     destination_device = models.ForeignKey(
         to='dcim.Device',
         on_delete=models.CASCADE,
         related_name='destinationForCommunications',
         blank=True,
         null=True
+    )
+    destination_ip_netmask = models.CharField(
+        max_length=2,
+        blank=True,
+        null=True,
+        default='24',
+        verbose_name='IP Netmask of destination'
     )
     source_ip_addr = models.ForeignKey(
         to='ipam.IPAddress',
@@ -712,8 +726,18 @@ class CommunicationFinding(NetBoxModel):
         blank=True,
         null=True
     )
+    source_ip_netmask = models.CharField(
+        max_length=2,
+        blank=True,
+        null=True
+    )
     destination_ip = models.CharField(
         max_length=50,
+        blank=True,
+        null=True
+    )
+    destination_ip_netmask = models.CharField(
+        max_length=2,
         blank=True,
         null=True
     )

@@ -17,4 +17,9 @@ class Migration(migrations.Migration):
             name='ip_netmask',
             field=models.CharField(blank=True, max_length=2, null=True),
         ),
+        migrations.AddField(
+            model_name='CommunicationFinding',
+            name='source_ip_netmask',
+            field=models.CharField(blank=True, max_length=2, null=True),
+        ),
     ]

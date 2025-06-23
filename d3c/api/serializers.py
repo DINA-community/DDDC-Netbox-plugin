@@ -69,7 +69,7 @@ class CommunicationFindingSerializer(NetBoxModelSerializer):
 
     class Meta:
         model = CommunicationFinding
-        fields = ('id', 'url', 'source', 'source_ip', 'destination_ip', 'destination_port', 'network_protocol',
+        fields = ('id', 'url', 'source', 'source_ip','source_ip_netmask', 'destination_ip', 'destination_ip_netmask','destination_port', 'network_protocol',
                   'transport_protocol', 'application_protocol')
 
 

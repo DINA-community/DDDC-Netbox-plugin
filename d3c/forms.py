@@ -746,7 +746,7 @@ class CommunicationForm(NetBoxModelForm):
 
     class Meta:
         model = Communication
-        fields = ('id', 'source_ip_addr', 'destination_ip_addr', 'destination_port',
+        fields = ('id', 'source_ip_addr', 'source_ip_netmask', 'destination_ip_addr','destination_ip_netmask', 'destination_port',
                   'network_protocol', 'transport_protocol', 'application_protocol')
 
 
@@ -781,8 +781,8 @@ class CommunicationImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = Communication
-        fields = ('source_device', 'destination_device', 'source_ip_addr', 'destination_ip_addr', 'destination_port',
-                  'network_protocol', 'transport_protocol', 'application_protocol')
+        fields = ('source_device', 'destination_device', 'source_ip_addr', 'source_ip_netmask',  'destination_ip_addr', 'destination_ip_netmask',
+                  'destination_port', 'network_protocol', 'transport_protocol', 'application_protocol')
 
 
 
@@ -866,8 +866,16 @@ class CommunicationFindingEditForm(NetBoxModelForm):
 
     class Meta:
         model = CommunicationFinding
-        fields = ('id', 'source_ip', 'destination_ip', 'destination_port', 'network_protocol', 'transport_protocol', 'application_protocol')
+        fields = ('id', 'source_ip', 'source_ip_netmask', 'destination_ip', 'destination_ip_netmask', 'destination_port', 'network_protocol', 'transport_protocol', 'application_protocol')
 
+    def clean_ip_netmask(self):
+        ip_netmask = ['source_ip_netmask', 'destination_ip_netmask']
+        for netmask in ip_netmask:
+            if self.cleaned_data[netmask]:
+                cleaned = self.cleaned_data[netmask].lstrip('/')
+                if not (0 <= int(cleaned) <= 32):
+                    raise forms.ValidationError(f'{netmask} must be between 0 and 32.')
+        return cleaned
 
 # Mapping Forms
 class MappingForm(NetBoxModelForm):

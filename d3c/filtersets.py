@@ -53,7 +53,7 @@ class CommunicationFilterSet(NetBoxModelFilterSet):
     """
     class Meta:
         model = Communication
-        fields = ('id', 'source_device', 'destination_device', 'source_ip_addr', 'destination_ip_addr', 'destination_port',
+        fields = ('id', 'source_device', 'destination_device', 'source_ip_netmask','source_ip_addr','destination_ip_netmask' ,'destination_ip_addr', 'destination_port',
                   'network_protocol', 'transport_protocol', 'application_protocol')
 
     def search(self, queryset, name, value):

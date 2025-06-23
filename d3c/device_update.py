@@ -16,49 +16,45 @@ from .models import Software, ProductRelationship, ProductRelationshipCategory
 from django.contrib.contenttypes.models import ContentType
 
 
-def get_current_value_for_device(device, findingField):
+def get_current_value_for_device(device, findingfield):
     """
     This function returns the corresponding Device value based on a DeviceFinding attribute.
     """
     if not device:
         return None
+    ff = findingfield.lower()
 
-    ff = findingField.lower()
-    if ff == 'manufacturer':
-        return str(device.device_type.manufacturer.name)
-    if ff == 'device_role':
-        return str(device.role)
-    if ff == 'device_type':
-        return str(device.device_type)
-    if ff == 'device_name':
-        return str(device.name)
-    if ff == 'device_family':
-        return str(device.device_type.custom_field_data.get('device_family', None))
-    if ff == 'description':
-        return str(device.device_type.description if device.device_type.description else None)
-    if ff == 'article_number':
-        return str(device.device_type.custom_field_data.get('article_number', None))
-    if ff == 'part_number':
-        return str(device.device_type.part_number if device.device_type.part_number else None)
-    if ff == 'serial_number':
-        return str(device.serial if device.serial else None)
-    if ff == 'status':
-        return str(device.status)
-    if ff == 'exposure':
-        return str(device.custom_field_data.get('exposure', None))
-    if ff == 'site':
-        return str(device.site)
-    if ff == 'rack':
-        return str(device.rack)
-    if ff == 'location':
-        return str(device.location)
-    if ff == 'is_safety_critical':
-        return str(device.custom_field_data.get('safety', None))
-    if ff == 'hardware_version':
-        return str(device.device_type.custom_field_data.get('hardware_version', None))
-    if ff == 'hardware_cpe':
-        return str(device.device_type.custom_field_data.get('cpe', None))
-    return findingField
+    # Mapping of field names to extraction functions
+    field_map = {
+        'manufacturer': lambda d: d.device_type.manufacturer.name,
+        'device_role': lambda d: d.role,
+        'device_type': lambda d: d.device_type,
+        'device_name': lambda d: d.name,
+        'device_family': lambda d: d.device_type.custom_field_data.get('device_family'),
+        'description': lambda d: d.device_type.description,
+        'article_number': lambda d: d.device_type.custom_field_data.get('article_number'),
+        'part_number': lambda d: d.device_type.part_number,
+        'serial_number': lambda d: d.serial,
+        'status': lambda d: d.status,
+        'exposure': lambda d: d.custom_field_data.get('exposure'),
+        'site': lambda d: d.site,
+        'rack': lambda d: d.rack,
+        'location': lambda d: d.location,
+        'is_safety_critical': lambda d: d.custom_field_data.get('safety'),
+        'hardware_version': lambda d: d.device_type.custom_field_data.get('hardware_version'),
+        'hardware_cpe': lambda d: d.device_type.custom_field_data.get('cpe'),
+    }
+    # Get the value using the field map
+    extractor = field_map.get(ff)
+    if extractor:
+        try:
+            value = extractor(device)
+            return str(value) if value is not None else None
+        except AttributeError:
+            return None
+        
+    # Return original field name if not found
+    return findingfield
 
 
 def create_and_assign_interface(device: Device, interface_name: str,
@@ -73,6 +69,7 @@ def create_and_assign_interface(device: Device, interface_name: str,
 
     if ip_address:
         ipaddr = IPAddress(address=ip_address, assigned_object=interface)
+        #### TODO
         ipaddr.save()
 
     if mac_address:
@@ -123,6 +120,7 @@ def change_device_type_keep_manufacturer(device, value):
     """
     This function updates the device type of a device while keeping the manufacturer.
     """
+    ### revision in branch P625
     if device and device.device_type and value:
 
         device_types = DeviceType.objects.filter(Q(model=value) | Q(slug=slugify(value)))
@@ -164,6 +162,7 @@ def change_device_role(device, value):
     """
     This function updates the Device Role of a device.
     """
+    ### Need revision for handling child parents properly. Issue #1 
     if device and value:
         roles = DeviceRole.objects.filter(Q(name=value) | Q(slug=slugify(value)))
         if roles.exists():
@@ -270,7 +269,7 @@ def change_device_exposure(device, value):
                 return True
             else:
                 return False
-        except Exception as e:
+        except Exception:
             return False
 
 
@@ -290,6 +289,7 @@ def change_device_router(device, mac, ip, value):
     """
     This function assigns the is_router value to a device.
     """
+    ### deprecated because roles can have child/parents #1
     if device and value and (ip or mac):
         interface = find_interface(device, mac, ip)
         if interface:
@@ -350,6 +350,7 @@ def change_device_description(device, value):
     """
     This function assigns a description to a device.
     """
+    # necessary since it is core field? check in data model revision
     if device and value:
         device.device_type.description = value
         device.device_type.save()
@@ -361,6 +362,7 @@ def change_device_article_number(device, value):
     """
     This function assigns an article number to a device.
     """
+    # Change in P625 into part_number
     if device and value:
         device.device_type.custom_field_data['article_number'] = value
         device.device_type.save()
@@ -415,7 +417,7 @@ def find_interface(device, mac, ip):
     This function performs a lookup based on the MAC and IP address
     to check if the device has a corresponding interface.
     """
-
+    # TODO
     parsed_ip = None
 
     if ip:
@@ -440,7 +442,7 @@ def add_service(device, ip_address, ip_netmask, network_protocol, transport_prot
     """
     This function creates a new Service object.
     """
-    result = False
+    # network protocol and result unused, check by data model revision
 
     if not application_protocol or application_protocol == 'False':
         application_protocol = 'Unspecified'
@@ -457,7 +459,6 @@ def add_service(device, ip_address, ip_netmask, network_protocol, transport_prot
                 an_ip = IPAddress.objects.get(address=ip)
                 service.ipaddresses.add(an_ip)
                 service.save()
-
         return True
     except Exception as e:
         return False
@@ -472,7 +473,7 @@ def add_software(device, name, firmware, version):
     name = name if name else 'Unspecified'
     version = version if version else 'Unspecified'
     firmware = firmware == "True"
-
+# break
     software, created = Software.objects.get_or_create(name=name, is_firmware=firmware, version=version)
 
     try:
