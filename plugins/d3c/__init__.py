@@ -1,4 +1,3 @@
-import sys
 import os
 from netbox.plugins import PluginConfig
 from .populate import REPO
@@ -16,6 +15,12 @@ class NetBoxDDCConfig(PluginConfig):
     description = 'Manage Device Detection and Device Characterization in NetBox'
     version = '0.9'
     base_url = 'd3c'
+    min_version = '4.2'
+    required_settings = []
+    default_settings = {
+          "top_level_menu": True,
+          "version": "0.8"
+    }
 
     def ready(self):
         """ Initializes the Plugin."""
