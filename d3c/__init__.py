@@ -87,7 +87,7 @@ def work():
         cf, created = CustomField.objects.update_or_create(
             name='hardware_name',
             type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
 
         cf, created = CustomField.objects.update_or_create(

@@ -1365,8 +1365,8 @@ class CommunicationFindingMap(GetReturnURLMixin, BaseMultiObjectView):
                         a_comm, created = models.Communication.objects.get_or_create(
                             source_device=Device.objects.get(id=src.id),
                             destination_device=Device.objects.get(id=dst.id),
-                            source_ip_addr=IPAddress.objects.get(address=communication_finding.source_ip + '/24'),
-                            destination_ip_addr=IPAddress.objects.get(address=communication_finding.destination_ip + '/24'),
+                            source_ip_addr=IPAddress.objects.get(address=communication_finding.source_ip + '/32'),
+                            destination_ip_addr=IPAddress.objects.get(address=communication_finding.destination_ip + '/32'),
                             destination_port=communication_finding.destination_port,
                             network_protocol=communication_finding.network_protocol,
                             transport_protocol=communication_finding.transport_protocol,
@@ -1476,6 +1476,7 @@ class DeviceTypeEditView(generic.ObjectEditView):
         device_type = self.get_object(**kwargs)
         manufacturer = request.POST['manufacturer']
         model_number = request.POST['cf_model_number']
+        hardware_name = request.POST['cf_hardware_name']
         hardware_version = request.POST['cf_hardware_version']
         device_family = request.POST['cf_device_family']
         part_number = request.POST['part_number']
@@ -1498,13 +1499,13 @@ class DeviceTypeEditView(generic.ObjectEditView):
             created = request.POST['create']
             print (created)
         if part_number == '' and hardware_version == '':
-             model = device_family + " " + model_number
+             model = device_family + " " + hardware_name + " " + model_number
         elif part_number == '' and hardware_version != '':
-            model = device_family + " " + model_number + " " + hardware_version
+            model = device_family + " " + hardware_name + " " + model_number + " " + hardware_version
         elif part_number != '' and hardware_version =='':
-            model = device_family + " " + model_number + " " + part_number
+            model = device_family + " " + hardware_name + " " + model_number + " " + part_number
         else:
-            model = device_family + " " + model_number + " " + part_number + " " + hardware_version
+            model = device_family + " " + hardware_name + " " + model_number + " " + part_number + " " + hardware_version
 
         with transaction.atomic():
             if device_type.id:
@@ -1518,7 +1519,7 @@ class DeviceTypeEditView(generic.ObjectEditView):
                 
             a_devicetype.custom_field_data['model_number'] = model_number
             a_devicetype.custom_field_data['hardware_version'] = hardware_version
-            a_devicetype.custom_field_data['hardware_name'] = request.POST['cf_hardware_name']
+            a_devicetype.custom_field_data['hardware_name'] = hardware_name
             a_devicetype.custom_field_data['cpe'] = request.POST['cf_cpe']
             a_devicetype.custom_field_data['device_description'] = request.POST['cf_device_description']
             a_devicetype.custom_field_data['device_family'] = device_family

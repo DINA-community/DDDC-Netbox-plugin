@@ -126,7 +126,7 @@ def getFromContext(context, key):
 
 def get_ip(ip):
     if ip and valid_ipv4(ip):
-        return ip + "/24"  # ToDo: More Logic needed
+        return ip + "/32"  # ToDo: More Logic needed
     return None
 
 
