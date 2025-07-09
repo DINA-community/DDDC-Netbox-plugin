@@ -1,7 +1,7 @@
 FROM netboxcommunity/netbox:v4.2-3.2.0
 
 
-COPY ./plugins /plugins
+COPY . /plugins
 RUN /usr/local/bin/uv pip install  --editable  /plugins
 
 COPY docker-ci/configuration/configuration.py /etc/netbox/config/configuration.py

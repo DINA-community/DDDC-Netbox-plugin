@@ -18,10 +18,10 @@ echo "Installing starting..."
 
 git config --global user.name "Joerg Mustermann"
 
-/usr/bin/cp -r /home/d3c/plugins/d3c /opt/netbox/
+/usr/bin/cp -r /home/d3c/d3c /opt/netbox/
 /usr/bin/rm -rf /opt/netbox/d3c/migrations/
-/usr/bin/cp /home/d3c/plugins/configuration.py /opt/netbox/netbox/netbox/
-/usr/bin/cp /home/d3c/plugins/setup.py /opt/netbox/
+/usr/bin/cp /home/d3c/configuration.py /opt/netbox/netbox/netbox/
+/usr/bin/cp /home/d3c/setup.py /opt/netbox/
 
 cd /opt/netbox
 source /opt/netbox/venv/bin/activate
