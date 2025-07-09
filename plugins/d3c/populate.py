@@ -143,13 +143,13 @@ class REPO:
             model_number = get_value('model_number', x)
             manufacturer_obj = Manufacturer.objects.get(name=manufacturer)
             if part_number == '' and hardware_version == '':
-                model = device_family + " " + model_number
+                model = device_family + " " + hardware_name + " " + model_number
             elif part_number == '' and hardware_version != '':
-                model = device_family + " " + model_number + " " + hardware_version
+                model = device_family + " " + hardware_name + " " + model_number + " " + hardware_version
             elif part_number != '' and hardware_version =='':
-                model = device_family + " " + model_number + " " + part_number
+                model = device_family + " " + hardware_name + " " + model_number + " " + part_number
             else:
-                model = device_family + " " + model_number + " " + part_number + " " + hardware_version
+                model = device_family + " " + hardware_name + " " + model_number + " " + part_number + " " + hardware_version
             slug = model
             dt = DeviceType.objects.filter(model=model, manufacturer=manufacturer_obj, slug=slug)
             if not dt.exists():

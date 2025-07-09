@@ -639,7 +639,7 @@ class DeviceFinding(NetBoxModel):
         if self.ip_address:
             res = ipv4_pattern.search(self.ip_address)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.mac_address:
@@ -797,13 +797,13 @@ class CommunicationFinding(NetBoxModel):
         if self.source_ip:
             res = ipv4_pattern.search(self.source_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 source_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.destination_ip:
             res = ipv4_pattern.search(self.destination_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 destination_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if source_device_by_ip != None:
