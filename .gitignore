@@ -2,3 +2,4 @@ package.json
 package-lock.json
 /test/
 plugins/.DS_Store
+.DS_Store
