@@ -493,7 +493,7 @@ class DeviceFinding(NetBoxModel):
     )
     # DeviceType/Manufacturer
     manufacturer = models.CharField(
-        max_length=50,
+        max_length=100,
         blank=True,
         null=True
     )
