@@ -7,10 +7,31 @@ In addition to the plugin code, this repository contains additional files for th
 
 ## Installation of the DDDC Plugin
 
-As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins). 
+As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
 This plugin is compatible with Netbox version 4.2.7 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up Netbox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up Netbox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
+
+## Adding the plugin to an existing netbox-docker installation
+
+The Plugin can be added to any existing or new setup of [netbox-docker](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins) by following their [plugin instructions](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins):
+
+1. Create the file `plugin_requirements.txt` with the following content:
+   ```
+   git+https://github.com/DINA-community/DDDC-Netbox-plugin.git
+   ```
+2. Create the file `Dockerfile-Plugins` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#dockerfile-plugins).
+3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
+4. Add this to `configuration/plugins.py`:
+   ```python
+   PLUGINS = ["d3c"]
+   ```
+   You can also add a section `PLUGINS_CONFIG` for d3c here.
+5. Build and run it:
+   ```bash
+   docker compose build --no-cache
+   docker compose up -d
+   ```
 
 ## Installation via Docker for developing and testing purposes
 
