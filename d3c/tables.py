@@ -416,6 +416,10 @@ class SoftwareTable(NetBoxTable):
 
     target_rel_count = tables.Column(empty_values=(), verbose_name='Target Count')
 
+    manufacturer = tables.Column(
+        linkify=True
+    )
+
     class Meta(NetBoxTable.Meta):
         model = Software
         fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe',  'purl',
