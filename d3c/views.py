@@ -65,19 +65,19 @@ class FileHashEditView(generic.ObjectEditView):
 
 @register_model_view(models.FileHash, 'delete')
 class FileHashDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the FileHash model. """
+    """ This view handles the delete requests for the FileHash model. """
     queryset = models.FileHash.objects.all()
 
 
 @register_model_view(models.FileHash)
 class FileHashView(generic.ObjectView):
-    """ This view handels the request for displaying a FileHash. """
+    """ This view handles the request for displaying a FileHash. """
     queryset = models.FileHash.objects.all()
 
 
 @register_model_view(models.FileHash, 'list', detail=False)
 class FileHashListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple FileHashes as a table. """
+    """ This view handles the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
 
@@ -92,38 +92,38 @@ class HashEditView(generic.ObjectEditView):
 
 @register_model_view(models.Hash, 'delete')
 class HashDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the Hash model. """
+    """ This view handles the delete requests for the Hash model. """
     queryset = models.Hash.objects.all()
 
 
 @register_model_view(models.Hash)
 class HashView(generic.ObjectView):
-    """ This view handels the request for displaying a single Hash. """
+    """ This view handles the request for displaying a single Hash. """
     queryset = models.Hash.objects.all()
 
 
 @register_model_view(models.Hash, 'list', detail=False)
 class HashListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple Hashes as a table. """
+    """ This view handles the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
 
 
 @register_model_view(models.XGenericUri, 'delete')
 class XGenericUriDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the XGenericUri model. """
+    """ This view handles the delete requests for the XGenericUri model. """
     queryset = models.XGenericUri.objects.all()
 
 
 @register_model_view(models.XGenericUri)
 class XGenericUriView(generic.ObjectView):
-    """ This view handels the request for displaying a single XGenericUri. """
+    """ This view handles the request for displaying a single XGenericUri. """
     queryset = models.XGenericUri.objects.all()
 
 
 @register_model_view(models.XGenericUri, 'list', detail=False)
 class XGenericUriListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple XGenericUris as a table. """
+    """ This view handles the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
 
@@ -131,7 +131,7 @@ class XGenericUriListView(generic.ObjectListView):
 @register_model_view(models.XGenericUri, 'add', detail=False)
 @register_model_view(models.XGenericUri, 'edit')
 class XGenericUriEditView(generic.ObjectEditView):
-    """ This view handels the request for editing the XGenericUri model. """
+    """ This view handles the request for editing the XGenericUri model. """
     queryset = models.XGenericUri.objects.all()
     form = forms.XGenericUriForm
     template_name = 'd3c/xgenericuri_edit.html'
@@ -152,19 +152,19 @@ class XGenericUriEditView(generic.ObjectEditView):
 
 @register_model_view(models.ProductRelationship, name='delete')
 class ProductRelationshipDeleteView(generic.ObjectDeleteView):
-    """ This view handels the delete requests for the ProductRelationship model. """
+    """ This view handles the delete requests for the ProductRelationship model. """
     queryset = models.ProductRelationship.objects.all()
 
 
 @register_model_view(models.ProductRelationship)
 class ProductRelationshipView(generic.ObjectView):
-    """ This view handels the request for displaying a single ProductRelationship. """
+    """ This view handles the request for displaying a single ProductRelationship. """
     queryset = models.ProductRelationship.objects.all()
 
 
 @register_model_view(models.ProductRelationship, name='list', detail=False)
 class ProductRelationshipListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple ProductRelationships as a table. """
+    """ This view handles the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
     table = tables.ProductRelationshipTable
     #template_name = 'd3c/object_list_custom.html'
@@ -173,7 +173,7 @@ class ProductRelationshipListView(generic.ObjectListView):
 @register_model_view(models.ProductRelationship, name='add', detail=False)
 @register_model_view(models.ProductRelationship, 'edit')
 class ProductRelationshipEditView(generic.ObjectEditView):
-    """ This view handels the request for editing the ProductRelationship model. """
+    """ This view handles the request for editing the ProductRelationship model. """
     queryset = models.ProductRelationship.objects.all()
     form = forms.ProductRelationshipForm
     template_name = 'd3c/productrelationship_edit.html'
@@ -194,13 +194,13 @@ class ProductRelationshipEditView(generic.ObjectEditView):
 
 @register_model_view(models.DeviceFinding)
 class DeviceFindingView(generic.ObjectView):
-    """ This view handels the request for displaying a single DeviceFinding. """
+    """ This view handles the request for displaying a single DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
 
 
 @register_model_view(models.DeviceFinding, name='list', detail=False)
 class DeviceFindingListView(generic.ObjectListView):
-    """ This view handels the request for displaying multiple DeviceFindings as a table. """
+    """ This view handles the request for displaying multiple DeviceFindings as a table. """
     queryset = models.DeviceFinding.objects.filter(device__isnull=True).filter(finding_status="NEW")
     table = tables.UnassignedDeviceFindingTable
     filterset = filtersets.DeviceFindingFilterSet
@@ -214,7 +214,7 @@ class DeviceFindingListView(generic.ObjectListView):
 
 
 class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for mapping DeviceFindings. """
+    """ This view handles the request for mapping DeviceFindings. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -248,7 +248,7 @@ class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingReject(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for rejecting DeviceFindings. """
+    """ This view handles the request for rejecting DeviceFindings. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -274,7 +274,7 @@ class DeviceFindingReject(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
-    """ This view handels the request for splitting DeviceFindings w.r.t. IP and MAC Addresses. """
+    """ This view handles the request for splitting DeviceFindings w.r.t. IP and MAC Addresses. """
     queryset = models.DeviceFinding.objects.all()
 
     def get_required_permission(self):
@@ -322,14 +322,14 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
 
 
 class DeviceFindingLookupView(View):
-    """ This view handels the request for performing the Device Lookup. """
+    """ This view handles the request for performing the Device Lookup. """
     def get(self, request, *args, **kwargs):
         with transaction.atomic():
             result = models.df_device_lookup()
             if result:
                 messages.success(request, f"Device Lookup finished")
             else:
-                messages.error(request, f"Exception occured while lookup")
+                messages.error(request, f"Exception occurred while lookup")
 
         return redirect(reverse('plugins:d3c:devicefinding_list'))
 
@@ -508,7 +508,7 @@ class FindingListForDeviceView(View, TableMixin):
                     finding.finding_status = "DONE"
                     finding.save()
         else:
-            msg = f'Some error occured while updating Device'
+            msg = f'Some error occurred while updating Device'
         logger.info(f"{msg} {self.device} (PK: {self.device.pk})")
 
         fullPath = request.get_full_path()
@@ -760,11 +760,11 @@ class DeviceFindingApply(generic.ObjectEditView):
                             self.finding.finding_status = "DONE"
                             self.finding.save()
                         except Exception as e:
-                            msg = f'Error occured changing status of DeviceFinding'
+                            msg = f'Error occurred changing status of DeviceFinding'
                         else:
                             msg = f'Updated {self.queryset.model._meta.verbose_name}'
                     else:
-                        msg = f'Some error occured while updating {self.queryset.model._meta.verbose_name}'
+                        msg = f'Some error occurred while updating {self.queryset.model._meta.verbose_name}'
 
                     logger.info(f"{msg} {self.device} (PK: {self.device.pk})")
                     if hasattr(self.device, 'get_absolute_url'):
