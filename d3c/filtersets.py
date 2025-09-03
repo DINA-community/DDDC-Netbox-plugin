@@ -1,6 +1,8 @@
-from netbox.filtersets import NetBoxModelFilterSet
-from .models import DeviceFinding, Software, Communication, CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash
+import django_filters
 from django.db.models import Q
+from netbox.filtersets import NetBoxModelFilterSet
+from dcim.models import Manufacturer
+from .models import DeviceFinding, Software, Communication, CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash
 
 
 class DeviceFindingFilterSet(NetBoxModelFilterSet):
@@ -39,6 +41,10 @@ class SoftwareFilterSet(NetBoxModelFilterSet):
     """
     Definition of the Filterset for Software.
     """
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label='Manufacturer (ID)',
+    )
     class Meta:
         model = Software
         fields = ('id', 'name', 'is_firmware', 'version', 'cpe', 'purl')
