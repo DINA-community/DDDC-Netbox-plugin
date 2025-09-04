@@ -5,6 +5,9 @@
 {% block controls %}
   <div class="controls">
     <div class="control-group">
+      {# Extra buttons #}
+      {% block extra_controls %}{% endblock %}
+
       {% if request.user|can_change:object %}
         {% edit_button object %}
       {% endif %}
