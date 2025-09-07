@@ -305,7 +305,8 @@ class Communication(NetBoxModel):
         blank=True,
         null=True,
         default='24',
-        verbose_name='IP Netmask of source'
+        verbose_name='IP Netmask of source',
+        help_text='The netmask of the IP address. Takes precedence over a netmask included in the IP address.'
     )
     destination_device = models.ForeignKey(
         to='dcim.Device',
@@ -319,7 +320,8 @@ class Communication(NetBoxModel):
         blank=True,
         null=True,
         default='24',
-        verbose_name='IP Netmask of destination'
+        verbose_name='IP Netmask of destination',
+        help_text='The netmask of the IP address. Takes precedence over a netmask included in the IP address.'
     )
     source_ip_addr = models.ForeignKey(
         to='ipam.IPAddress',
@@ -495,7 +497,8 @@ class DeviceFinding(NetBoxModel):
         blank=True,
         null=True,
         default='24',
-        verbose_name='IP Netmask'
+        verbose_name='IP Netmask',
+        help_text='The netmask of the IP address. Takes precedence over a netmask included in the IP address.'
     )
     # InterfaceExtra
     is_router = models.CharField(
@@ -729,7 +732,8 @@ class CommunicationFinding(NetBoxModel):
     source_ip_netmask = models.CharField(
         max_length=2,
         blank=True,
-        null=True
+        null=True,
+        help_text='The netmask of the IP address. Takes precedence over a netmask included in the IP address.'
     )
     destination_ip = models.CharField(
         max_length=50,
@@ -739,7 +743,8 @@ class CommunicationFinding(NetBoxModel):
     destination_ip_netmask = models.CharField(
         max_length=2,
         blank=True,
-        null=True
+        null=True,
+        help_text='The netmask of the IP address. Takes precedence over a netmask included in the IP address.'
     )
     destination_port = models.CharField(
         max_length=50,

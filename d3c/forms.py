@@ -20,6 +20,7 @@ from django.contrib.postgres.forms import SimpleArrayField
 from extras.models import CustomFieldChoiceSet
 from django.core.exceptions import ObjectDoesNotExist
 from netaddr import valid_mac, valid_ipv4
+from typing import Optional
 
 
 class HashForm(NetBoxModelForm):
@@ -202,6 +203,7 @@ class DeviceFindingForm(NetBoxModelForm):
     )
 
     ip_address = forms.CharField(required=False, label='IP Address', help_text='Specify at least the IP or MAC address.')
+    stripped_netmask: Optional[str] = None  # for temporararily saving the extracted netmask
 
     mac_address = forms.CharField(required=False, label='MAC Address', help_text='Specify at least the IP or MAC address.')
 
@@ -222,10 +224,36 @@ class DeviceFindingForm(NetBoxModelForm):
                 raise forms.ValidationError('IP Netmask must be between 0 and 32.')
             return cleaned
 
+    def clean_ip_address(self):
+        # this runs before clean(), so we need to save the extracted netmask here for later treatment
+        if self.cleaned_data['ip_address']:
+            addr = self.cleaned_data['ip_address'].strip().split('/')
+            self.cleaned_data['ip_address'] = addr[0]
+            if len(addr) == 2:  # contains a netmask
+                self.stripped_netmask = addr[1]
+            elif len(addr) > 2:
+                raise forms.ValidationError(f"Invalid IP Address: Contains {len(addr)} slashes.")
+            if not valid_ipv4(self.cleaned_data['ip_address']):
+                raise forms.ValidationError(f"Invalid IP Address.")
+        return self.cleaned_data['ip_address']
+
+    def clean_mac_address(self):
+        if self.cleaned_data['mac_address']:
+            mac_list = [valid_mac(mac.strip()) for mac in self.cleaned_data['mac_address'].split(',')]
+            if False in mac_list:
+                raise forms.ValidationError('Invalid MAC Address')
+        return self.cleaned_data['mac_address']
+
     def clean(self):
         cleaned_data = super().clean()
+        if not self.cleaned_data.get('ip_netmask') and self.stripped_netmask:  # don't overwrite an explicit netmask
+            self.cleaned_data['ip_netmask'] = self.stripped_netmask
+            try:  # run the clean method on the new value
+                self.clean_ip_netmask()
+            except forms.ValidationError as exc:
+                raise forms.ValidationError({'ip_address': exc.message})  # error is about the netmask in the address field
         if not self.cleaned_data.get('ip_address') and not self.cleaned_data.get('mac_address'):
-            raise forms.ValidationError({'ip_address': 'Even one of IP Address or MAC Address should have a value.'})
+            raise forms.ValidationError({'ip_address': 'At least one of IP Address or MAC Address should have a value.'})
 
 
 class DeviceFindingCreateDeviceForm(forms.Form):
@@ -464,16 +492,23 @@ class DeviceFindingEditForm(NetBoxModelForm):
                                                'If it does exist, the MAC is updated if not already set, and if it is '
                                                'set, a new IP is created using the Finding\'s IP and assigned to the '
                                                'interface.')
+    stripped_netmask: Optional[str] = None  # for temporararily saving the extracted netmask
 
     class Meta:
         model = DeviceFinding
         fields = ('id', 'device', 'interface_name', 'ip_address', 'ip_netmask', 'mac_address')
 
     def clean_ip_address(self):
+        # this runs before clean(), so we need to save the extracted netmask here for later treatment
         if self.cleaned_data['ip_address']:
-            ip_list = [valid_ipv4(ip.strip()) for ip in self.cleaned_data['ip_address'].split(',')]
-            if False in ip_list:
-                raise forms.ValidationError('Invalid IP Address')
+            addr = self.cleaned_data['ip_address'].strip().split('/')
+            self.cleaned_data['ip_address'] = addr[0]
+            if len(addr) == 2:  # contains a netmask
+                self.stripped_netmask = addr[1]
+            elif len(addr) > 2:
+                raise forms.ValidationError(f"Invalid IP Address: Contains {len(addr)} slashes.")
+            if not valid_ipv4(self.cleaned_data['ip_address']):
+                raise forms.ValidationError(f"Invalid IP Address.")
         return self.cleaned_data['ip_address']
 
     def clean_ip_netmask(self):
@@ -489,6 +524,17 @@ class DeviceFindingEditForm(NetBoxModelForm):
             if False in mac_list:
                 raise forms.ValidationError('Invalid MAC Address')
         return self.cleaned_data['mac_address']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not self.cleaned_data.get('ip_netmask') and self.stripped_netmask:  # don't overwrite an explicit netmask
+            self.cleaned_data['ip_netmask'] = self.stripped_netmask
+            try:  # run the clean method on the new value
+                self.clean_ip_netmask()
+            except forms.ValidationError as exc:
+                raise forms.ValidationError({'ip_address': exc.message})  # error is about the netmask in the address field
+        if not self.cleaned_data.get('ip_address') and not self.cleaned_data.get('mac_address'):
+            raise forms.ValidationError({'ip_address': 'At least one of IP Address or MAC Address should have a value.'})
 
 
 class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
@@ -843,12 +889,45 @@ class DeviceFindingImportForm(NetBoxModelImportForm):
                   'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure',)
 
+    stripped_netmask: Optional[str] = None  # for temporararily saving the extracted netmask
+
+    def clean_ip_address(self):
+        # this runs before clean(), so we need to save the extracted netmask here for later treatment
+        if self.cleaned_data['ip_address']:
+            addr = self.cleaned_data['ip_address'].strip().split('/')
+            self.cleaned_data['ip_address'] = addr[0]
+            if len(addr) == 2:  # contains a netmask
+                self.stripped_netmask = addr[1]
+            elif len(addr) > 2:
+                raise forms.ValidationError(f"Invalid IP Address: Contains {len(addr)} slashes.")
+            if not valid_ipv4(self.cleaned_data['ip_address']):
+                raise forms.ValidationError(f"Invalid IP Address.")
+        return self.cleaned_data['ip_address']
+
     def clean_ip_netmask(self):
         if self.cleaned_data['ip_netmask']:
             cleaned = self.cleaned_data['ip_netmask'].lstrip('/')
             if not (0 <= int(cleaned) <= 32):
                 raise forms.ValidationError('IP Netmask must be between 0 and 32.')
             return cleaned
+
+    def clean_mac_address(self):
+        if self.cleaned_data['mac_address']:
+            mac_list = [valid_mac(mac.strip()) for mac in self.cleaned_data['mac_address'].split(',')]
+            if False in mac_list:
+                raise forms.ValidationError('Invalid MAC Address')
+        return self.cleaned_data['mac_address']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not self.cleaned_data.get('ip_netmask') and self.stripped_netmask:  # don't overwrite an explicit netmask
+            self.cleaned_data['ip_netmask'] = self.stripped_netmask
+            try:  # run the clean method on the new value
+                self.clean_ip_netmask()
+            except forms.ValidationError as exc:
+                raise forms.ValidationError({'ip_address': exc.message})  # error is about the netmask in the address field
+        if not self.cleaned_data.get('ip_address') and not self.cleaned_data.get('mac_address'):
+            raise forms.ValidationError({'ip_address': 'At least one of IP Address or MAC Address should have a value.'})
 
 
 class CommunicationFindingEditForm(NetBoxModelForm):
