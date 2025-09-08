@@ -21,6 +21,10 @@ The Plugin can be added to any existing or new setup of [netbox-docker](https://
    git+https://github.com/DINA-community/DDDC-Netbox-plugin.git
    ```
 2. Create the file `Dockerfile-Plugins` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#dockerfile-plugins).
+   Add this snippet before the line `RUN /usr/local/bin/uv pip`:
+   ```bash
+   RUN apt update && apt install -y git
+   ```
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
 4. Add this to `configuration/plugins.py`:
    ```python
