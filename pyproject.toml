@@ -36,5 +36,7 @@ documentation = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["d3c"]
+[tool.setuptools.packages.find]
+# prevent detection of directory 'data'
+# https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#custom-discovery
+include = ["d3c*"]

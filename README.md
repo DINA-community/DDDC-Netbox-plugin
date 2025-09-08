@@ -14,7 +14,18 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ## Adding the plugin to an existing netbox-docker installation
 
-The Plugin can be added to any existing or new setup of [netbox-docker](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins) by following their [plugin instructions](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins):
+The Plugin can be added to any existing or new setup of [netbox-docker](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins) by following their [plugin instructions](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins).
+
+DDDC is only compatible with Netbox 4.2 and therefore with netbox-docker 3.2.1.
+For a new install, clone from tag 3.2.1:
+```bash
+git clone -b 3.2.1 https://github.com/netbox-community/netbox-docker.git
+```
+
+For existing installations, switch to tag 3.2.1 before continuing:
+```bash
+git checkout 3.2.1
+```
 
 1. Create the file `plugin_requirements.txt` with the following content:
    ```
