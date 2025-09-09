@@ -124,9 +124,9 @@ def getFromContext(context, key):
     return data
 
 
-def get_ip(ip):
+def get_ip(ip, netmask=24):
     if ip and valid_ipv4(ip):
-        return ip + "/24"  # ToDo: More Logic needed
+        return f"{ip}/{netmask}"
     return None
 
 

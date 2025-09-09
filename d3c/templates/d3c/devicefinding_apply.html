@@ -256,6 +256,12 @@
                         <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.ip_address}} </label>
                     </div>
                     {% endif %}
+                    {% if finding.ip_netmask %}
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">IP Netmask:</label>
+                        <label class="col-sm-3 col-form-label" for="id_device_type">{{ finding.ip_netmask }} </label>
+                    </div>
+                    {% endif %}
                     {% if finding.network_protocol %}
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label text-lg-end" for="id_device_type">Network Protocol:</label>

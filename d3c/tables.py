@@ -39,6 +39,13 @@ APPLY_DF_BUTTON = """
 """
 
 
+class IPAddressColumn(tables.Column):
+    verbose_name = "IP Address"
+
+    def render(self, value, record):
+        return f"{value}/{record.ip_netmask}" if record.ip_netmask else value
+
+
 class FileHashTable(NetBoxTable):
     """
         Table for the FileHash model.
@@ -139,7 +146,7 @@ class UnassignedDeviceFindingTable(NetBoxTable):
         linkify=True
     )
 
-    ip_address = tables.Column(verbose_name="IP Address")
+    ip_address = IPAddressColumn()
 
     mac_address = tables.Column(verbose_name="MAC Address")
 
@@ -356,6 +363,8 @@ class DeviceFindingForDeviceTable(NetBoxTable):
         extra_buttons=APPLY_DF_BUTTON
     )
 
+    ip_address = IPAddressColumn()
+
     class Meta(NetBoxTable.Meta):
         model = DeviceFinding
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
@@ -390,6 +399,8 @@ class DeviceFindingTable(NetBoxTable):
     devicetype = tables.TemplateColumn(TRUNCATE_TEMPLATE.format('device_type'))
 
     oui = tables.TemplateColumn(TRUNCATE_TEMPLATE.format('oui'))
+
+    ip_address = IPAddressColumn()
 
     class Meta(NetBoxTable.Meta):
         model = DeviceFinding

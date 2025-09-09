@@ -1,16 +1,16 @@
 # Netbox Plugin DDDC
 
-Even if there are tools in Malcolm and [Netbox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into Netbox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within Netbox.\\
-The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the Netbox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
+Even if there are tools in Malcolm and [NetBox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into NetBox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within NetBox.\\
+The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the NetBox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
 
-In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary Netbox environment.
+In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary NetBox environment.
 
 ## Installation of the DDDC Plugin
 
 As the DDDC plugin is a standard Netbox plugin, it can be installed according to the [Netbox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
 This plugin is compatible with Netbox version 4.2.7 and ensured by the docker file.
 
-Additionally, this repository contains files from the community-driven Docker image to set up Netbox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up Netbox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
+Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
 ## Adding the plugin to an existing netbox-docker installation
 
@@ -78,7 +78,7 @@ Recommendation: Install docker with the Compose v2 already integrated into the D
 
 To check the version installed on your system run `docker --version` and `docker compose version`.
 
-After the installation, Netbox is available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+After the installation, NetBox is available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 Therefore, for simplicity, a web browser should be available on the installed system.
 
 ### Installation for developing and testing purposes
@@ -123,25 +123,25 @@ In theory, you can add an alternative security token in the file netbox.env by a
 SUPERUSER_API_TOKEN=<Token>
 ```
 
-However, an important aspect of an installation in a production environment is the creation of users, tokens, and their permissions. This must be done for each Netbox installation separately and in accordance with the specific requirements in place.
+However, an important aspect of an installation in a production environment is the creation of users, tokens, and their permissions. This must be done for each NetBox installation separately and in accordance with the specific requirements in place.
 
 ### Testing
 
-The unit tests of netbox can be executed via `./docker-ci/test.sh`.
+The unit tests of NetBox can be executed via `./docker-ci/test.sh`.
 
 ## Help
 
-This section contains links for familiarizing yourself with Django, Netbox, and plugins.
+This section contains links for familiarizing yourself with Django, NetBox, and plugins.
 
 ### General
 
 - Installation of NetBox as a standalone, self-hosted application: <https://docs.netbox.dev/en/stable/installation/>
-- Community driven Docker image for netbox: <https://github.com/netbox-community/netbox-docker>
+- Community driven Docker image for NetBox: <https://github.com/netbox-community/netbox-docker>
 - Using Netbox Plugins in Docker: <https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins>
 
 ### Development
 
 - Official plugin development documentation of NetBox: <https://docs.netbox.dev/en/stable/plugins/development/>
-- NetbBox plugin development Tutorial: <https://github.com/netbox-community/netbox-plugin-tutorial>
+- NetBox plugin development Tutorial: <https://github.com/netbox-community/netbox-plugin-tutorial>
 - Setting up a development environment with Docker for NetBox plugins: <https://github.com/netbox-community/netbox-docker/discussions/746>
-- django-table2 Documentation used by the Plugin and Netbox: <https://django-tables2.readthedocs.io/en/latest/>
+- django-table2 Documentation used by the Plugin and NetBox: <https://django-tables2.readthedocs.io/en/latest/>
