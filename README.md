@@ -14,7 +14,7 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ## Adding the plugin to an existing netbox-docker installation
 
-### Set the proper docker version
+### Set the proper netbox docker version
 
 DDDC is only compatible with Netbox 4.2 and therefore with netbox-docker 3.2.1.
 For a new install, clone from tag 3.2.1:
