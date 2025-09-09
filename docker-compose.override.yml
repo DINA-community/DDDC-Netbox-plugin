@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: netbox:d3c
     volumes: 
-      - ./plugins:/plugins
+      - .:/plugins
   netbox-worker:
     image: netbox:d3c
     build:
