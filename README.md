@@ -14,38 +14,58 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ## Adding the plugin to an existing netbox-docker installation
 
-The Plugin can be added to any existing or new setup of [netbox-docker](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins) by following their [plugin instructions](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins).
+### Set the proper docker version
 
 DDDC is only compatible with Netbox 4.2 and therefore with netbox-docker 3.2.1.
 For a new install, clone from tag 3.2.1:
-```bash
-git clone -b 3.2.1 https://github.com/netbox-community/netbox-docker.git
-```
+
+   ```bash
+   git clone -b 3.2.1 https://github.com/netbox-community/netbox-docker.git
+   ```
 
 For existing installations, switch to tag 3.2.1 before continuing:
-```bash
-git checkout 3.2.1
-```
+
+   ```bash
+   git checkout 3.2.1
+   ```
+
+### Add plugin
+
+The Plugin can be added to any existing or new setup of netbox-docker by following their [plugin instructions](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins).
 
 1. Create the file `plugin_requirements.txt` with the following content:
-   ```
+
+   ```bash
    git+https://github.com/DINA-community/DDDC-Netbox-plugin.git
    ```
+
 2. Create the file `Dockerfile-Plugins` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#dockerfile-plugins).
    Add this snippet before the line `RUN /usr/local/bin/uv pip`:
+
    ```bash
    RUN apt update && apt install -y git
    ```
+
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
+
 4. Add this to `configuration/plugins.py`:
+
    ```python
    PLUGINS = ["d3c"]
    ```
+
    You can also add a section `PLUGINS_CONFIG` for d3c here.
 5. Build and run it:
+
    ```bash
    docker compose build --no-cache
    docker compose up -d
+   ```
+
+6. Access your local netbox by [http://127.0.0.1:8000](http://127.0.0.1:8000). To create the first admin user run this command:  
+
+   ```bash
+   docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser
    ```
 
 ## Installation via Docker for developing and testing purposes
