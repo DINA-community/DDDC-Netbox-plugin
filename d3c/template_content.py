@@ -8,7 +8,7 @@ class DeviceTypeDeviceExtra(PluginTemplateExtension):
     """
     Template for displaying the XGenericURI inside the Detail-View of a Device.
     """
-    model = 'dcim.devicetype'
+    models = ['dcim.devicetype']
 
     def right_page(self):
         deviceType = self.context.get('object')
