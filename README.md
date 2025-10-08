@@ -46,6 +46,16 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt install -y git
    ```
 
+   Also, replace
+   ```bash
+   FROM netboxcommunity/netbox:latest
+   ```
+   with
+   ```bash
+   FROM netboxcommunity/netbox:v4.2-3.2.1
+   ```
+   Matching the version of netbox-docker.
+
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
 
 4. Add this to `configuration/plugins.py`:
