@@ -1,4 +1,4 @@
-FROM netboxcommunity/netbox:v4.2-3.2.0
+FROM netboxcommunity/netbox:v4.2-3.2.1
 
 
 COPY . /plugins

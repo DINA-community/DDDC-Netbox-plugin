@@ -2,7 +2,7 @@ name: netbox_docker_test
 
 services:
   netbox: &netbox
-    image: docker.io/netboxcommunity/netbox:${VERSION-v4.2-3.2.0}
+    image: docker.io/netboxcommunity/netbox:${VERSION-v4.2-3.2.1}
     depends_on:
     - postgres
     - redis
