@@ -43,10 +43,30 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    Add this snippet before the line `RUN /usr/local/bin/uv pip`:
 
    ```bash
-   RUN apt update && apt install -y git
+   RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt install -y git
    ```
 
+   Also, replace
+   ```bash
+   FROM netboxcommunity/netbox:latest
+   ```
+   with
+   ```bash
+   FROM netboxcommunity/netbox:v4.2-3.2.1
+   ```
+   Matching the version of netbox-docker.
+
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
+
+   You can also create a superuser by adding these lines with meaningful values. Alternatively, create the superuser in step 6.
+   ```yaml
+         environment:
+            SKIP_SUPERUSER: "false"
+            #SUPERUSER_API_TOKEN: ""
+            SUPERUSER_EMAIL: ""
+            SUPERUSER_NAME: ""
+            SUPERUSER_PASSWORD: ""
+   ```
 
 4. Add this to `configuration/plugins.py`:
 
@@ -62,7 +82,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    docker compose up -d
    ```
 
-6. Access your local netbox by [http://127.0.0.1:8000](http://127.0.0.1:8000). To create the first admin user run this command:  
+6. Access your local netbox by [http://127.0.0.1:8000](http://127.0.0.1:8000). To create an admin user, run this command:
 
    ```bash
    docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser
