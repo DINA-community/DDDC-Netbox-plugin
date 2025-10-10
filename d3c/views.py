@@ -5,10 +5,10 @@ from dcim.tables.devices import DeviceTable
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import transaction, IntegrityError
 from django.forms.utils import pretty_name
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
@@ -50,6 +50,7 @@ S_CHECKER = {
 S_NORMALIZER = StringNormalizer()
 
 
+@register_model_view(models.FileHash, 'add', detail=False)
 @register_model_view(models.FileHash, 'edit')
 class FileHashEditView(generic.ObjectEditView):
     """ This view handles the edit requests for the FileHash model. """
@@ -57,22 +58,26 @@ class FileHashEditView(generic.ObjectEditView):
     form = forms.FileHashForm
 
 
+@register_model_view(models.FileHash, 'delete')
 class FileHashDeleteView(generic.ObjectDeleteView):
     """ This view handles the delete requests for the FileHash model. """
     queryset = models.FileHash.objects.all()
 
 
+@register_model_view(models.FileHash)
 class FileHashView(generic.ObjectView):
     """ This view handles the request for displaying a FileHash. """
     queryset = models.FileHash.objects.all()
 
 
+@register_model_view(models.FileHash, 'list', detail=False)
 class FileHashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
     table = tables.FileHashTable
 
 
+@register_model_view(models.Hash, 'add', detail=False)
 @register_model_view(models.Hash, 'edit')
 class HashEditView(generic.ObjectEditView):
     """ This view handles the edit requests for the Hash model. """
@@ -80,38 +85,45 @@ class HashEditView(generic.ObjectEditView):
     form = forms.HashForm
 
 
+@register_model_view(models.Hash, 'delete')
 class HashDeleteView(generic.ObjectDeleteView):
     """ This view handles the delete requests for the Hash model. """
     queryset = models.Hash.objects.all()
 
 
+@register_model_view(models.Hash)
 class HashView(generic.ObjectView):
     """ This view handles the request for displaying a single Hash. """
     queryset = models.Hash.objects.all()
 
 
+@register_model_view(models.Hash, 'list', detail=False)
 class HashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
     table = tables.HashTable
 
 
+@register_model_view(models.XGenericUri, 'delete')
 class XGenericUriDeleteView(generic.ObjectDeleteView):
     """ This view handles the delete requests for the XGenericUri model. """
     queryset = models.XGenericUri.objects.all()
 
 
+@register_model_view(models.XGenericUri)
 class XGenericUriView(generic.ObjectView):
     """ This view handles the request for displaying a single XGenericUri. """
     queryset = models.XGenericUri.objects.all()
 
 
+@register_model_view(models.XGenericUri, 'list', detail=False)
 class XGenericUriListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
     table = tables.XGenericUriTable
 
 
+@register_model_view(models.XGenericUri, 'add', detail=False)
 @register_model_view(models.XGenericUri, 'edit')
 class XGenericUriEditView(generic.ObjectEditView):
     """ This view handles the request for editing the XGenericUri model. """
@@ -133,16 +145,19 @@ class XGenericUriEditView(generic.ObjectEditView):
         return obj
 
 
+@register_model_view(models.ProductRelationship, name='delete')
 class ProductRelationshipDeleteView(generic.ObjectDeleteView):
     """ This view handles the delete requests for the ProductRelationship model. """
     queryset = models.ProductRelationship.objects.all()
 
 
+@register_model_view(models.ProductRelationship)
 class ProductRelationshipView(generic.ObjectView):
     """ This view handles the request for displaying a single ProductRelationship. """
     queryset = models.ProductRelationship.objects.all()
 
 
+@register_model_view(models.ProductRelationship, name='list', detail=False)
 class ProductRelationshipListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
@@ -150,6 +165,7 @@ class ProductRelationshipListView(generic.ObjectListView):
     #template_name = 'd3c/object_list_custom.html'
 
 
+@register_model_view(models.ProductRelationship, name='add', detail=False)
 @register_model_view(models.ProductRelationship, 'edit')
 class ProductRelationshipEditView(generic.ObjectEditView):
     """ This view handles the request for editing the ProductRelationship model. """
@@ -171,11 +187,13 @@ class ProductRelationshipEditView(generic.ObjectEditView):
         return obj
 
 
+@register_model_view(models.DeviceFinding)
 class DeviceFindingView(generic.ObjectView):
     """ This view handles the request for displaying a single DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
 
 
+@register_model_view(models.DeviceFinding, name='list', detail=False)
 class DeviceFindingListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple DeviceFindings as a table. """
     queryset = models.DeviceFinding.objects.filter(device__isnull=True).filter(finding_status="NEW")
@@ -492,6 +510,7 @@ class FindingListForDeviceView(View, TableMixin):
         return redirect(fullPath)
 
 
+@register_model_view(models.DeviceFinding, name='add', detail=False)
 class DeviceFindingCreateView(generic.ObjectEditView):
     """ This view handles the creation of a DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
@@ -873,7 +892,7 @@ class DeviceFindingCreateDeviceView(generic.ObjectEditView):
         })
 
 
-# Finding create view
+@register_model_view(models.DeviceFinding, name='edit')
 class DeviceFindingEditView(generic.ObjectEditView):
     """ Handles the request of editing a DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
@@ -985,6 +1004,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
         })
 
 
+@register_model_view(models.DeviceFinding, name='delete')
 class DeviceFindingDeleteView(generic.ObjectDeleteView):
     """ Handles the request for deleting a DeviceFinding. """
     queryset = models.DeviceFinding.objects.all()
@@ -1196,6 +1216,7 @@ class FindingImportForDeviceView(View):
         return render(request, self.template_name, {'form': form, 'model': models.DeviceFinding})
 
 
+@register_model_view(models.Software)
 class SoftwareView(generic.ObjectView):
     """ Handles the request of displaying a single Software objects. """
     queryset = models.Software.objects.all()
@@ -1209,6 +1230,7 @@ class SoftwareView(generic.ObjectView):
         }
 
 
+@register_model_view(models.Software, name='list', detail=False)
 class SoftwareListView(generic.ObjectListView):
     """ Handles the request of displaying a multiple Software objects as table. """
     def get_queryset(self, request):
@@ -1255,36 +1277,49 @@ class DeviceListForSoftwareView(View):
     base_template = 'd3c/software.html'
     template_name = 'd3c/devices_for_software.html'
     table = DeviceTable
+    tab = ViewTab(
+        label='ProductRelationships',
+        badge=lambda obj: models.ProductRelationship.objects.filter(Q(source_type_id=ContentType.objects.get_for_model(Software), source_id=obj.pk) |
+                                                                    Q(destination_type_id=ContentType.objects.get_for_model(Software), destination_id=obj.pk)).count(),
+        permission='findings.view_stuff'
+    )
 
     def get(self, request, **kwargs):
         obj = get_object_or_404(models.Software, **kwargs)
-        devices = Device.objects.filter(software=self.kwargs["pk"])
-        devices_table = DeviceTable(devices)
+        software_ct = ContentType.objects.get_for_model(Software)
+        pr = models.ProductRelationship.objects.filter(Q(source_type_id=software_ct.id, source_id=self.kwargs["pk"]) |
+                                                       Q(destination_type_id=software_ct.id, destination_id=self.kwargs["pk"]))
+        pr_table = tables.ProductRelationshipTable(pr)
         return render(request, self.template_name, {
             'object': obj,
-            'table': devices_table,
+            'table': pr_table,
             'base_template': self.base_template,
             'tab': self.tab,
         })
 
 
+@register_model_view(models.Software, name='add', detail=False)
+@register_model_view(models.Software, name='edit')
 class SoftwareEditView(generic.ObjectEditView):
     """ Handles the request for editing Software. """
     queryset = models.Software.objects.all()
     form = forms.SoftwareForm
 
 
+@register_model_view(models.Software, name='delete')
 class SoftwareDeleteView(generic.ObjectDeleteView):
     """ Handles the request for deleting Software. """
     queryset = models.Software.objects.all()
 
 
+@register_model_view(models.Communication)
 class CommunicationView(generic.ObjectView):
     """ Handles the request for displaying a single Communication. """
     queryset = models.Communication.objects.all()
     table = tables.CommunicationTable
 
 
+@register_model_view(models.Communication, name='list', detail=False)
 class CommunicationListView(generic.ObjectListView):
     """ Handles the request for displaying a multiple Communications as table. """
     def get_queryset(self, request):
@@ -1296,6 +1331,8 @@ class CommunicationListView(generic.ObjectListView):
     filterset_form = forms.CommunicationFilterForm
 
 
+@register_model_view(models.CommunicationFinding, name='add', detail=False)
+@register_model_view(models.CommunicationFinding, name='edit')
 class CommunicationFindingEditView(generic.ObjectEditView):
     """ Handles the request for editing CommunicationFinding. """
     queryset = models.CommunicationFinding.objects.all()
@@ -1418,34 +1455,11 @@ class ServerCommunicationListForDeviceView(View):
         })
 
 
-@register_model_view(models.Communication, name='deviceslistforcommunicationview', path='devices')
-class DeviceListForCommunicationView(View):
-    """ Handles the request for displaying devices for one communication."""
-    base_template = 'd3c/communication.html'
-    template_name = 'd3c/devices_for_communication.html'
-    table = DeviceTable
-
-    tab = ViewTab(
-        label='Devices',
-        badge=lambda obj: Device.objects.filter(sourceForCommunications=obj).count(),
-        permission='findings.view_stuff'
-    )
-
-    def get(self, request, **kwargs):
-        obj = get_object_or_404(models.Communication, **kwargs)
-        devices = Device.objects.filter(SourceForCommunication=self.kwargs["pk"])
-        devices_table = DeviceTable(devices)
-        return render(request, self.template_name, {
-            'object': obj,
-            'table': devices_table,
-            'base_template': self.base_template,
-            'tab': self.tab,
-        })
-
-
 ipv4_pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
 
 # Communication edit view
+@register_model_view(models.Communication, name='add', detail=False)
+@register_model_view(models.Communication, name='edit')
 class CommunicationEditView(generic.ObjectEditView):
     """ Handles the request for editing Communications. """
     queryset = models.Communication.objects.all()
@@ -1527,17 +1541,20 @@ class CommunicationImportView(generic.BulkImportView):
     default_return_url = "plugins:d3c:communication_list"
 
 
+@register_model_view(models.Communication, name='delete')
 class CommunicationDeleteView(generic.ObjectDeleteView):
     """ View for deleting Communications. """
     queryset = models.Communication.objects.all()
 
 
+@register_model_view(models.CommunicationFinding)
 class CommunicationFindingView(generic.ObjectView):
     """ View for displaying a single CommunicationFinding. """
     queryset = models.CommunicationFinding.objects.all()
     table = tables.CommunicationFindingTable
 
 
+@register_model_view(models.CommunicationFinding, name='list', detail=False)
 class CommunicationFindingListView(generic.ObjectListView):
     """ View for displaying multiple CommunicationFindings as table. """
     # def get_queryset(self, request):
@@ -1565,17 +1582,20 @@ class CommunicationFindingImportView(generic.BulkImportView):
     default_return_url = "plugins:d3c:communicationfinding_list"
 
 
+@register_model_view(models.CommunicationFinding, name='delete')
 class CommunicationFindingDeleteView(generic.ObjectDeleteView):
     """ View for deleting CommunicationFindings. """
     queryset = models.CommunicationFinding.objects.all()
 
 
+@register_model_view(models.Mapping)
 class MappingView(generic.ObjectView):
     """ View for displaying a single Mapping. """
     queryset = models.Mapping.objects.all()
     table = tables.MappingTable
 
 
+@register_model_view(models.Mapping, name='list', detail=False)
 class MappingListView(generic.ObjectListView):
     """ View for displaying a multiple Mappings as table. """
     def get_queryset(self, request):
@@ -1587,12 +1607,15 @@ class MappingListView(generic.ObjectListView):
     filterset_form = forms.MappingFilterForm
 
 
+@register_model_view(models.Mapping, name='add', detail=False)
+@register_model_view(models.Mapping, name='edit')
 class MappingEditView(generic.ObjectEditView):
     """ View for editing Mappings. """
     queryset = models.Mapping.objects.all()
     form = forms.MappingForm
 
 
+@register_model_view(models.Mapping, name='delete')
 class MappingDeleteView(generic.ObjectDeleteView):
     """ View for deleting Mappings. """
     queryset = models.Mapping.objects.all()
