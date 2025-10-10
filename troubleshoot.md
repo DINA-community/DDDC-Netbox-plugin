@@ -21,7 +21,7 @@ When the DDDC-Plugin is not up to date with the netbox version, breaking changes
 ```bash
 services:
   netbox:
-    image: netbox:v4.2-3.2.1
+    image: netbox:$Version
     pull_policy: never
     ports:
       - 8000:8080
@@ -29,9 +29,11 @@ services:
       context: .
       dockerfile: Dockerfile-Plugins
   netbox-worker:
-    image: netbox:v4.2-3.2.1
+    image: netbox:$Version
     pull_policy: never
   netbox-housekeeping:
-    image: netbox:v4.2-3.2.1
+    image: netbox:$Version
     pull_policy: never
 ```
+
+where `$Version` is the netbox version for the stabile DDDC-Plugin version like `v4.2-3.2.1`.
