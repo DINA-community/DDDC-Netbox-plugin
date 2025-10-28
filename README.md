@@ -73,6 +73,14 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
             SUPERUSER_PASSWORD: ""
    ```
 
+   Also, change the image versions
+
+   ```yaml
+      image: netbox:v4.2-3.2.1
+   ```
+
+   for all services
+
 4. Add this to `configuration/plugins.py`:
 
    ```python
@@ -80,6 +88,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    ```
 
    You can also add a section `PLUGINS_CONFIG` for d3c here.
+
 5. Build and run it (see [Troubleshoot](./troubleshoot.md)):
 
    ```bash
