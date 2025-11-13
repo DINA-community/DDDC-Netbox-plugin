@@ -1,0 +1,4 @@
+status,address,device,interface
+active,192.168.10.60/32,Test01,eth01
+active,192.168.10.66/32,Test02,eth01
+active,192.168.1.200/32,Test03,eth01

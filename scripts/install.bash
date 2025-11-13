@@ -69,11 +69,10 @@ python3 manage.py createsuperuser
 
 ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-housekeeping
 
-python3 manage.py runserver 0.0.0.0:8000 --insecure
+python3 manage.py runserver 0.0.0.0:8000 
 
 
 
 # ######################################################
-
 
 
