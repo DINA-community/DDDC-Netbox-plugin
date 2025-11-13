@@ -34,6 +34,14 @@ class Software(NetBoxModel):
         blank=False,
         null=False
     )
+    # Software/Manufacturer
+    manufacturer = models.ForeignKey(
+        to='dcim.Manufacturer',
+        on_delete=models.CASCADE,
+        related_name='softwareManufacturer',
+        blank=True,
+        null=True
+    )
     is_firmware = models.BooleanField(
         null=True,
         blank=True
@@ -485,7 +493,7 @@ class DeviceFinding(NetBoxModel):
     )
     # DeviceType/Manufacturer
     manufacturer = models.CharField(
-        max_length=50,
+        max_length=100,
         blank=True,
         null=True
     )
@@ -508,12 +516,12 @@ class DeviceFinding(NetBoxModel):
         null=True,
         verbose_name='Device Family'
     )
-    article_number = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        verbose_name='Article Number'
-    )
+    # article_number = models.CharField(
+    #     max_length=50,
+    #     blank=True,
+    #     null=True,
+    #     verbose_name='Article Number'
+    # )
     hardware_version = models.CharField(
         max_length=50,
         blank=True,
@@ -580,7 +588,7 @@ class DeviceFinding(NetBoxModel):
                           self.device_role, self.is_safety_critical, self.network_protocol, self.transport_protocol,
                           self.application_protocol, self.port, self.is_router, self.manufacturer, self.oui,
                           self.hardware_version, self.hardware_cpe, self.software_name, self.device_name,
-                          self.part_number, self.is_firmware, self.version, self.article_number, self.rack,
+                          self.part_number, self.is_firmware, self.version, self.rack,
                           self.location, self.exposure)
         for x in attribute_list:
             if x != None:
@@ -631,7 +639,7 @@ class DeviceFinding(NetBoxModel):
         if self.ip_address:
             res = ipv4_pattern.search(self.ip_address)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.mac_address:
@@ -789,13 +797,13 @@ class CommunicationFinding(NetBoxModel):
         if self.source_ip:
             res = ipv4_pattern.search(self.source_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 source_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.destination_ip:
             res = ipv4_pattern.search(self.destination_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 destination_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if source_device_by_ip != None:

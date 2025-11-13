@@ -1,0 +1,4 @@
+device,name,type
+Test01,eth01,bridge
+Test02,eth01,bridge
+Test03,eth01,bridge

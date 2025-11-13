@@ -36,8 +36,8 @@ def get_current_value_for_device(device, findingField):
         return str(device.device_type.custom_field_data.get('device_family', None))
     if ff == 'description':
         return str(device.device_type.description if device.device_type.description else None)
-    if ff == 'article_number':
-        return str(device.device_type.custom_field_data.get('article_number', None))
+    # if ff == 'article_number':
+    #     return str(device.device_type.custom_field_data.get('article_number', None))
     if ff == 'part_number':
         return str(device.device_type.part_number if device.device_type.part_number else None)
     if ff == 'serial_number':
@@ -357,15 +357,15 @@ def change_device_description(device, value):
     return False
 
 
-def change_device_article_number(device, value):
-    """
-    This function assigns an article number to a device.
-    """
-    if device and value:
-        device.device_type.custom_field_data['article_number'] = value
-        device.device_type.save()
-        return True
-    return False
+# def change_device_article_number(device, value):
+#     """
+#     This function assigns an article number to a device.
+#     """
+#     if device and value:
+#         device.device_type.custom_field_data['article_number'] = value
+#         device.device_type.save()
+#         return True
+#     return False
 
 
 def change_device_model_number(device, value):

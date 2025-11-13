@@ -1,0 +1,4 @@
+role,manufacturer,device_type,status,site,name
+EWS,Unspecified,Unspecified,active,PoC,Test01
+SCADA,Unspecified,Unspecified,active,PoC,Test02
+Sensor,Unspecified,Unspecified,active,PoC,Test03

@@ -18,7 +18,7 @@ source /opt/netbox/venv/bin/activate
 
 python3 /opt/netbox/netbox/manage.py rqworker high default low &
 
-python3 /opt/netbox/netbox/manage.py runserver 0.0.0.0:8000 --insecure
+python3 /opt/netbox/netbox/manage.py runserver 0.0.0.0:8000 --insecure &
 
 
 

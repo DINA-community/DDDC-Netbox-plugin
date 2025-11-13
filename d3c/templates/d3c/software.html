@@ -5,6 +5,9 @@
 {% block controls %}
   <div class="controls">
     <div class="control-group">
+      {# Extra buttons #}
+      {% block extra_controls %}{% endblock %}
+
       {% if request.user|can_change:object %}
         {% edit_button object %}
       {% endif %}
@@ -32,6 +35,10 @@
             <tr>
               <th scope="row">Version</th>
               <td>{{ object.version }}</td>
+            </tr>
+	    <tr>
+              <th scope="row">Manufacturer</th>
+              <td>{{ object.manufacturer| linkify }}</td>
             </tr>
             <tr>
               <th scope="row">Is Firmware</th>

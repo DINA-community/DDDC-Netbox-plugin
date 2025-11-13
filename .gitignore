@@ -6,3 +6,6 @@ __pycache__
 build/
 dist/
 
+plugins/.DS_Store
+.DS_Store
+
