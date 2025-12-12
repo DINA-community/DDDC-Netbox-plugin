@@ -143,6 +143,14 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 
 After testing, the containers can be stopped by pressing `Ctrl+C` and restarted using `docker-compose up`.
 
+#### Debug mode
+
+To enable the netbox debug mode, to get long and detailed tracebacks, add this to `docker-compose.override.yml` in the section `netbox`:
+```
+    environment:
+      - DEBUG=True
+```
+
 ### Notes regarding the installation of this plugin via the provided files
 
 The installation will provide a warning message since the installation is using the default security token:
