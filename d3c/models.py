@@ -103,7 +103,8 @@ class Software(NetBoxModel):
 
     def __str__(self):
         version = ' ' + self.version if self.version else ''
-        return self.name + version
+        manufac = ' (' + self.manufacturer.name + ')' if self.manufacturer else ''
+        return self.name + version + manufac
 
     @property
     def docs_url(self):
