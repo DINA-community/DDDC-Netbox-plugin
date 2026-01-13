@@ -64,58 +64,94 @@ def work():
             type=CustomFieldTypeChoices.TYPE_BOOLEAN,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='inventory_number',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='year',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='device_family',
             label='Device Family',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='hardware_name',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='hardware_version',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='model_number',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=True)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='cpe',
             label='CPE',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='device_description',
             label='Device Description',
             type=CustomFieldTypeChoices.TYPE_TEXT,
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         cf, created = CustomField.objects.update_or_create(
             name='secondary_roles',
             label='Secondary Roles',
@@ -123,7 +159,11 @@ def work():
             related_object_type=ObjectType.objects.get_for_model(DeviceRole),
             required=False)
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         # is_router
         is_router_key = 'd3c_is_router choices'
         choice_sets = CustomFieldChoiceSet.objects.filter(name=is_router_key)
@@ -145,7 +185,11 @@ def work():
                 choice_set=cs_interface)
 
             cf.object_types.set([ObjectType.objects.get_for_model(Interface)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
 
+    try:
         # Exposure
         is_exposure_key = 'd3c_exposure choices'
         choice_sets = CustomFieldChoiceSet.objects.filter(name=is_exposure_key)
@@ -188,3 +232,4 @@ def work():
     ###
     except Exception as e:
         print("Failed init")
+        print(e)
