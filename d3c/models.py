@@ -94,6 +94,12 @@ class Software(NetBoxModel):
 
     class Meta:
         verbose_name_plural = 'Software'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'manufacturer', 'version'],
+                name="software_unique",
+                nulls_distinct=False)
+        ]
 
     def __str__(self):
         version = ' ' + self.version if self.version else ''
