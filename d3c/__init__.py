@@ -35,16 +35,17 @@ config = NetBoxDDCConfig
 def init_custom_fields(sender, environ, **kwargs):
     from .models import Dummy
 
+    checkFields()
+
     admin, created = Dummy.objects.get_or_create()
     print(admin, " ", created)
-
     if created:
-        work()
+        importData()
 
     request_started.disconnect(init_custom_fields)
 
 
-def work():
+def checkFields():
     """
     Creating all CustomFields, CustomFieldChoiceSets and initialize the default Device Roles.
 
@@ -226,10 +227,16 @@ def work():
 
         print('Finished init for CustomFields')
 
+    ###
+    except Exception as e:
+        print("Failed init")
+        print(e)
+
+def importData():
+    try:
         absolute_path = os.path.dirname(__file__)
         repo = REPO(os.path.join(absolute_path, "data/repo"))
         repo.start()
-    ###
     except Exception as e:
         print("Failed init")
         print(e)
