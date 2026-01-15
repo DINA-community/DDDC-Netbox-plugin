@@ -289,7 +289,7 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
             processed_counter = 0
             failed_counter = 0
             for df in selected_objects:
-             	if "," in df.ip_address or "," in df.mac_address:
+                if df.ip_address and df.mac_address and ("," in df.ip_address or "," in df.mac_address):
                     processed_counter += 1
                     ips = [ip.strip() for ip in df.ip_address.split(',')]
                     macs = [mac.strip() for mac in df.mac_address.split(',')]

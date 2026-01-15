@@ -13,6 +13,7 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from io import StringIO
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm, NetBoxModelImportForm
+from netbox.choices import CSVDelimiterChoices
 from utilities.choices import ChoiceSet
 from utilities.forms.rendering import FieldSet
 from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField, SlugField
@@ -552,6 +553,13 @@ class FindingImportForm(forms.Form):
             attrs={'class': 'form-control'}
         )
     )
+    csv_delimiter = forms.ChoiceField(
+        choices=CSVDelimiterChoices,
+        initial=CSVDelimiterChoices.AUTO,
+        label="CSV delimiter",
+        help_text="The character which delimits CSV fields. Applies only to CSV format.",
+        required=False
+    )
     mapping = DynamicModelChoiceField(
         queryset=Mapping.objects.all(),
         required=False
@@ -652,7 +660,25 @@ class FindingImportForm(forms.Form):
         Clean CSV-formatted data. The first row will be treated as column headers.
         """
         stream = StringIO(data.strip())
-        reader = csv.reader(stream)
+
+        delimiter = self.cleaned_data['csv_delimiter']
+        # similar logic as netbox.utilities.forms.bulk_import
+        if delimiter == CSVDelimiterChoices.AUTO:
+            try:
+                dialect = csv.Sniffer().sniff(data.strip(),
+                                              delimiters='\t,;')
+            except csv.Error:
+                dialect = csv.excel
+        elif delimiter in (CSVDelimiterChoices.COMMA, CSVDelimiterChoices.SEMICOLON):
+            dialect = csv.excel
+            dialect.delimiter = delimiter
+        elif delimiter == CSVDelimiterChoices.TAB:
+            dialect = csv.excel_tab
+        else:
+            raise forms.ValidationError({
+                'csv_delimiter': _('Invalid CSV delimiter'),
+            })
+        reader = csv.reader(stream, dialect=dialect)
         headers, records = parse_csv(reader)
 
         # Set CSV headers for reference by the model form
