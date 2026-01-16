@@ -55,7 +55,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    with
 
    ```bash
-   FROM netboxcommunity/netbox:v4.2-3.2.1
+   FROM netboxcommunity/netbox:v4.3-3.3.0
    ```
 
    Matching the version of netbox-docker.
@@ -76,7 +76,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    Also, change the image versions
 
    ```yaml
-      image: netbox:v4.2-3.2.1
+      image: netbox:v4.3-3.3.0
    ```
 
    for all services

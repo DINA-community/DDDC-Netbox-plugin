@@ -36,4 +36,4 @@ services:
     pull_policy: never
 ```
 
-where `$Version` is the netbox version for the stabile DDDC-Plugin version like `v4.2-3.2.1`.
+where `$Version` is the netbox version for the stabile DDDC-Plugin version like `v4.3-3.3.0`.
