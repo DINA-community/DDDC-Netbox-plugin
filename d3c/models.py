@@ -93,6 +93,7 @@ class Software(NetBoxModel):
         return reverse('plugins:d3c:software', args=[self.pk])
 
     class Meta:
+        ordering = ['name', 'manufacturer', 'version', 'id']
         verbose_name_plural = 'Software'
         constraints = [
             models.UniqueConstraint(
@@ -150,6 +151,7 @@ class XGenericUri(NetBoxModel):
         return reverse('plugins:d3c:xgenericuri', args=[self.pk])
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'XGenericUris'
 
     def __str__(self):
@@ -180,6 +182,7 @@ class Hash(NetBoxModel):
         return reverse('plugins:d3c:hash', args=[self.pk])
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Hashes'
 
     def __str__(self):
@@ -213,6 +216,7 @@ class FileHash(NetBoxModel):
         return reverse('plugins:d3c:filehash', args=[self.pk])
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'FileHashes'
 
     def __str__(self):
@@ -294,6 +298,7 @@ class ProductRelationship(NetBoxModel):
         return reverse('plugins:d3c:productrelationship', args=[self.pk])
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'ProductRelationship'
 
     def __str__(self):
@@ -890,6 +895,7 @@ class Mapping(NetBoxModel):
         return reverse('plugins:d3c:mapping', args=[self.pk])
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Mappings'
 
     def __str__(self):
