@@ -62,8 +62,10 @@ def checkFields():
         #   Create the custom fields
         cf, created = CustomField.objects.update_or_create(
             name='safety',
-            type=CustomFieldTypeChoices.TYPE_BOOLEAN,
-            required=False)
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_BOOLEAN,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
     except Exception as e:
         print("Failed to create custom field")
@@ -72,8 +74,10 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='inventory_number',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
     except Exception as e:
         print("Failed to create custom field")
@@ -82,8 +86,10 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='year',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
     except Exception as e:
         print("Failed to create custom field")
@@ -92,9 +98,11 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='device_family',
-            label='Device Family',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=True)
+            defaults={
+                'label': 'Device Family',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -103,8 +111,10 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='hardware_name',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=True)
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -113,8 +123,10 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='hardware_version',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -123,8 +135,11 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='model_number',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=True)
+            defaults={
+                'description': 'Set to "-" when unknown.',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -133,9 +148,11 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='cpe',
-            label='CPE',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            defaults={
+                'label': 'CPE',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -144,9 +161,11 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='device_description',
-            label='Device Description',
-            type=CustomFieldTypeChoices.TYPE_TEXT,
-            required=False)
+            defaults={
+                'label': 'Device Description',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
         print("Failed to create custom field")
@@ -155,10 +174,12 @@ def checkFields():
     try:
         cf, created = CustomField.objects.update_or_create(
             name='secondary_roles',
-            label='Secondary Roles',
-            type=CustomFieldTypeChoices.TYPE_MULTIOBJECT,
-            related_object_type=ObjectType.objects.get_for_model(DeviceRole),
-            required=False)
+            defaults={
+                'label': 'Secondary Roles',
+                'type': CustomFieldTypeChoices.TYPE_MULTIOBJECT,
+                'related_object_type': ObjectType.objects.get_for_model(DeviceRole),
+                'required': False
+            })
         cf.object_types.set([ObjectType.objects.get_for_model(Device)])
     except Exception as e:
         print("Failed to create custom field")
@@ -171,19 +192,23 @@ def checkFields():
         if not choice_sets.exists():
             cs_interface, created = CustomFieldChoiceSet.objects.get_or_create(
                 name=is_router_key,
-                description='Router Interface?',
-                extra_choices=(
-                    ('unknown', 'Unknown'),
-                    ('yes', 'Yes'),
-                    ('no', 'No'),
-                    ('maybe', 'Maybe'),
-                ))
+                defaults={
+                    'description': 'Router Interface?',
+                    'extra_choices': (
+                        ('unknown', 'Unknown'),
+                        ('yes', 'Yes'),
+                        ('no', 'No'),
+                        ('maybe', 'Maybe'),
+                    )
+                })
 
             cf, created = CustomField.objects.update_or_create(
                 name='is_router',
-                type=CustomFieldTypeChoices.TYPE_SELECT,
-                required=False,
-                choice_set=cs_interface)
+                defaults={
+                    'type': CustomFieldTypeChoices.TYPE_SELECT,
+                    'required': False,
+                    'choice_set': cs_interface
+                })
 
             cf.object_types.set([ObjectType.objects.get_for_model(Interface)])
     except Exception as e:
@@ -197,23 +222,27 @@ def checkFields():
         if not choice_sets.exists():
             cs_exposure, created = CustomFieldChoiceSet.objects.get_or_create(
                 name=is_exposure_key,
-                description='Device accessible from zone with lower trust?',
-                extra_choices=(
-                    ('unknown', 'Unknown'),
-                    ('small', 'Small'),
-                    ('indirect', 'Indirect'),
-                    ('direct', 'Direct'),
-                ))
+                defaults={
+                    'description': 'Device accessible from zone with lower trust?',
+                    'extra_choices': (
+                        ('unknown', 'Unknown'),
+                        ('small', 'Small'),
+                        ('indirect', 'Indirect'),
+                        ('direct', 'Direct'),
+                    )
+                })
 
             description = ("Small: Highly isolated zone. "
                            "Direct: Directly accessible to/from a zone with lower trust. "
                            "Indirect: Other accessible devices are accessible to/from a zone with lower trust.")
             cf, created = CustomField.objects.update_or_create(
                 name='exposure',
-                description=description,
-                type=CustomFieldTypeChoices.TYPE_SELECT,
-                required=False,
-                choice_set=cs_exposure)
+                defaults={
+                    'description': description,
+                    'type': CustomFieldTypeChoices.TYPE_SELECT,
+                    'required': False,
+                    'choice_set': cs_exposure
+                })
 
             cf.object_types.set([ObjectType.objects.get_for_model(Device)])
 
