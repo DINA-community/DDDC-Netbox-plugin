@@ -112,6 +112,7 @@ def checkFields():
         cf, created = CustomField.objects.update_or_create(
             name='hardware_name',
             defaults={
+                'description': 'Set to "-" when unknown.',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
                 'required': True
             })

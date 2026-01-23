@@ -1498,14 +1498,22 @@ class DeviceTypeEditView(generic.ObjectEditView):
         if 'create' in request.POST.keys():
             created = request.POST['create']
             print (created)
-        if part_number == '' and hardware_version == '':
-             model = device_family + " " + hardware_name + " " + model_number
-        elif part_number == '' and hardware_version != '':
-            model = device_family + " " + hardware_name + " " + model_number + " " + hardware_version
-        elif part_number != '' and hardware_version =='':
-            model = device_family + " " + hardware_name + " " + model_number + " " + part_number
-        else:
-            model = device_family + " " + hardware_name + " " + model_number + " " + part_number + " " + hardware_version
+      
+        hardware_name = hardware_name.strip() or "-"
+        model_number = model_number.strip() or "-"
+
+        parts = [device_family]
+
+        if hardware_name != "-":
+            parts.append(hardware_name)
+        if model_number != "-":
+            parts.append(model_number)
+        if part_number:
+            parts.append(part_number)
+        if hardware_version:
+            parts.append(hardware_version)
+
+        model = " ".join(parts)
 
         with transaction.atomic():
             if device_type.id:
