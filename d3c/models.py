@@ -89,9 +89,6 @@ class Software(NetBoxModel):
         to='d3c.XGenericUri',
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:software', args=[self.pk])
-
     class Meta:
         ordering = ['name', 'manufacturer', 'version', 'id']
         verbose_name_plural = 'Software'
@@ -147,9 +144,6 @@ class XGenericUri(NetBoxModel):
         max_length=1000,
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:xgenericuri', args=[self.pk])
-
     class Meta:
         ordering = ['id']
         verbose_name_plural = 'XGenericUris'
@@ -177,9 +171,6 @@ class Hash(NetBoxModel):
     filename = models.CharField(
         max_length=1000,
     )
-
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:hash', args=[self.pk])
 
     class Meta:
         ordering = ['id']
@@ -211,9 +202,6 @@ class FileHash(NetBoxModel):
         on_delete=models.CASCADE,
         related_name='file_hashes',
     )
-
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:filehash', args=[self.pk])
 
     class Meta:
         ordering = ['id']
@@ -294,9 +282,6 @@ class ProductRelationship(NetBoxModel):
         fk_field='destination_id'
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:productrelationship', args=[self.pk])
-
     class Meta:
         ordering = ['id']
         verbose_name_plural = 'ProductRelationship'
@@ -360,9 +345,6 @@ class Communication(NetBoxModel):
         blank=True,
         null=True
     )
-
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:communication', args=[self.pk])
 
     @property
     def docs_url(self):
@@ -587,9 +569,6 @@ class DeviceFinding(NetBoxModel):
     def docs_url(self):
         return None
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:devicefinding', args=[self.pk])
-
     def is_empty(self):
         """
         Checks if any attributes have been set on this DeviceFinding.
@@ -778,9 +757,6 @@ class CommunicationFinding(NetBoxModel):
     def docs_url(self):
         return None
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:communicationfinding', args=[self.pk])
-
     def get_device_by_ip(self, ip):
         """
         Performs a lookup for devices with the specified IP-Address.
@@ -890,9 +866,6 @@ class Mapping(NetBoxModel):
         blank=True,
         null=False
     )
-
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:mapping', args=[self.pk])
 
     class Meta:
         ordering = ['id']
