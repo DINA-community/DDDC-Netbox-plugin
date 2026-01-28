@@ -75,7 +75,7 @@ class FileHashView(generic.ObjectView):
     queryset = models.FileHash.objects.all()
 
 
-@register_model_view(models.FileHash, 'list', detail=False)
+@register_model_view(models.FileHash, 'list', detail=False, path='')
 class FileHashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
@@ -102,7 +102,7 @@ class HashView(generic.ObjectView):
     queryset = models.Hash.objects.all()
 
 
-@register_model_view(models.Hash, 'list', detail=False)
+@register_model_view(models.Hash, 'list', detail=False, path='')
 class HashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
@@ -121,7 +121,7 @@ class XGenericUriView(generic.ObjectView):
     queryset = models.XGenericUri.objects.all()
 
 
-@register_model_view(models.XGenericUri, 'list', detail=False)
+@register_model_view(models.XGenericUri, 'list', detail=False, path='')
 class XGenericUriListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
@@ -162,7 +162,7 @@ class ProductRelationshipView(generic.ObjectView):
     queryset = models.ProductRelationship.objects.all()
 
 
-@register_model_view(models.ProductRelationship, name='list', detail=False)
+@register_model_view(models.ProductRelationship, name='list', detail=False, path='')
 class ProductRelationshipListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
@@ -198,7 +198,7 @@ class DeviceFindingView(generic.ObjectView):
     queryset = models.DeviceFinding.objects.all()
 
 
-@register_model_view(models.DeviceFinding, name='list', detail=False)
+@register_model_view(models.DeviceFinding, name='list', detail=False, path='')
 class DeviceFindingListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple DeviceFindings as a table. """
     queryset = models.DeviceFinding.objects.filter(device__isnull=True).filter(finding_status="NEW")
@@ -1235,7 +1235,7 @@ class SoftwareView(generic.ObjectView):
         }
 
 
-@register_model_view(models.Software, name='list', detail=False)
+@register_model_view(models.Software, name='list', detail=False, path='')
 class SoftwareListView(generic.ObjectListView):
     """ Handles the request of displaying a multiple Software objects as table. """
     def get_queryset(self, request):
@@ -1325,7 +1325,7 @@ class CommunicationView(generic.ObjectView):
     table = tables.CommunicationTable
 
 
-@register_model_view(models.Communication, name='list', detail=False)
+@register_model_view(models.Communication, name='list', detail=False, path='')
 class CommunicationListView(generic.ObjectListView):
     """ Handles the request for displaying a multiple Communications as table. """
     def get_queryset(self, request):
@@ -1661,7 +1661,7 @@ class CommunicationFindingView(generic.ObjectView):
     table = tables.CommunicationFindingTable
 
 
-@register_model_view(models.CommunicationFinding, name='list', detail=False)
+@register_model_view(models.CommunicationFinding, name='list', detail=False, path='')
 class CommunicationFindingListView(generic.ObjectListView):
     """ View for displaying multiple CommunicationFindings as table. """
     # def get_queryset(self, request):
@@ -1702,7 +1702,7 @@ class MappingView(generic.ObjectView):
     table = tables.MappingTable
 
 
-@register_model_view(models.Mapping, name='list', detail=False)
+@register_model_view(models.Mapping, name='list', detail=False, path='')
 class MappingListView(generic.ObjectListView):
     """ View for displaying a multiple Mappings as table. """
     def get_queryset(self, request):
