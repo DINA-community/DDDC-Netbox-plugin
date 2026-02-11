@@ -34,6 +34,14 @@ class Software(NetBoxModel):
         blank=False,
         null=False
     )
+    # Software/Manufacturer
+    manufacturer = models.ForeignKey(
+        to='dcim.Manufacturer',
+        on_delete=models.CASCADE,
+        related_name='softwareManufacturer',
+        blank=True,
+        null=True
+    )
     is_firmware = models.BooleanField(
         null=True,
         blank=True
@@ -81,15 +89,20 @@ class Software(NetBoxModel):
         to='d3c.XGenericUri',
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:software', args=[self.pk])
-
     class Meta:
+        ordering = ['name', 'manufacturer', 'version', 'id']
         verbose_name_plural = 'Software'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'manufacturer', 'version'],
+                name="software_unique",
+                nulls_distinct=False)
+        ]
 
     def __str__(self):
         version = ' ' + self.version if self.version else ''
-        return self.name + version
+        manufac = ' (' + self.manufacturer.name + ')' if self.manufacturer else ''
+        return self.name + version + manufac
 
     @property
     def docs_url(self):
@@ -131,10 +144,8 @@ class XGenericUri(NetBoxModel):
         max_length=1000,
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:xgenericuri', args=[self.pk])
-
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'XGenericUris'
 
     def __str__(self):
@@ -161,10 +172,8 @@ class Hash(NetBoxModel):
         max_length=1000,
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:hash', args=[self.pk])
-
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Hashes'
 
     def __str__(self):
@@ -194,10 +203,8 @@ class FileHash(NetBoxModel):
         related_name='file_hashes',
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:filehash', args=[self.pk])
-
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'FileHashes'
 
     def __str__(self):
@@ -275,10 +282,8 @@ class ProductRelationship(NetBoxModel):
         fk_field='destination_id'
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:productrelationship', args=[self.pk])
-
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'ProductRelationship'
 
     def __str__(self):
@@ -340,9 +345,6 @@ class Communication(NetBoxModel):
         blank=True,
         null=True
     )
-
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:communication', args=[self.pk])
 
     @property
     def docs_url(self):
@@ -485,7 +487,7 @@ class DeviceFinding(NetBoxModel):
     )
     # DeviceType/Manufacturer
     manufacturer = models.CharField(
-        max_length=50,
+        max_length=100,
         blank=True,
         null=True
     )
@@ -508,12 +510,12 @@ class DeviceFinding(NetBoxModel):
         null=True,
         verbose_name='Device Family'
     )
-    article_number = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        verbose_name='Article Number'
-    )
+    # article_number = models.CharField(
+    #     max_length=50,
+    #     blank=True,
+    #     null=True,
+    #     verbose_name='Article Number'
+    # )
     hardware_version = models.CharField(
         max_length=50,
         blank=True,
@@ -567,9 +569,6 @@ class DeviceFinding(NetBoxModel):
     def docs_url(self):
         return None
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:devicefinding', args=[self.pk])
-
     def is_empty(self):
         """
         Checks if any attributes have been set on this DeviceFinding.
@@ -580,7 +579,7 @@ class DeviceFinding(NetBoxModel):
                           self.device_role, self.is_safety_critical, self.network_protocol, self.transport_protocol,
                           self.application_protocol, self.port, self.is_router, self.manufacturer, self.oui,
                           self.hardware_version, self.hardware_cpe, self.software_name, self.device_name,
-                          self.part_number, self.is_firmware, self.version, self.article_number, self.rack,
+                          self.part_number, self.is_firmware, self.version, self.rack,
                           self.location, self.exposure)
         for x in attribute_list:
             if x != None:
@@ -631,7 +630,7 @@ class DeviceFinding(NetBoxModel):
         if self.ip_address:
             res = ipv4_pattern.search(self.ip_address)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.mac_address:
@@ -758,9 +757,6 @@ class CommunicationFinding(NetBoxModel):
     def docs_url(self):
         return None
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:communicationfinding', args=[self.pk])
-
     def get_device_by_ip(self, ip):
         """
         Performs a lookup for devices with the specified IP-Address.
@@ -789,13 +785,13 @@ class CommunicationFinding(NetBoxModel):
         if self.source_ip:
             res = ipv4_pattern.search(self.source_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 source_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if self.destination_ip:
             res = ipv4_pattern.search(self.destination_ip)
             if res:
-                ipaddress = res[0] + "/24"  # ToDo: More Logic needed
+                ipaddress = res[0] + "/32"  # ToDo: More Logic needed
                 destination_device_by_ip = self.get_device_by_ip(ipaddress)
 
         if source_device_by_ip != None:
@@ -871,10 +867,8 @@ class Mapping(NetBoxModel):
         null=False
     )
 
-    def get_absolute_url(self):
-        return reverse('plugins:d3c:mapping', args=[self.pk])
-
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Mappings'
 
     def __str__(self):

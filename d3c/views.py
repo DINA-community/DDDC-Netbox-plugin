@@ -1,7 +1,9 @@
 import json
 import logging
-from dcim.models import Device, DeviceRole, Site
+from dcim.models import Device, DeviceType, DeviceRole, Site, Platform
+from extras.models import Tag
 from dcim.tables.devices import DeviceTable
+from dcim.forms.model_forms import DeviceTypeForm
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
@@ -36,6 +38,9 @@ from .utils import fillTemplate, get_ip, get_mac, time_start, time_end
 from . import filtersets, forms, models, tables
 import re
 from netaddr import valid_mac, valid_ipv4
+from extras.utils import image_upload
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 # Four StringChecker modules are created, each one for the attributes
@@ -43,8 +48,8 @@ from netaddr import valid_mac, valid_ipv4
 S_CHECKER = {
     'manufacturer': init_spell_checker(["Manufacturer"], ["Manufacturer"], None),
     'device_family': init_spell_checker(["Device Family"], None, None),
-    'device_type': init_spell_checker(["Device Type"], ["Device Type"], None),
-    'article_number': init_spell_checker(["Article Number"], None, None)
+    'device_type': init_spell_checker(["Device Type"], ["Device Type"], None)
+#    'article_number': init_spell_checker(["Article Number"], None, None)
 }
 
 S_NORMALIZER = StringNormalizer()
@@ -70,7 +75,7 @@ class FileHashView(generic.ObjectView):
     queryset = models.FileHash.objects.all()
 
 
-@register_model_view(models.FileHash, 'list', detail=False)
+@register_model_view(models.FileHash, 'list', detail=False, path='')
 class FileHashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple FileHashes as a table. """
     queryset = models.FileHash.objects.all()
@@ -97,7 +102,7 @@ class HashView(generic.ObjectView):
     queryset = models.Hash.objects.all()
 
 
-@register_model_view(models.Hash, 'list', detail=False)
+@register_model_view(models.Hash, 'list', detail=False, path='')
 class HashListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple Hashes as a table. """
     queryset = models.Hash.objects.all()
@@ -116,7 +121,7 @@ class XGenericUriView(generic.ObjectView):
     queryset = models.XGenericUri.objects.all()
 
 
-@register_model_view(models.XGenericUri, 'list', detail=False)
+@register_model_view(models.XGenericUri, 'list', detail=False, path='')
 class XGenericUriListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple XGenericUris as a table. """
     queryset = models.XGenericUri.objects.all()
@@ -157,7 +162,7 @@ class ProductRelationshipView(generic.ObjectView):
     queryset = models.ProductRelationship.objects.all()
 
 
-@register_model_view(models.ProductRelationship, name='list', detail=False)
+@register_model_view(models.ProductRelationship, name='list', detail=False, path='')
 class ProductRelationshipListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple ProductRelationships as a table. """
     queryset = models.ProductRelationship.objects.all()
@@ -193,7 +198,7 @@ class DeviceFindingView(generic.ObjectView):
     queryset = models.DeviceFinding.objects.all()
 
 
-@register_model_view(models.DeviceFinding, name='list', detail=False)
+@register_model_view(models.DeviceFinding, name='list', detail=False, path='')
 class DeviceFindingListView(generic.ObjectListView):
     """ This view handles the request for displaying multiple DeviceFindings as a table. """
     queryset = models.DeviceFinding.objects.filter(device__isnull=True).filter(finding_status="NEW")
@@ -308,7 +313,7 @@ class DeviceFindingSplit(GetReturnURLMixin, BaseMultiObjectView):
 
 
             if failed_counter == 0:
-                messages.success(request, f"{processed_counter} DeviceFinding(s) split")
+                messages.success(request, f"{processed_counter} DeviceFinding(s) splitted")
             else:
                 msg = f"Split failed for {failed_counter} out of {processed_counter} DeviceFinding(s)"
                 messages.error(request, msg)
@@ -430,7 +435,7 @@ class FindingListForDeviceView(View, TableMixin):
         device_name = data.get('device_name', None)
         device_family = data.get('device_family', None)
         device_role = data.get('device_role', None)
-        article_number = data.get('article_number', None)
+#        article_number = data.get('article_number', None)
         model_number = data.get('part_number', None)
         serial_number = data.get('serial_number', None)
         device_status = data.get('status', None)
@@ -461,8 +466,8 @@ class FindingListForDeviceView(View, TableMixin):
             result_device &= change_device_family(self.device, device_family)
         if device_role:
             result_role &= change_device_role(self.device, device_role)
-        if article_number:
-            result_device &= change_device_article_number(self.device, article_number)
+#        if article_number:
+#            result_device &= change_device_article_number(self.device, article_number)
         if model_number:
             result_device &= change_device_model_number(self.device, model_number)
         if serial_number:
@@ -557,13 +562,13 @@ class DeviceFindingApply(generic.ObjectEditView):
         curr_description = self.device.device_type.description if self.device.device_type.description else None
         result['description_c'] = [(0, str(curr_description)), (1, str(self.finding.description))]
 
-        result['article_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["article_number"], "Article Number",
-                                      self.device.device_type.custom_field_data.get('article_number', None),
-                                      self.finding.article_number)
+        # result['article_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["article_number"], "Article Number",
+        #                               self.device.device_type.custom_field_data.get('article_number', None),
+        #                               self.finding.article_number)
 
         curr_model = self.device.device_type.part_number if self.device.device_type.part_number else None
-        result['model_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["article_number"], "Part Number", str(curr_model),
-                                    self.finding.part_number)
+        # result['model_c'] = get_sug(rsp, S_NORMALIZER, S_CHECKER["article_number"], "Part Number", str(curr_model),
+        #                             self.finding.part_number)
 
         curr_serial = self.device.serial if self.device.serial else None
         result['serial_c'] = [(0, str(curr_serial)), (1, str(self.finding.serial_number))]
@@ -676,10 +681,10 @@ class DeviceFindingApply(generic.ObjectEditView):
                         new_device_role = choices['role_c'][int(device_role_option)][1]
                         result_role = change_device_role(self.device, new_device_role)
 
-                    device_article_option = form.cleaned_data['device_article'] or '0'
-                    if device_article_option != '0':
-                        new_device_article = choices['article_c'][int(device_article_option)][1]
-                        result_device &= change_device_article_number(self.device, new_device_article)
+                    # device_article_option = form.cleaned_data['device_article'] or '0'
+                    # if device_article_option != '0':
+                    #     new_device_article = choices['article_c'][int(device_article_option)][1]
+                    #     result_device &= change_device_article_number(self.device, new_device_article)
 
                     device_model_option = form.cleaned_data['device_model'] or '0'
                     if device_model_option != '0':
@@ -954,7 +959,7 @@ class DeviceFindingEditView(generic.ObjectEditView):
                 if interface == None:
                    try:
                         with transaction.atomic():
-                            create_and_assign_interface(device, interface_name, ip, mac)
+                                create_and_assign_interface(device, interface_name, ip, mac)
 
                         msg = f'Created interface {interface_name} for {device.name} '
 
@@ -1230,7 +1235,7 @@ class SoftwareView(generic.ObjectView):
         }
 
 
-@register_model_view(models.Software, name='list', detail=False)
+@register_model_view(models.Software, name='list', detail=False, path='')
 class SoftwareListView(generic.ObjectListView):
     """ Handles the request of displaying a multiple Software objects as table. """
     def get_queryset(self, request):
@@ -1304,6 +1309,7 @@ class SoftwareEditView(generic.ObjectEditView):
     """ Handles the request for editing Software. """
     queryset = models.Software.objects.all()
     form = forms.SoftwareForm
+#    template_name = 'd3c/software_edit.html'
 
 
 @register_model_view(models.Software, name='delete')
@@ -1319,7 +1325,7 @@ class CommunicationView(generic.ObjectView):
     table = tables.CommunicationTable
 
 
-@register_model_view(models.Communication, name='list', detail=False)
+@register_model_view(models.Communication, name='list', detail=False, path='')
 class CommunicationListView(generic.ObjectListView):
     """ Handles the request for displaying a multiple Communications as table. """
     def get_queryset(self, request):
@@ -1359,8 +1365,8 @@ class CommunicationFindingMap(GetReturnURLMixin, BaseMultiObjectView):
                         a_comm, created = models.Communication.objects.get_or_create(
                             source_device=Device.objects.get(id=src.id),
                             destination_device=Device.objects.get(id=dst.id),
-                            source_ip_addr=IPAddress.objects.get(address=communication_finding.source_ip + '/24'),
-                            destination_ip_addr=IPAddress.objects.get(address=communication_finding.destination_ip + '/24'),
+                            source_ip_addr=IPAddress.objects.get(address=communication_finding.source_ip + '/32'),
+                            destination_ip_addr=IPAddress.objects.get(address=communication_finding.destination_ip + '/32'),
                             destination_port=communication_finding.destination_port,
                             network_protocol=communication_finding.network_protocol,
                             transport_protocol=communication_finding.transport_protocol,
@@ -1420,7 +1426,7 @@ class ClientCommunicationListForDeviceView(View):
 
     def get(self, request, **kwargs):
         obj = get_object_or_404(Device, **kwargs)
-        communication = models.Communication.objects.filter(source_device=self.kwargs["pk"])
+        communication = models.Communication.objects.filter(source_device=self.kwargs["pk"]) 
         communication_table = tables.CommunicationTable(communication)
         return render(request, self.template_name, {
             'object': obj,
@@ -1457,6 +1463,107 @@ class ServerCommunicationListForDeviceView(View):
 
 ipv4_pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
 
+
+# DeviceType add/edit view
+@register_model_view(DeviceType, 'add', detail=False)
+@register_model_view(DeviceType, 'edit')
+class DeviceTypeEditView(generic.ObjectEditView):
+    """ This view handles the edit requests for the DeviceType model. """
+    queryset = DeviceType.objects.all()
+    form = forms.MyDeviceTypeForm
+    
+    def post(self, request, *args, **kwargs):
+        device_type = self.get_object(**kwargs)
+        manufacturer = request.POST['manufacturer']
+        model_number = request.POST['cf_model_number']
+        hardware_name = request.POST['cf_hardware_name']
+        hardware_version = request.POST['cf_hardware_version']
+        device_family = request.POST['cf_device_family']
+        part_number = request.POST['part_number']
+        default_platform = request.POST['default_platform']
+        if request.POST['exclude_from_utilization'] == "on":
+            exclude_from_utilization = True
+        else:
+            exclude_from_utilization = False
+        if request.POST['is_full_depth'] == "on":
+            is_full_depth = True
+        else:
+            is_full_depth = False
+
+        weight = request.POST['weight']
+        if weight == '':
+            weight = float(0)
+        else:
+            weigth = float(weight)
+        if 'create' in request.POST.keys():
+            created = request.POST['create']
+            print (created)
+      
+        hardware_name = hardware_name.strip() or "-"
+        model_number = model_number.strip() or "-"
+
+        parts = [device_family]
+
+        if hardware_name != "-":
+            parts.append(hardware_name)
+        if model_number != "-":
+            parts.append(model_number)
+        if part_number:
+            parts.append(part_number)
+        if hardware_version:
+            parts.append(hardware_version)
+
+        model = " ".join(parts)
+
+        with transaction.atomic():
+            if device_type.id:
+                a_devicetype = DeviceType.objects.get(id=device_type.id)
+                a_devicetype.manufacturer = Manufacturer.objects.get(id=manufacturer)
+                a_devicetype.model = model
+                a_devicetype.slug = model
+            else:
+                a_devicetype = DeviceType.objects.create(manufacturer=Manufacturer.objects.get(id=manufacturer), model=model)
+                a_devicetype.slug = model  
+                
+            a_devicetype.custom_field_data['model_number'] = model_number
+            a_devicetype.custom_field_data['hardware_version'] = hardware_version
+            a_devicetype.custom_field_data['hardware_name'] = hardware_name
+            a_devicetype.custom_field_data['cpe'] = request.POST['cf_cpe']
+            a_devicetype.custom_field_data['device_description'] = request.POST['cf_device_description']
+            a_devicetype.custom_field_data['device_family'] = device_family
+            a_devicetype.part_number = part_number
+            if default_platform:
+                a_devicetype.default_platform = Platform.objects.get(id=default_platform)
+            a_devicetype.description = request.POST['description']
+            a_devicetype.u_height = request.POST['u_height']
+            a_devicetype.exclude_for_utilization = exclude_from_utilization
+            a_devicetype.is_full_depth = is_full_depth
+            a_devicetype.subdevice_role = request.POST['subdevice_role']
+            a_devicetype.airflow = request.POST['airflow']
+            a_devicetype.weight = weight
+            a_devicetype.weight_unit = request.POST['weight_unit']
+            a_devicetype.comments = request.POST['comments']
+            if 'front_image-clear' in request.POST.keys():
+                print ("front_image_clear:", request.POST.get('front_image-clear'))
+                a_devicetype.front_image=None
+            if 'front_image' in request._files.keys():
+                a_devicetype.front_image=default_storage.save(str(request._files.get('front_image')),ContentFile(request._files.get('front_image').read()))
+            if 'rear_image-clear' in request.POST.keys():
+                print ("rear_image_clear:", request.POST.get('rear_image-clear'))
+                a_devicetype.rear_image=None
+            if 'rear_image' in request._files.keys():
+                a_devicetype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
+            if 'update' in request.POST.keys():
+                a_devicetype.update = request.POST['update']
+            a_devicetype.tags.clear()
+            if 'tags' in request.POST.keys():
+                print ("new:", request.POST.getlist('tags'))
+                for a_tag in request.POST.getlist('tags'):
+                    a_devicetype.tags.add (Tag.objects.get(id=a_tag))
+            a_devicetype.save()
+            messages.success(request, f"DeviceType record stored")
+        return redirect(self.get_return_url(request))
+    
 # Communication edit view
 @register_model_view(models.Communication, name='add', detail=False)
 @register_model_view(models.Communication, name='edit')
@@ -1554,7 +1661,7 @@ class CommunicationFindingView(generic.ObjectView):
     table = tables.CommunicationFindingTable
 
 
-@register_model_view(models.CommunicationFinding, name='list', detail=False)
+@register_model_view(models.CommunicationFinding, name='list', detail=False, path='')
 class CommunicationFindingListView(generic.ObjectListView):
     """ View for displaying multiple CommunicationFindings as table. """
     # def get_queryset(self, request):
@@ -1595,7 +1702,7 @@ class MappingView(generic.ObjectView):
     table = tables.MappingTable
 
 
-@register_model_view(models.Mapping, name='list', detail=False)
+@register_model_view(models.Mapping, name='list', detail=False, path='')
 class MappingListView(generic.ObjectListView):
     """ View for displaying a multiple Mappings as table. """
     def get_queryset(self, request):
@@ -1640,12 +1747,12 @@ def DeviceFindingImport(request):
         help = json.loads(uploaded_file.read().decode('utf8'))
         for x in help:
             application_protocol = get_value_or_none('application_protocol', x)
-            article_number = get_value_or_none('article_number', x)
+#            article_number = get_value_or_none('article_number', x)
             confidence = get_value_or_none('confidence', x)
             description = get_value_or_none('description', x)
             device_family = get_value_or_none('device_family', x)
             device_name = get_value_or_none('device_name', x)
-            device_role = get_value_or_none('device_role', x)
+            device_role = get_value_or_none('device_role', x)           
             device_type = get_value_or_none('device_type', x)
             hw_version = get_value_or_none('hw_version', x)
             ip_address = get_value_or_none('ip_address', x)
@@ -1655,7 +1762,7 @@ def DeviceFindingImport(request):
             mac_address = get_value_or_none('mac_address', x)
             manufacturer = get_value_or_none('manufacturer', x)
             oui = get_value_or_none('oui', x)
-            network_protocol = get_value_or_none('network_protocol', x)
+            network_protocol = get_value_or_none('network_protocol', x)    
             port = get_value_or_none('port', x)
             serial_number = get_value_or_none('serial_number', x)
             source = get_value_or_none('source', x)
@@ -1663,7 +1770,7 @@ def DeviceFindingImport(request):
             sw_version = get_value_or_none('sw_version', x)
             transport_protocol = get_value_or_none('transport_protocol', x)
             found, created = models.DeviceFinding.objects.get_or_create(application_protocol=application_protocol,
-                                                                        article_number=article_number,
+#                                                                        article_number=article_number,
                                                                         confidence=confidence,
                                                                         description=description,
                                                                         device_family=device_family,
@@ -1718,7 +1825,7 @@ def CommunicationFindingImport(request):
                                                                                application_protocol=application_protocol)
     else:
         print("not authenticated")
-    return HttpResponse()
+    return HttpResponse()    
 
 ######
 

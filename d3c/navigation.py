@@ -119,6 +119,7 @@ filehash_buttons = [
 filehashItem = PluginMenuItem(
     link='plugins:d3c:filehash_list',
     link_text='FileHash',
+    buttons=filehash_buttons
 )
 
 ###

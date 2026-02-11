@@ -150,7 +150,7 @@ class UnassignedDeviceFindingTable(NetBoxTable):
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'device_role', 'is_safety_critical',
                   'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
-                  'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
+                  'is_router', 'manufacturer', 'oui', 'device_family', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version',
                   'exposure', 'device', 'has_predicted_device', 'predicted_device', 'finding_status')
         default_columns = ('id', 'source', 'has_predicted_device', 'predicted_device', 'ip_address', 'mac_address',
@@ -264,7 +264,7 @@ class DeviceFindingForDeviceTable(NetBoxTable):
     """
     selectableFields = ('device_role', 'device_name', 'status', 'site', 'rack', 'location', 'description',
                         'device_type', 'serial_number', 'is_safety_critical',
-                        'manufacturer', 'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',
+                        'manufacturer', 'oui', 'device_family', 'part_number', 'hardware_version',
                         'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure', 'device')
     groupedFields = {
         'service': {
@@ -361,18 +361,18 @@ class DeviceFindingForDeviceTable(NetBoxTable):
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'is_safety_critical', 'mac_address', 'ip_address',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port', 'manufacturer',
-                  'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',  'hardware_cpe',
+                  'oui', 'device_family', 'part_number', 'hardware_version',  'hardware_cpe',
                   'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
         default_columns = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack',
                            'location','description', 'device_type', 'serial_number', 'is_safety_critical',
                            'mac_address', 'service', 'ip_address', 'network_protocol', 'transport_protocol',
                            'application_protocol', 'port', 'manufacturer', 'oui', 'device_family',
-                           'article_number', 'part_number', 'hardware_version', 'hardware_cpe', 'software', 'software_name',
+                           'part_number', 'hardware_version', 'hardware_cpe', 'software', 'software_name',
                            'is_firmware', 'version', 'cpe', 'exposure',)
         sequence = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                     'description', 'device_type', 'serial_number', 'is_safety_critical', 'mac_address', 'service',
                     'ip_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
-                    'manufacturer', 'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',
+                    'manufacturer', 'oui', 'device_family', 'part_number', 'hardware_version',
                     'hardware_cpe', 'software', 'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
 
 
@@ -396,7 +396,7 @@ class DeviceFindingTable(NetBoxTable):
         fields = ('id', 'source', 'confidence', 'device_role', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'is_safety_critical', 'ip_address', 'mac_address',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port', 'is_router',
-                  'manufacturer', 'oui', 'device_family', 'article_number', 'part_number', 'hardware_version',
+                  'manufacturer', 'oui', 'device_family', 'part_number', 'hardware_version',
                   'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure', 'device', 'finding_status')
         default_columns = ('id', 'source', 'manufacturer', 'device_type', 'oui', 'device_family',
                            'network_protocol', 'transport_protocol', 'application_protocol', 'port')
@@ -416,11 +416,15 @@ class SoftwareTable(NetBoxTable):
 
     target_rel_count = tables.Column(empty_values=(), verbose_name='Target Count')
 
+    manufacturer = tables.Column(
+        linkify=True
+    )
+
     class Meta(NetBoxTable.Meta):
         model = Software
-        fields = ('id', 'name', 'is_firmware', 'version', 'cpe',  'purl',
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe',  'purl',
                   'sbom_url_count', 'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
-        default_columns = ('id', 'name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_url_count',
+        default_columns = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_url_count',
                            'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
 
     def render_sbom_url_count(self, record):

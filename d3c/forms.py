@@ -6,22 +6,26 @@ import csv
 from .models import DeviceFinding, Software, Communication, \
     CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
-from dcim.models.devices import Device, DeviceType
+from dcim.models.devices import Device, DeviceType, Manufacturer, Platform
 from ipam.models import IPAddress
 from django import forms
 from django.forms import ModelForm
+from django.utils.translation import gettext_lazy as _
 from io import StringIO
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm, NetBoxModelImportForm
 from netbox.choices import CSVDelimiterChoices
 from utilities.choices import ChoiceSet
-from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
+from utilities.forms.rendering import FieldSet
+from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField, SlugField
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES
+from utilities.forms.widgets import APISelect, ClearableFileInput, HTMXSelect, NumberWithOptions, SelectWithPK
 from xml.etree.ElementTree import ParseError
 from django.contrib.postgres.forms import SimpleArrayField
 from extras.models import CustomFieldChoiceSet
 from django.core.exceptions import ObjectDoesNotExist
 from netaddr import valid_mac, valid_ipv4
 
+DEVICETYPE_IMAGE_FORMATS = 'image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp'
 
 class HashForm(NetBoxModelForm):
     """
@@ -212,7 +216,7 @@ class DeviceFindingForm(NetBoxModelForm):
                   'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'description', 'device_type', 'serial_number', 'device_role', 'is_safety_critical',
                   'network_protocol', 'transport_protocol', 'application_protocol', 'port',
-                  'is_router', 'manufacturer', 'device_family', 'article_number', 'part_number',
+                  'is_router', 'manufacturer', 'device_family', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version',
                   'exposure', 'finding_status')
 
@@ -290,12 +294,12 @@ class DeviceFindingApplyForm(forms.Form):
         widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
     )
 
-    device_article = forms.ChoiceField(
-        initial='0',
-        required=False,
-        label="Article Number",
-        widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
-    )
+    # device_article = forms.ChoiceField(
+    #     initial='0',
+    #     required=False,
+    #     label="Article Number",
+    #     widget=forms.RadioSelect(attrs={'class': 'col-sm-3 btn-check form-control'})
+    # )
 
     device_model = forms.ChoiceField(
         initial='0',
@@ -391,7 +395,7 @@ class DeviceFindingApplyForm(forms.Form):
         device_name_choices = kwargs.pop('name_c', None)
         device_family_choices = kwargs.pop('family_c', None)
         device_description_choices = kwargs.pop('description_c', None)
-        device_article_choices = kwargs.pop('article_c', None)
+#        device_article_choices = kwargs.pop('article_c', None)
         device_model_choices = kwargs.pop('model_c', None)
         device_serial_choices = kwargs.pop('serial_c', None)
         device_status_choices = kwargs.pop('status_c', None)
@@ -416,8 +420,8 @@ class DeviceFindingApplyForm(forms.Form):
             self.fields['device_family'].choices = device_family_choices
         if device_description_choices:
             self.fields['device_description'].choices = device_description_choices
-        if device_article_choices:
-            self.fields['device_article'].choices = device_article_choices
+#        if device_article_choices:
+#            self.fields['device_article'].choices = device_article_choices
         if device_model_choices:
             self.fields['device_model'].choices = device_model_choices
         if device_serial_choices:
@@ -522,7 +526,7 @@ class FindingImportForm(forms.Form):
                   'description', 'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'device_type', 'serial_number', 'device_role', 'is_safety_critical',
                   'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
-                  'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
+                  'is_router', 'manufacturer', 'oui', 'device_family', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure')
     templates = {}
     csv_headers = {}
@@ -699,6 +703,12 @@ class SoftwareForm(NetBoxModelForm):
     """
     Input Form for the Software model.
     """
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=True,
+        label="Manufacturer"
+    )
+        
     cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
 
     purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
@@ -712,7 +722,7 @@ class SoftwareForm(NetBoxModelForm):
 
     class Meta:
         model = Software
-        fields = ('id', 'name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
 
 
 class SoftwareFilterForm(NetBoxModelFilterSetForm):
@@ -852,7 +862,7 @@ class DeviceFindingImportForm(NetBoxModelImportForm):
                   'description', 'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
                   'device_type', 'serial_number', 'device_role', 'is_safety_critical',
                   'ip_address', 'mac_address', 'network_protocol', 'transport_protocol', 'application_protocol', 'port',
-                  'is_router', 'manufacturer', 'oui', 'device_family', 'article_number', 'part_number',
+                  'is_router', 'manufacturer', 'oui', 'device_family', 'part_number',
                   'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version', 'exposure',)
 
 
@@ -885,3 +895,53 @@ class MappingForm(NetBoxModelForm):
 class MappingFilterForm(NetBoxModelFilterSetForm):
     """Form for filtering Mappings."""
     model = Mapping
+
+
+# DeviceType
+class MyDeviceTypeForm(NetBoxModelForm):
+    manufacturer = DynamicModelChoiceField(
+        label=_('Manufacturer'),
+        queryset=Manufacturer.objects.all(),
+        quick_add=True
+    )
+    default_platform = DynamicModelChoiceField(
+        label=_('Default platform'),
+        queryset=Platform.objects.all(),
+        required=False,
+        selector=True,
+        query_params={
+            'manufacturer_id': ['$manufacturer', 'null'],
+        }
+    )
+    slug = SlugField(
+        label=_('Slug'),
+        slug_source='device_family',
+        required=False
+    )
+    comments = CommentField()
+    model = forms.CharField (required=False)
+
+    fieldsets = (
+        FieldSet('manufacturer', 'slug', 'default_platform', 'description', 'tags', name=_('Device Type')),
+        FieldSet(
+            'u_height', 'exclude_from_utilization', 'is_full_depth', 'part_number', 'subdevice_role', 'airflow',
+            'weight', 'weight_unit', name=_('Chassis')
+        ),
+        FieldSet('front_image', 'rear_image', name=_('Images')),
+    )
+
+    class Meta:
+        model = DeviceType
+        fields = [
+            'manufacturer', 'slug', 'default_platform', 'part_number', 'u_height', 'exclude_from_utilization',
+            'is_full_depth', 'subdevice_role', 'airflow', 'weight', 'weight_unit', 'front_image', 'rear_image',
+            'description', 'comments', 'tags',
+        ]
+        widgets = {
+            'front_image': ClearableFileInput(attrs={
+                'accept': DEVICETYPE_IMAGE_FORMATS
+            }),
+            'rear_image': ClearableFileInput(attrs={
+                'accept': DEVICETYPE_IMAGE_FORMATS
+            }),
+        }
