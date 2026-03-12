@@ -1,0 +1,37 @@
+name: Get labels
+description: Get labels from DINA-community/.github
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v5
+      - 
+        name: Checkout org .github repo
+        uses: actions/checkout@v5
+        with:
+          repository: DINA-community/.github
+          path: org-github
+      
+      - name: Run Labeler
+        uses: crazy-max/ghaction-github-labeler@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          yaml-file: org-github/labels/label_default.yaml
+
+      - name: Run Labeler Specific
+        uses: crazy-max/ghaction-github-labeler@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-delete: true
+          yaml-file: org-github/labels/label_matcher.yaml
