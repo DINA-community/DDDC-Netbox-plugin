@@ -1504,14 +1504,14 @@ class DeviceTypeEditView(generic.ObjectEditView):
 
         parts = [device_family]
 
-        if hardware_name != "-":
-            parts.append(hardware_name)
         if model_number != "-":
             parts.append(model_number)
-        if part_number:
-            parts.append(part_number)
+        if hardware_name != "-":
+            parts.append(hardware_name)
         if hardware_version:
             parts.append(hardware_version)
+        if part_number:
+            parts.append(part_number)
 
         model = " ".join(parts)
 
