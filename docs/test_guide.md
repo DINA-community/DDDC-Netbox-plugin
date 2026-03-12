@@ -27,7 +27,7 @@ are callable. Import the following data from `/data/` via netbox standard import
 
 Assign IPv4 Address as primary under each device
 
-> Note: This check should be automated
+> Note: This steps should be automated
 
 ## Device Import
 

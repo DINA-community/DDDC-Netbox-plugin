@@ -80,7 +80,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    ```
 
    You can also add a section `PLUGINS_CONFIG` for d3c here.
-5. Build and run it (see [Troubleshoot](./troubleshoot.md)):
+5. Build and run it (see [Troubleshoot](./docs/troubleshoot.md)):
 
    ```bash
    docker compose build --no-cache
@@ -152,7 +152,8 @@ However, an important aspect of an installation in a production environment is t
 
 ### Testing
 
-The unit tests of NetBox can be executed via `./docker-ci/test.sh`.
+The unit tests of NetBox can be executed via `./docker-ci/test.sh`. 
+Checking the plugin functions, use the [Test Guide](./docs/test_guide.md).
 
 ## Help
 
