@@ -95,13 +95,21 @@ def checkFields():
         print("Failed to create custom field")
         print(e)
 
+    # Device Type fields, in order of weight:
+    # cpe 10
+    # device_description 20
+    # device_family 30
+    # model_number 40
+    # hardware_name 50
+    # hardware_version 60
     try:
         cf, created = CustomField.objects.update_or_create(
             name='device_family',
             defaults={
                 'label': 'Device Family',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': True
+                'required': True,
+                'weight': 30,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
@@ -114,7 +122,8 @@ def checkFields():
             defaults={
                 'description': 'Set to "-" when unknown.',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': True
+                'required': True,
+                'weight': 50,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
@@ -126,7 +135,8 @@ def checkFields():
             name='hardware_version',
             defaults={
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': False
+                'required': False,
+                'weight': 60,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
@@ -139,7 +149,8 @@ def checkFields():
             defaults={
                 'description': 'Set to "-" when unknown.',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': True
+                'required': True,
+                'weight': 40,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
@@ -152,7 +163,8 @@ def checkFields():
             defaults={
                 'label': 'CPE',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': False
+                'required': False,
+                'weight': 10,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
@@ -165,7 +177,8 @@ def checkFields():
             defaults={
                 'label': 'Device Description',
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
-                'required': False
+                'required': False,
+                'weight': 20,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
     except Exception as e:
