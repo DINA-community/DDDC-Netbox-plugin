@@ -19,10 +19,12 @@ from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from core.signals import clear_events
+from core.object_actions import BulkSync
 from netbox.views import generic
 from netbox.views.generic.base import BaseMultiObjectView
 from netbox.views.generic.mixins import TableMixin
 from netbox.views.generic.utils import get_prerequisite_model
+from netbox.object_actions import AddObject, BulkEdit, BulkExport, BulkImport
 from utilities.exceptions import AbortRequest, AbortTransaction, PermissionsViolation
 from utilities.forms import restrict_form_fields
 from utilities.htmx import htmx_partial
@@ -206,11 +208,7 @@ class DeviceFindingListView(generic.ObjectListView):
     filterset = filtersets.DeviceFindingFilterSet
     filterset_form = forms.DeviceFindingFilterForm
     template_name = 'd3c/devicefinding_list.html'
-    actions = {
-        'add': {'add'},
-        'edit': {'change'},
-        'export': set(),
-        'bulk_sync': {'sync'}}
+    actions = (AddObject, BulkEdit, BulkExport, BulkSync)
 
 
 class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
@@ -1673,12 +1671,7 @@ class CommunicationFindingListView(generic.ObjectListView):
     filterset = filtersets.CommunicationFindingFilterSet
     filterset_form = forms.CommunicationFindingFilterForm
     template_name = 'd3c/communicationfinding_list.html'
-    actions = {
-        'add': {'add'},
-        'import': {'add'},
-        'edit': {'change'},
-        'export': set(),
-        'bulk_sync': {'sync'}}
+    actions = (AddObject, BulkImport, BulkEdit, BulkExport, BulkSync)
 
 
 # Communication import view
