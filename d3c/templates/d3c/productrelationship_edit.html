@@ -72,5 +72,37 @@
       </div>
     </div>
 
+    <script>
+      // the form shows the parent and target types (Device and Software) as two tabs
+      // Switching tabs does not clear the hidden field
+      //
+      // error. Clear the sibling field whenever a tab becomes active.
+      (function () {
+        var pairs = [
+          ['id_source_device', 'id_source_software'],
+          ['id_source_software', 'id_source_device'],
+          ['id_destination_device', 'id_destination_software'],
+          ['id_destination_software', 'id_destination_device'],
+        ];
+
+        pairs.forEach(function (pair) {
+          var shownFieldId = pair[0];
+          var hiddenFieldId = pair[1];
+          var tab = document.getElementById(shownFieldId + '_tab');
+          if (!tab) {
+            return;
+          }
+          tab.addEventListener('shown.bs.tab', function () {
+            var hiddenField = document.getElementById(hiddenFieldId);
+            if (hiddenField && hiddenField.value) {
+              // clear the input field in the hidden tab
+              hiddenField.value = '';
+              // changing the value directly does not trigger a change event automatically
+              hiddenField.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          });
+        });
+      })();
+    </script>
 
 {% endblock %}
