@@ -16,17 +16,17 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-DDDC is only compatible with NetBox 4.4 and therefore with netbox-docker 3.4.0.
-For a new install, clone from tag 3.4.0:
+DDDC is only compatible with NetBox 4.4 and therefore with netbox-docker 3.4.x.
+For a new install, clone from tag 3.4.2:
 
    ```bash
-   git clone -b 3.4.0 https://github.com/netbox-community/netbox-docker.git
+   git clone -b 3.4.2 https://github.com/netbox-community/netbox-docker.git
    ```
 
-For existing installations, switch to tag 3.4.0 before continuing:
+For existing installations, switch to tag 3.4.2 before continuing:
 
    ```bash
-   git checkout 3.4.0
+   git checkout 3.4.2
    ```
 
 ### Add plugin
@@ -55,7 +55,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    with
 
    ```bash
-   FROM netboxcommunity/netbox:v4.4-3.4.0
+   FROM netboxcommunity/netbox:v4.4-3.4.2
    ```
 
    Matching the version of netbox-docker.
@@ -76,7 +76,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    Also, change the image versions
 
    ```yaml
-      image: netbox:v4.4-3.4.0
+      image: netbox:v4.4-3.4.2
    ```
 
    for all services
