@@ -8,7 +8,7 @@ In addition to the plugin code, this repository contains additional files for th
 ## Installation of the DDDC Plugin
 
 As the DDDC plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
-This plugin is compatible with NetBox version 4.3.1 and ensured by the docker file.
+This plugin is compatible with NetBox version 4.4 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -16,17 +16,17 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-DDDC is only compatible with NetBox 4.2 and therefore with netbox-docker 3.2.1.
-For a new install, clone from tag 3.2.1:
+DDDC is only compatible with NetBox 4.4 and therefore with netbox-docker 3.4.x.
+For a new install, clone from tag 3.4.2:
 
    ```bash
-   git clone -b 3.2.1 https://github.com/netbox-community/netbox-docker.git
+   git clone -b 3.4.2 https://github.com/netbox-community/netbox-docker.git
    ```
 
-For existing installations, switch to tag 3.2.1 before continuing:
+For existing installations, switch to tag 3.4.2 before continuing:
 
    ```bash
-   git checkout 3.2.1
+   git checkout 3.4.2
    ```
 
 ### Add plugin
@@ -55,7 +55,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    with
 
    ```bash
-   FROM netboxcommunity/netbox:v4.3-3.3.0
+   FROM netboxcommunity/netbox:v4.4-3.4.2
    ```
 
    Matching the version of netbox-docker.
@@ -76,7 +76,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    Also, change the image versions
 
    ```yaml
-      image: netbox:v4.3-3.3.0
+      image: netbox:v4.4-3.4.2
    ```
 
    for all services
