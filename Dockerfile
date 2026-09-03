@@ -1,4 +1,5 @@
-FROM netboxcommunity/netbox:v4.4-3.4.2
+ARG NETBOX_DOCKER_VERSION
+FROM netboxcommunity/netbox:${NETBOX_DOCKER_VERSION}
 
 
 COPY . /plugins

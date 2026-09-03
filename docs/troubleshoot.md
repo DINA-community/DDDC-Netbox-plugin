@@ -16,12 +16,12 @@ $docker compose up
 
 ### netbox-worker and netbox-housekeeping
 
-When the DDDC-Plugin is not up to date with the netbox version, breaking changes might cause problem even if the building process completes with no errors. In this case, prune the containers, images and volumes from the build and adjust `docker-compose.override.yml` to 
+When the DDDC-Plugin is not up to date with the netbox version, breaking changes might cause problem even if the building process completes with no errors. In this case, prune the containers, images and volumes from the build and adjust `docker-compose.yml` to
 
 ```bash
 services:
   netbox:
-    image: netbox:$Version
+    image: netbox:$NETBOX_DOCKER_VERSION
     pull_policy: never
     ports:
       - 8000:8080
@@ -29,11 +29,11 @@ services:
       context: .
       dockerfile: Dockerfile-Plugins
   netbox-worker:
-    image: netbox:$Version
+    image: netbox:$NETBOX_DOCKER_VERSION
     pull_policy: never
   netbox-housekeeping:
-    image: netbox:$Version
+    image: netbox:$NETBOX_DOCKER_VERSION
     pull_policy: never
 ```
 
-where `$Version` is the netbox version for the stabile DDDC-Plugin version like `v4.4-3.4.2`.
+Using the `NETBOX_DOCKER_VERSION` from the `.env` file.

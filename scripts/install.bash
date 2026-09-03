@@ -30,7 +30,7 @@ systemctl enable postgresql
 cp /home/DDDC-Netbox-plugin/scripts/pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 
 sudo -i -u postgres psql -f /home/DDDC-Netbox-plugin/scripts/initdb.sql
- 
+
 # 2. Redis
 
 apt install -y redis-server
@@ -46,6 +46,8 @@ apt install -y python3 python3-pip python3-venv python3-dev build-essential libx
 mkdir -p /opt/netbox/
 cd /opt/netbox/
 
+# Keep major & minor version in sync with NETBOX_DOCKER_VERSION in ../.env
+# Lookup the latest patch release at https://github.com/netbox-community/netbox-docker/releases
 git clone -b v4.4.10 https://github.com/netbox-community/netbox.git .
 
 adduser --system --group netbox
@@ -69,7 +71,7 @@ python3 manage.py createsuperuser
 
 ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-housekeeping
 
-python3 manage.py runserver 0.0.0.0:8000 
+python3 manage.py runserver 0.0.0.0:8000
 
 
 

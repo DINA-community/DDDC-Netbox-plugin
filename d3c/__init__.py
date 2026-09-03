@@ -15,7 +15,7 @@ class NetBoxDDCConfig(PluginConfig):
     description = 'Manage Device Detection and Device Chrateriszation in NetBox'
     version = '0.9'
     base_url = 'd3c'
-    min_version = '4.2'
+    min_version = '4.4'
     required_settings = []
     default_settings = {
           "top_level_menu": True,
