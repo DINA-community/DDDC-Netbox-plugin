@@ -17,7 +17,7 @@ Additionally, this repository contains files from the community-driven Docker im
 ### Set the proper netbox docker version
 
 DDDC is only compatible with NetBox 4.5 and therefore with netbox-docker 4.0.0.
-The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `docker-ci/env/netbox.env`.
+The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `.env`.
 For a new install, clone from that tag:
 
    ```bash
@@ -59,7 +59,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    FROM netboxcommunity/netbox:$NETBOX_DOCKER_VERSION
    ```
 
-   using the value of `NETBOX_DOCKER_VERSION` in `docker-ci/env/netbox.env`.
+   using the value of `NETBOX_DOCKER_VERSION` in `.env`.
 
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
 
@@ -133,8 +133,8 @@ Therefore, for simplicity, a web browser should be available on the installed sy
    ```bash
    git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
    cd DDDC-Netbox-plugin/
-   docker compose --env-file ./docker-ci/env/netbox.env build --no-cache
-   docker compose --env-file ./docker-ci/env/netbox.env up
+   docker compose build --no-cache
+   docker compose up
    ```
 
 2. Wait until `Initialization is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
