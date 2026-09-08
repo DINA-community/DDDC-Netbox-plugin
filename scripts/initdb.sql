@@ -1,4 +1,0 @@
-
-CREATE DATABASE netbox;
-CREATE USER netbox WITH PASSWORD 'bsi507';
-ALTER DATABASE netbox OWNER TO netbox;
