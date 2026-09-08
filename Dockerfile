@@ -1,4 +1,5 @@
-FROM netboxcommunity/netbox:v4.5-4.0.0
+ARG NETBOX_DOCKER_VERSION=4.4.0-4.0.0  ## silence the warning of missing default value
+FROM netboxcommunity/netbox:${NETBOX_DOCKER_VERSION}
 
 
 COPY . /plugins

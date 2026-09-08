@@ -2,19 +2,27 @@ name: netbox_docker_test
 
 services:
   netbox: &netbox
-    image: docker.io/netboxcommunity/netbox:${VERSION-v4.5-4.0.0}
+    image: netbox:d3c
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        NETBOX_DOCKER_VERSION: ${NETBOX_DOCKER_VERSION:?NETBOX_DOCKER_VERSION is not set, check ../netbox.env}
+    ports:
+      - 8000:8080
     depends_on:
     - postgres
     - redis
     - redis-cache
     env_file: env/netbox.env
-    user: 'unit:root'
+    user: 'netbox:root'
     healthcheck:
       start_period: 300s
       timeout: 3s
       interval: 15s
       test: "curl -f http://localhost:8080/api/ || exit 1"
     volumes:
+    - ..:/plugins
     - ./test-configuration/test_config.py:/etc/netbox/config/test_config.py:z,ro
 
   # postgres
