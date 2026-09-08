@@ -28,7 +28,6 @@ Examples:
 
 When bumping, the versions needs to be adapted in:
 
-- `docker-cli/env/netbox.env` (full string as explained above)
+- `.env` (full string as explained above)
 - `README.md`: netbox version and netbox-docker version in [Set the proper netbox docker version](../README.md#set-the-proper-netbox-docker-version) and [Installation of the DDDC Plugin](../README.md#installation-of-the-dddc-plugin)
 - `d3c/__init__.py` (Netbox major and minor version)
-- `scripts/install.bash` (the full netbox version, including patch release) --> handled by script itself
