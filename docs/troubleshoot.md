@@ -1,5 +1,11 @@
 # Troubleshoot
 
+---
+
+[Overview](index.md) | [Contribution](contribute.md) | [Troubleshoot](troubleshoot.md) | [Tutorial](tutorial.md)
+
+---
+
 Not all problems are posted in issues. Therefore, this section lists some problems that may occur.
 
 ## Docker Compose Up
@@ -13,27 +19,3 @@ $docker compose stop
 Container ... Stopped
 $docker compose up
 ```
-
-### netbox-worker and netbox-housekeeping
-
-When the DDDC-Plugin is not up to date with the netbox version, breaking changes might cause problem even if the building process completes with no errors. In this case, prune the containers, images and volumes from the build and adjust `docker-compose.yml` to
-
-```bash
-services:
-  netbox:
-    image: netbox:$NETBOX_DOCKER_VERSION
-    pull_policy: never
-    ports:
-      - 8000:8080
-    build:
-      context: .
-      dockerfile: Dockerfile-Plugins
-  netbox-worker:
-    image: netbox:$NETBOX_DOCKER_VERSION
-    pull_policy: never
-  netbox-housekeeping:
-    image: netbox:$NETBOX_DOCKER_VERSION
-    pull_policy: never
-```
-
-Using the `NETBOX_DOCKER_VERSION` from the `.env` file.

@@ -7,7 +7,7 @@ services:
       context: ..
       dockerfile: Dockerfile
       args:
-        NETBOX_DOCKER_VERSION: ${NETBOX_DOCKER_VERSION:?NETBOX_DOCKER_VERSION is not set, check ../.env}
+        NETBOX_DOCKER_VERSION: ${NETBOX_DOCKER_VERSION:?NETBOX_DOCKER_VERSION is not set, check env/netbox.env}
     ports:
       - 8000:8080
     depends_on:

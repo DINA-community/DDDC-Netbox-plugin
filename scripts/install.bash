@@ -7,14 +7,20 @@
 #  file: install.bash
 #
 #####################################################
-#
-#  Fraunhofer IOSB
-#  Fraunhoferstr. 1
-#  D-76131 Karlsruhe
-#
-#####################################################
+
 
 echo "Installing starting..."
+
+
+NETBOX_ENV_FILE="$(dirname "$0")/env/netbox.env"
+
+if [ ! -f "$NETBOX_ENV_FILE" ]; then
+  FILE="$NETBOX_ENV_FILE"
+else
+  echo "$NETBOX_ENV_FILE not found" >&2
+  exit 1
+fi
+
 
 git config user.email "root@assetmanager.bsi.corp"
 
@@ -46,9 +52,13 @@ apt install -y python3 python3-pip python3-venv python3-dev build-essential libx
 mkdir -p /opt/netbox/
 cd /opt/netbox/
 
-# Keep major & minor version in sync with NETBOX_DOCKER_VERSION in ../.env
+# Keep major & minor version in sync with NETBOX_DOCKER_VERSION in ../docker-ci/env/netbox.env
 # Lookup the latest patch release at https://github.com/netbox-community/netbox-docker/releases
-git clone -b v4.5.10 https://github.com/netbox-community/netbox.git .
+
+get_version
+version="v.${maj}.${min}.${patch}"
+echo "Use version ${version} of NetBox"
+git clone -b ${version} https://github.com/netbox-community/netbox.git .
 
 adduser --system --group netbox
 chown --recursive netbox /opt/netbox/netbox/media/
@@ -78,3 +88,34 @@ python3 manage.py runserver 0.0.0.0:8000
 # ######################################################
 
 
+get_version(){
+
+  value=$(grep -E '^[[:space:]]*NETBOX_DOCKER_VERSION=' "$FILE" | head -n1 | cut -d'=' -f2- | tr -d '[:space:]' | tr -d '\r')
+  nb=${value#v}; nb=${nb%%-*}      
+  maj=${nb%%.*}                    
+  min=${nb#*.}                     
+  declare -g patch
+  echo "Getting lastest patch state for $maj.$min"
+  patch=$(
+    curl -fsSL "https://api.github.com/repos/netbox-community/netbox/tags?per_page=100" |
+      grep -oE "v${maj}\\.${min}\\.[0-9]+" |
+      grep -oE '[0-9]+$' |
+      sort -n |
+      tail -n1
+  ) || true
+
+  if [[ -z "$patch" ]]; then
+    patch=$(
+      curl -fsSL "https://github.com/netbox-community/netbox/tags" |
+        grep -oE "releases/tag/v${maj}\\.${min}\\.[0-9]+" |
+        head -n1 |
+        grep -oE '[0-9]+$'
+    ) || true
+  fi
+
+  [[ -n "$patch" ]] || {
+    echo "No tag v${maj}.${min}.* found" >&2
+    return 1
+  }
+  return 0
+}

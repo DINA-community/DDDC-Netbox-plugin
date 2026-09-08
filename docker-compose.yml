@@ -12,7 +12,6 @@ services:
       - postgres
       - redis
       - redis-cache
-    env_file: docker-ci/env/netbox.env
     user: "unit:root"
     healthcheck:
       test: curl -f http://localhost:8080/login/ || exit 1

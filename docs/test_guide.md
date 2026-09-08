@@ -1,5 +1,11 @@
 # Checks Before Pull Request
 
+---
+
+[Overview](index.md) | [Contribution](contribute.md) | [Troubleshoot](troubleshoot.md) | [Tutorial](tutorial.md)
+
+---
+
 In order to consider your pull request please follow the following steps:
 
 - Make sure the installation is working for the in the README mentioned options
