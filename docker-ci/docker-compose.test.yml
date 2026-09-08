@@ -15,7 +15,7 @@ services:
     - redis
     - redis-cache
     env_file: env/netbox.env
-    user: 'unit:root'
+    user: 'netbox:root'
     healthcheck:
       start_period: 300s
       timeout: 3s
