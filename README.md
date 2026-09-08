@@ -8,7 +8,7 @@ In addition to the plugin code, this repository contains additional files for th
 ## Installation of the DDDC Plugin
 
 As the DDDC plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
-This plugin is compatible with NetBox version 4.5 and ensured by the docker file.
+This plugin is compatible with NetBox version 4.6 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -16,18 +16,18 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-DDDC is only compatible with NetBox 4.5 and therefore with netbox-docker 4.0.0.
+DDDC is only compatible with NetBox 4.6 and therefore with netbox-docker 5.0.2.
 The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `.env`.
 For a new install, clone from that tag:
 
    ```bash
-   git clone -b 4.0.0 https://github.com/netbox-community/netbox-docker.git
+   git clone -b 5.0.2 https://github.com/netbox-community/netbox-docker.git
    ```
 
 For existing installations, switch to that tag before continuing:
 
    ```bash
-   git checkout 4.0.0
+   git checkout 5.0.2
    ```
 
 ### Add plugin
