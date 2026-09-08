@@ -48,7 +48,7 @@ cd /opt/netbox/
 
 # Keep major & minor version in sync with NETBOX_DOCKER_VERSION in ../.env
 # Lookup the latest patch release at https://github.com/netbox-community/netbox-docker/releases
-git clone -b v4.4.10 https://github.com/netbox-community/netbox.git .
+git clone -b v4.5.10 https://github.com/netbox-community/netbox.git .
 
 adduser --system --group netbox
 chown --recursive netbox /opt/netbox/netbox/media/
