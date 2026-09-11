@@ -1,0 +1,2 @@
+source,manufacturer,device_type,confidence,mac_address,ip_address,device_role,port,network_protocol,transport_protocol,application_protocol,oui
+AssetDiscovery,\d{3}*.,,1.100,,1192.168.10.22,,49153.0,ipv46,udp4,False,
