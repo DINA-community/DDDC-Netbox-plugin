@@ -9,8 +9,8 @@
 This tutorial introduces the features of the DDDC Plugin by walking you through a manual upload of asset data in CSV, raw text, or JSON format. You will see how this data is processed in the different views and get to know the individual features along the way.
 
 - `Device Findings`: Shown in this tutorial
-- `Communication Findings`: Initial version described in the [manual, page 28](DDDC_User-manuel_V0.95.pdf#page=28)
-- `Communication and Software attributes`: Initial version described in the [manual, page 34 ](DDDC_User-manuel_V0.95.pdf#page=34)
+- `Communication Findings`: Initial version described in the [manual, page 28](../d3c/documents/DDDC_User-manuel_V0.95.pdf#page=28)
+- `Communication and Software attributes`: Initial version described in the [manual, page 34 ](../d3c/documents/DDDC_User-manuel_V0.95.pdf#page=34)
 
 ## Manual Upload
 
