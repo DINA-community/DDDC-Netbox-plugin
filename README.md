@@ -153,19 +153,19 @@ To enable the netbox debug mode, to get long and detailed tracebacks, add this t
       - DEBUG=True
 ```
 
-### Notes regarding the installation of this plugin via the provided files
+### Default accounts and API tokens
 
-The installation will provide a warning message since the installation is using the default security token:
+A default admin account (`admin`/`admin`) is created automatically via the `SUPERUSER_NAME`/`SUPERUSER_EMAIL`/`SUPERUSER_PASSWORD` variables in `docker-ci/env/netbox.env`.
+As with the other default passwords and API keys in this repo's files, this is not suitable for a production environment.
 
-```text
-⚠️ Warning: You have the old default admin token in your database. This token is widely known; please remove it.
-```
+To create an API token set these variables
+- `SUPERUSER_API_TOKEN` (40 characters)
+- `SUPERUSER_API_KEY` (12 characters)
+- `API_TOKEN_PEPPER_1` (at least 50 characters)
+in `docker-ci/env/netbox.env`.
+Use the resulting token as `Authorization: Bearer nbt_<Key>.<Token>`.
 
-In theory, you can add an alternative security token in the file netbox.env by adding the following line:
-
-```python
-SUPERUSER_API_TOKEN=<Token>
-```
+The admin account and the API token are only created once, when the `admin` user does not yet exist.
 
 However, an important aspect of an installation in a production environment is the creation of users, tokens, and their permissions. This must be done for each NetBox installation separately and in accordance with the specific requirements in place.
 
