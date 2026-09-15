@@ -5,7 +5,7 @@ set -e
 
 
 # The docker compose command to use
-doco="docker compose --file $(dirname "$0")/docker-compose.test.yml --file $(dirname "$0")/docker-compose.test.override.yml --project-name netbox_docker_test"
+doco="docker compose --file $(dirname "$0")/docker-compose.test.yml --env-file $(dirname "$0")/../.env --project-name netbox_docker_test"
 
 test_setup() {
   echo "🏗 Setup up test environment"

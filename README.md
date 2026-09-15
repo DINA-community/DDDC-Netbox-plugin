@@ -8,7 +8,7 @@ In addition to the plugin code, this repository contains additional files for th
 ## Installation of the DDDC Plugin
 
 As the DDDC plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
-This plugin is compatible with NetBox version 4.3.1 and ensured by the docker file.
+This plugin is compatible with NetBox version 4.5 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -16,17 +16,18 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-DDDC is only compatible with NetBox 4.2 and therefore with netbox-docker 3.2.1.
-For a new install, clone from tag 3.2.1:
+DDDC is only compatible with NetBox 4.5 and therefore with netbox-docker 4.0.0.
+The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `.env`.
+For a new install, clone from that tag:
 
    ```bash
-   git clone -b 3.2.1 https://github.com/netbox-community/netbox-docker.git
+   git clone -b 4.0.0 https://github.com/netbox-community/netbox-docker.git
    ```
 
-For existing installations, switch to tag 3.2.1 before continuing:
+For existing installations, switch to that tag before continuing:
 
    ```bash
-   git checkout 3.2.1
+   git checkout 4.0.0
    ```
 
 ### Add plugin
@@ -55,10 +56,10 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    with
 
    ```bash
-   FROM netboxcommunity/netbox:v4.3-3.3.0
+   FROM netboxcommunity/netbox:$NETBOX_DOCKER_VERSION
    ```
 
-   Matching the version of netbox-docker.
+   using the value of `NETBOX_DOCKER_VERSION` in `.env`.
 
 3. Create the file `docker-compose.override.yml` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#user-content-docker-composeoverrideyml).
 
@@ -76,10 +77,10 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    Also, change the image versions
 
    ```yaml
-      image: netbox:v4.3-3.3.0
+      image: netbox:$NETBOX_DOCKER_VERSION
    ```
 
-   for all services
+   for all services using the version used in steps above
 
 4. Add this to `configuration/plugins.py`:
 
@@ -145,8 +146,9 @@ After testing, the containers can be stopped by pressing `Ctrl+C` and restarted 
 
 #### Debug mode
 
-To enable the netbox debug mode, to get long and detailed tracebacks, add this to `docker-compose.override.yml` in the section `netbox`:
-```
+To enable the netbox debug mode, to get long and detailed tracebacks, add this to `docker-compose.yml` in the section `netbox`:
+
+```yaml
     environment:
       - DEBUG=True
 ```
@@ -173,17 +175,8 @@ The unit tests of NetBox can be executed via `./docker-ci/test.sh`.
 
 ## Help
 
-This section contains links for familiarizing yourself with Django, NetBox, and plugins.
+You can find additionally information under docs/
 
-### General
-
-- Installation of NetBox as a standalone, self-hosted application: <https://docs.netbox.dev/en/stable/installation/>
-- Community driven Docker image for netbox: <https://github.com/netbox-community/netbox-docker>
-- Using NetBox Plugins in Docker: <https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins>
-
-### Development
-
-- Official plugin development documentation of NetBox: <https://docs.netbox.dev/en/stable/plugins/development/>
-- NetBox plugin development Tutorial: <https://github.com/netbox-community/netbox-plugin-tutorial>
-- Setting up a development environment with Docker for NetBox plugins: <https://github.com/netbox-community/netbox-docker/discussions/746>
-- django-table2 Documentation used by the Plugin and NetBox: <https://django-tables2.readthedocs.io/en/latest/>
+- [Contribution](docs/contribute.md)
+- [Troubleshoot](docs/troubleshoot.md)
+- [Tutorial](docs/tutorial.md)
