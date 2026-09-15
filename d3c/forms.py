@@ -4,7 +4,8 @@
 
 import csv
 from .models import DeviceFinding, Software, Communication, \
-    CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
+    CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO, \
+    PRODCUT_PARENT_MODELS
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
 from dcim.models.devices import Device, DeviceType, Manufacturer, Platform
 from ipam.models import IPAddress
@@ -16,11 +17,15 @@ from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm, NetBoxModelI
 from netbox.choices import CSVDelimiterChoices
 from utilities.choices import ChoiceSet
 from utilities.forms.rendering import FieldSet
-from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField, SlugField
+from utilities.forms import get_field_value
+from utilities.forms.fields import CommentField, ContentTypeChoiceField, DynamicModelChoiceField, \
+    DynamicModelMultipleChoiceField, SlugField
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES
 from utilities.forms.widgets import APISelect, ClearableFileInput, HTMXSelect, NumberWithOptions, SelectWithPK
+from utilities.templatetags.builtins.filters import bettertitle
 from xml.etree.ElementTree import ParseError
 from django.contrib.postgres.forms import SimpleArrayField
+from django.contrib.contenttypes.models import ContentType
 from extras.models import CustomFieldChoiceSet
 from django.core.exceptions import ObjectDoesNotExist
 from netaddr import valid_mac, valid_ipv4
@@ -118,30 +123,36 @@ class XGenericUriForm(NetBoxModelForm):
 class ProductRelationshipForm(NetBoxModelForm):
     """
     Input Form for the ProductRelationship model.
+
+    Parent/source and target/destination can each be a Device OR a Software.
+    Use a generic relation as in dcim.forms.mixins.ScopedForm/Location.scope)
+    using HTMXSelect to render the form on change
     """
-    source_device = DynamicModelChoiceField(
-        queryset=Device.objects.all(),
-        required=False,
-        selector=True,
-        label='Parent device*'
+    source_type = ContentTypeChoiceField(
+        queryset=ContentType.objects.filter(PRODCUT_PARENT_MODELS),
+        widget=HTMXSelect(),
+        required=True,
+        label='Parent type'
     )
-    source_software = DynamicModelChoiceField(
-        queryset=Software.objects.all(),
-        required=False,
+    source_object = DynamicModelChoiceField(
+        queryset=Device.objects.none(),  # Set dynamically in __init__
+        required=True,
+        disabled=True,
         selector=True,
-        label='Parent software*'
+        label='Parent object'
     )
-    destination_device = DynamicModelChoiceField(
-        queryset=Device.objects.all(),
-        required=False,
-        selector=True,
-        label='Target device*'
+    destination_type = ContentTypeChoiceField(
+        queryset=ContentType.objects.filter(PRODCUT_PARENT_MODELS),
+        widget=HTMXSelect(),
+        required=True,
+        label='Target type'
     )
-    destination_software = DynamicModelChoiceField(
-        queryset=Software.objects.all(),
-        required=False,
+    destination_object = DynamicModelChoiceField(
+        queryset=Device.objects.none(),  # Set dynamically in __init__
+        required=True,
+        disabled=True,
         selector=True,
-        label='Target software*'
+        label='Target object'
     )
 
     class Meta:
@@ -155,44 +166,47 @@ class ProductRelationshipForm(NetBoxModelForm):
         # Initialize helper selectors
         instance = kwargs.get('instance')
         initial = kwargs.get('initial', {}).copy()
-        if instance:
-            if type(instance.source) is Device:
-                initial['source_device'] = instance.source
-            elif type(instance.source) is Software:
-                initial['source_software'] = instance.source
-
-            if type(instance.destination) is Device:
-                initial['destination_device'] = instance.destination
-            elif type(instance.destination) is Software:
-                initial['destination_software'] = instance.destination
+        if instance and instance.pk:
+            initial.setdefault('source_type', instance.source_type)
+            initial.setdefault('source_object', instance.source)
+            initial.setdefault('destination_type', instance.destination_type)
+            initial.setdefault('destination_object', instance.destination)
         kwargs['initial'] = initial
 
         super().__init__(*args, **kwargs)
 
+        self._set_object_field('source_type', 'source_object')
+        self._set_object_field('destination_type', 'destination_object')
+
+    def _set_object_field(self, type_field_name, object_field_name):
+        """ Adapt to whatever type is selected in type_field_name """
+        type_id = get_field_value(self, type_field_name)
+        if not type_id:
+            return
+        try:
+            content_type = ContentType.objects.get(pk=type_id)
+        except ObjectDoesNotExist:
+            return
+        model = content_type.model_class()
+        self.fields[object_field_name].queryset = model.objects.all()
+        self.fields[object_field_name].widget.attrs['selector'] = model._meta.label_lower
+        self.fields[object_field_name].disabled = False
+        self.fields[object_field_name].label = bettertitle(model._meta.verbose_name)
+
     def clean(self):
         super().clean()
 
-        source_selected_objects = [
-            field for field in ('source_device', 'source_software') if self.cleaned_data[field]
-        ]
-        if len(source_selected_objects) > 1:
-            raise forms.ValidationError("A ProductRelationship can only be assigned to a single parent object.")
-        elif source_selected_objects:
-            assigned_object = self.cleaned_data[source_selected_objects[0]]
-            self.instance.source = assigned_object
-        else:
-            raise forms.ValidationError("A ProductRelationship needs a parent object.")
+        source_object = self.cleaned_data.get('source_object')
+        if source_object:
+            self.instance.source = source_object
+        elif self.cleaned_data.get('source_type'):
+            raise forms.ValidationError({'source_object': "A ProductRelationship needs a parent object."})
 
-        destination_selected_objects = [
-            field for field in ('destination_device', 'destination_software') if self.cleaned_data[field]
-        ]
-        if len(destination_selected_objects) > 1:
-            raise forms.ValidationError("A ProductRelationship can only be assigned to a single destination object.")
-        elif destination_selected_objects:
-            assigned_object = self.cleaned_data[destination_selected_objects[0]]
-            self.instance.destination = assigned_object
-        else:
-            raise forms.ValidationError("A ProductRelationship needs a destination object.")
+        destination_object = self.cleaned_data.get('destination_object')
+        if destination_object:
+            self.instance.destination = destination_object
+        elif self.cleaned_data.get('destination_type'):
+            raise forms.ValidationError({'destination_object': "A ProductRelationship needs a destination object."})
 
 
 
@@ -708,7 +722,7 @@ class SoftwareForm(NetBoxModelForm):
         required=True,
         label="Manufacturer"
     )
-        
+
     cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
 
     purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
