@@ -53,7 +53,7 @@ def checkFields():
     - created: bool, indicates whether the plugin is started for the first time
     """
     from core.models import ObjectType
-    from dcim.models import Device, DeviceRole, DeviceType, Interface
+    from dcim.models import Device, DeviceRole, DeviceType, Interface, ModuleType
     from extras.models import CustomField, CustomFieldChoiceSet
     from extras.choices import CustomFieldTypeChoices
     from .models import FILEHASH_ALGO
@@ -181,6 +181,48 @@ def checkFields():
                 'weight': 20,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    # ModuleType custom fields 
+    try:
+        cf, created = CustomField.objects.update_or_create(
+            name='hardware_name',
+            defaults={
+                'description': 'Set to "-" when unknown.',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True,
+                'weight': 50,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    try:
+        cf, created = CustomField.objects.update_or_create(
+            name='hardware_version',
+            defaults={
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False,
+                'weight': 60,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    try:
+        cf, created = CustomField.objects.update_or_create(
+            name='model_number',
+            defaults={
+                'description': 'Set to "-" when unknown.',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True,
+                'weight': 40,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
     except Exception as e:
         print("Failed to create custom field")
         print(e)

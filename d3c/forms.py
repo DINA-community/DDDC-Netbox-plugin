@@ -7,6 +7,8 @@ from .models import DeviceFinding, Software, Communication, \
     CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
 from dcim.models.devices import Device, DeviceType, Manufacturer, Platform
+from dcim.models.modules import ModuleType
+from dcim.forms.model_forms import ModuleTypeForm
 from ipam.models import IPAddress
 from django import forms
 from django.forms import ModelForm
@@ -945,3 +947,10 @@ class MyDeviceTypeForm(NetBoxModelForm):
                 'accept': DEVICETYPE_IMAGE_FORMATS
             }),
         }
+
+class MyModuleTypeForm(ModuleTypeForm):
+    # TODO exclude module field, include CustomFields.
+    # TODO check for model uniquesse
+    class Meta:
+        model = ModuleType
+        exclude = []

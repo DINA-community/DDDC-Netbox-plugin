@@ -1,6 +1,6 @@
 import json
 import logging
-from dcim.models import Device, DeviceType, DeviceRole, Site, Platform
+from dcim.models import Device, DeviceType, DeviceRole, ModuleType, Site, Platform
 from extras.models import Tag
 from dcim.tables.devices import DeviceTable
 from dcim.forms.model_forms import DeviceTypeForm
@@ -1562,6 +1562,107 @@ class DeviceTypeEditView(generic.ObjectEditView):
             messages.success(request, f"DeviceType record stored")
         return redirect(self.get_return_url(request))
     
+# ModuleType add/edit view
+@register_model_view(ModuleType, 'add', detail=False)
+@register_model_view(ModuleType, 'edit')
+class ModuleTypeEditView(generic.ObjectEditView):
+    """ This view handles the edit requests for the ModuleType model. """
+    queryset = ModuleType.objects.all()
+    form = forms.MyModuleTypeForm
+    
+    def post(self, request, *args, **kwargs):
+        # TODO check for the right field.
+        module_type = self.get_object(**kwargs)
+        manufacturer = request.POST['manufacturer']
+        model_number = request.POST['cf_model_number']
+        hardware_name = request.POST['cf_hardware_name']
+        hardware_version = request.POST['cf_hardware_version']
+        #device_family = request.POST['cf_device_family']
+        #part_number = request.POST['part_number']
+        #default_platform = request.POST['default_platform']
+        #if request.POST['exclude_from_utilization'] == "on":
+        #    exclude_from_utilization = True
+        #else:
+        #    exclude_from_utilization = False
+        #if request.POST['is_full_depth'] == "on":
+        #    is_full_depth = True
+        #else:
+        #    is_full_depth = False
+
+        weight = request.POST['weight']
+        if weight == '':
+            weight = float(0)
+        else:
+            weigth = float(weight)
+        if 'create' in request.POST.keys():
+            created = request.POST['create']
+            print (created)
+
+        hardware_name = hardware_name.strip() or "-"
+        model_number = model_number.strip() or "-"
+
+        parts = ["TEST"]
+
+        if model_number != "-":
+            parts.append(model_number)
+        if hardware_name != "-":
+            parts.append(hardware_name)
+        if hardware_version:
+            parts.append(hardware_version)
+        # if part_number:
+        # parts.append(part_number)
+
+        model = " ".join(parts)
+
+        with transaction.atomic():
+            if module_type.id:
+                a_moduletype = ModuleType.objects.get(id=module_type.id)
+                a_moduletype.manufacturer = Manufacturer.objects.get(id=manufacturer)
+                a_moduletype.model = model
+                a_moduletype.slug = model
+            else:
+                a_moduletype = ModuleType.objects.create(manufacturer=Manufacturer.objects.get(id=manufacturer), model=model)
+                a_moduletype.slug = model  
+                
+            a_moduletype.custom_field_data['model_number'] = model_number
+            a_moduletype.custom_field_data['hardware_version'] = hardware_version
+            a_moduletype.custom_field_data['hardware_name'] = hardware_name
+            #a_moduletype.custom_field_data['cpe'] = request.POST['cf_cpe']
+            #a_moduletype.custom_field_data['device_description'] = request.POST['cf_device_description']
+            #a_moduletype.custom_field_data['device_family'] = device_family
+            #a_moduletype.part_number = part_number
+            #if default_platform:
+            #    a_moduletype.default_platform = Platform.objects.get(id=default_platform)
+            #a_moduletype.description = request.POST['description']
+            #a_moduletype.u_height = request.POST['u_height']
+            #a_moduletype.exclude_for_utilization = exclude_from_utilization
+            #a_moduletype.is_full_depth = is_full_depth
+            #a_moduletype.subdevice_role = request.POST['subdevice_role']
+            #a_moduletype.airflow = request.POST['airflow']
+            a_moduletype.weight = weight
+            a_moduletype.weight_unit = request.POST['weight_unit']
+            a_moduletype.comments = request.POST['comments']
+            #if 'front_image-clear' in request.POST.keys():
+            #    print ("front_image_clear:", request.POST.get('front_image-clear'))
+            #    a_moduletype.front_image=None
+            #if 'front_image' in request._files.keys():
+            #    a_moduletype.front_image=default_storage.save(str(request._files.get('front_image')),ContentFile(request._files.get('front_image').read()))
+            #if 'rear_image-clear' in request.POST.keys():
+            #    print ("rear_image_clear:", request.POST.get('rear_image-clear'))
+            #    a_moduletype.rear_image=None
+            #if 'rear_image' in request._files.keys():
+            #    a_moduletype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
+            #if 'update' in request.POST.keys():
+            #    a_moduletype.update = request.POST['update']
+            a_moduletype.tags.clear()
+            if 'tags' in request.POST.keys():
+                print ("new:", request.POST.getlist('tags'))
+                for a_tag in request.POST.getlist('tags'):
+                    a_moduletype.tags.add (Tag.objects.get(id=a_tag))
+            a_moduletype.save()
+            messages.success(request, f"moduletype record stored")
+        return redirect(self.get_return_url(request))
+
 # Communication edit view
 @register_model_view(models.Communication, name='add', detail=False)
 @register_model_view(models.Communication, name='edit')
