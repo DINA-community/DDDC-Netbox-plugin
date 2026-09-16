@@ -949,8 +949,9 @@ class MyDeviceTypeForm(NetBoxModelForm):
         }
 
 class MyModuleTypeForm(ModuleTypeForm):
-    # TODO exclude module field, include CustomFields.
-    # TODO check for model uniquesse
     class Meta:
         model = ModuleType
-        exclude = []
+        fields = [
+            'profile', 'manufacturer', 'part_number', 'description', 'airflow', 'weight', 'weight_unit',
+            'owner', 'comments', 'tags',
+        ]
