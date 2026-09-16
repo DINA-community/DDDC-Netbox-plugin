@@ -1,0 +1,40 @@
+name: Docker smoke test
+
+# - Starts the compose stack
+# - runs a minimal integration check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# only minimal access needed, drop any other permissions
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build and start the stack
+        # the first start runs all netbox migrations and can take a while
+        # --wait causes it to wait until the containers are healthy
+        run: docker compose up -d --build --wait --wait-timeout 600
+
+      - name: Show container status
+        if: always()
+        run: docker compose ps -a
+
+      - name: Run smoke test (login + fetch d3c page)
+        run: docker-ci/smoke-test.sh http://localhost:8000
+
+      - name: Show logs
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Tear down
+        if: always()
+        run: docker compose down --volumes

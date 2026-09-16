@@ -16,7 +16,8 @@ services:
     env_file: docker-ci/env/netbox.env
     healthcheck:
       test: curl -f http://localhost:8080/login/ || exit 1
-      start_period: 90s
+      # the first start runs all netbox migrations and can take a while
+      start_period: 10m
       timeout: 3s
       interval: 15s
     volumes:
@@ -52,7 +53,7 @@ services:
       retries: 5
     env_file: docker-ci/env/postgres.env
     volumes:
-      - netbox-postgres-data:/var/lib/postgresql/data
+      - netbox-postgres:/var/lib/postgresql
 
   # redis
   redis:
@@ -84,7 +85,7 @@ services:
 volumes:
   netbox-media-files:
     driver: local
-  netbox-postgres-data:
+  netbox-postgres:
     driver: local
   netbox-redis-cache-data:
     driver: local
