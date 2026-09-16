@@ -188,6 +188,20 @@ def checkFields():
     # ModuleType custom fields 
     try:
         cf, created = CustomField.objects.update_or_create(
+            name='module_family',
+            defaults={
+                'label': 'Module Family',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True,
+                'weight': 30,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    try:
+        cf, created = CustomField.objects.update_or_create(
             name='hardware_name',
             defaults={
                 'description': 'Set to "-" when unknown.',
@@ -221,6 +235,20 @@ def checkFields():
                 'type': CustomFieldTypeChoices.TYPE_TEXT,
                 'required': True,
                 'weight': 40,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    try:
+        cf, created = CustomField.objects.update_or_create(
+            name='cpe',
+            defaults={
+                'label': 'CPE',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': False,
+                'weight': 10,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
     except Exception as e:
