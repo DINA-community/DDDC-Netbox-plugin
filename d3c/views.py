@@ -1492,7 +1492,7 @@ class DeviceTypeEditView(generic.ObjectEditView):
         if weight == '':
             weight = float(0)
         else:
-            weigth = float(weight)
+            weight = float(weight)
         if 'create' in request.POST.keys():
             created = request.POST['create']
             print (created)
@@ -1571,7 +1571,6 @@ class ModuleTypeEditView(generic.ObjectEditView):
     form = forms.MyModuleTypeForm
     
     def post(self, request, *args, **kwargs):
-        # TODO check for the right field.
         module_type = self.get_object(**kwargs)
         manufacturer = request.POST['manufacturer']
         model_number = request.POST['cf_model_number']
@@ -1579,21 +1578,11 @@ class ModuleTypeEditView(generic.ObjectEditView):
         hardware_version = request.POST['cf_hardware_version']
         module_family = request.POST['cf_module_family']
         part_number = request.POST['part_number']
-        #default_platform = request.POST['default_platform']
-        #if request.POST['exclude_from_utilization'] == "on":
-        #    exclude_from_utilization = True
-        #else:
-        #    exclude_from_utilization = False
-        #if request.POST['is_full_depth'] == "on":
-        #    is_full_depth = True
-        #else:
-        #    is_full_depth = False
-
         weight = request.POST['weight']
         if weight == '':
             weight = float(0)
         else:
-            weigth = float(weight)
+            weight = float(weight)
         if 'create' in request.POST.keys():
             created = request.POST['create']
             print (created)
@@ -1628,32 +1617,27 @@ class ModuleTypeEditView(generic.ObjectEditView):
             a_moduletype.custom_field_data['hardware_version'] = hardware_version
             a_moduletype.custom_field_data['hardware_name'] = hardware_name
             a_moduletype.custom_field_data['cpe'] = request.POST['cf_cpe']
+            # TODO: Perhaps add a custom field 'device_description' or 'module_description'
             #a_moduletype.custom_field_data['device_description'] = request.POST['cf_device_description']
             a_moduletype.custom_field_data['module_family'] = module_family
             a_moduletype.part_number = part_number
-            #if default_platform:
-            #    a_moduletype.default_platform = Platform.objects.get(id=default_platform)
-            #a_moduletype.description = request.POST['description']
-            #a_moduletype.u_height = request.POST['u_height']
-            #a_moduletype.exclude_for_utilization = exclude_from_utilization
-            #a_moduletype.is_full_depth = is_full_depth
-            #a_moduletype.subdevice_role = request.POST['subdevice_role']
-            #a_moduletype.airflow = request.POST['airflow']
+            a_moduletype.description = request.POST['description']
+            a_moduletype.airflow = request.POST['airflow']
             a_moduletype.weight = weight
             a_moduletype.weight_unit = request.POST['weight_unit']
             a_moduletype.comments = request.POST['comments']
-            #if 'front_image-clear' in request.POST.keys():
-            #    print ("front_image_clear:", request.POST.get('front_image-clear'))
-            #    a_moduletype.front_image=None
-            #if 'front_image' in request._files.keys():
-            #    a_moduletype.front_image=default_storage.save(str(request._files.get('front_image')),ContentFile(request._files.get('front_image').read()))
-            #if 'rear_image-clear' in request.POST.keys():
-            #    print ("rear_image_clear:", request.POST.get('rear_image-clear'))
-            #    a_moduletype.rear_image=None
-            #if 'rear_image' in request._files.keys():
-            #    a_moduletype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
-            #if 'update' in request.POST.keys():
-            #    a_moduletype.update = request.POST['update']
+            if 'front_image-clear' in request.POST.keys():
+                print ("front_image_clear:", request.POST.get('front_image-clear'))
+                a_moduletype.front_image=None
+            if 'front_image' in request._files.keys():
+                a_moduletype.front_image=default_storage.save(str(request._files.get('front_image')),ContentFile(request._files.get('front_image').read()))
+            if 'rear_image-clear' in request.POST.keys():
+                print ("rear_image_clear:", request.POST.get('rear_image-clear'))
+                a_moduletype.rear_image=None
+            if 'rear_image' in request._files.keys():
+                a_moduletype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
+            if 'update' in request.POST.keys():
+                a_moduletype.update = request.POST['update']
             a_moduletype.tags.clear()
             if 'tags' in request.POST.keys():
                 print ("new:", request.POST.getlist('tags'))
