@@ -1577,8 +1577,8 @@ class ModuleTypeEditView(generic.ObjectEditView):
         model_number = request.POST['cf_model_number']
         hardware_name = request.POST['cf_hardware_name']
         hardware_version = request.POST['cf_hardware_version']
-        #device_family = request.POST['cf_device_family']
-        #part_number = request.POST['part_number']
+        module_family = request.POST['cf_module_family']
+        part_number = request.POST['part_number']
         #default_platform = request.POST['default_platform']
         #if request.POST['exclude_from_utilization'] == "on":
         #    exclude_from_utilization = True
@@ -1601,7 +1601,7 @@ class ModuleTypeEditView(generic.ObjectEditView):
         hardware_name = hardware_name.strip() or "-"
         model_number = model_number.strip() or "-"
 
-        parts = ["TEST"]
+        parts = [module_family]
 
         if model_number != "-":
             parts.append(model_number)
@@ -1609,8 +1609,8 @@ class ModuleTypeEditView(generic.ObjectEditView):
             parts.append(hardware_name)
         if hardware_version:
             parts.append(hardware_version)
-        # if part_number:
-        # parts.append(part_number)
+        if part_number:
+            parts.append(part_number)
 
         model = " ".join(parts)
 
@@ -1627,10 +1627,10 @@ class ModuleTypeEditView(generic.ObjectEditView):
             a_moduletype.custom_field_data['model_number'] = model_number
             a_moduletype.custom_field_data['hardware_version'] = hardware_version
             a_moduletype.custom_field_data['hardware_name'] = hardware_name
-            #a_moduletype.custom_field_data['cpe'] = request.POST['cf_cpe']
+            a_moduletype.custom_field_data['cpe'] = request.POST['cf_cpe']
             #a_moduletype.custom_field_data['device_description'] = request.POST['cf_device_description']
-            #a_moduletype.custom_field_data['device_family'] = device_family
-            #a_moduletype.part_number = part_number
+            a_moduletype.custom_field_data['module_family'] = module_family
+            a_moduletype.part_number = part_number
             #if default_platform:
             #    a_moduletype.default_platform = Platform.objects.get(id=default_platform)
             #a_moduletype.description = request.POST['description']
