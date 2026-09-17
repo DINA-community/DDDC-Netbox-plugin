@@ -1,0 +1,9 @@
+source_ip,destination_ip,destination_port,network_protocol,transport_protocol,application_protocol,source
+192.168.10.60/32,192.168.1.200/32,53,ipv4,udp,dns,AssetDiscovery
+192.168.10.66/32,192.168.1.200,53,ipv4,udp,dns,AssetDiscovery
+192.168.10.12/32,192.168.10.11/32,34964,ipv4,udp,profinet,AssetDiscovery
+192.168.10.12/32,192.168.1.199,514,ipv4,udp,syslog,AssetDiscovery
+192.168.10.12/32,192.168.10.1,123,ipv4,udp,ntp,AssetDiscovery
+192.168.10.12/32,192.168.10.22/32,34964,ipv4,udp,profinet,AssetDiscovery
+192.168.10.12/32,192.168.10.22/32,49152,ipv4,udp,False,AssetDiscovery
+192.168.10.12/32,192.168.10.22/32,49153,ipv4,udp,False,AssetDiscovery
