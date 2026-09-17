@@ -1,6 +1,6 @@
 import json
 import logging
-from dcim.models import Device, DeviceType, DeviceRole, ModuleType, Site, Platform
+from dcim.models import Device, DeviceType, DeviceRole, ModuleType, ModuleTypeProfile, Site, Platform
 from extras.models import Tag
 from dcim.tables.devices import DeviceTable
 from dcim.forms.model_forms import DeviceTypeForm
@@ -1630,6 +1630,14 @@ class ModuleTypeEditView(generic.ObjectEditView):
                 a_moduletype.weight = weight
                 a_moduletype.weight_unit = request.POST['weight_unit']
                 a_moduletype.comments = request.POST['comments']
+                if request.POST.get('profile'):
+                    a_moduletype.profile = ModuleTypeProfile.objects.get(id=request.POST['profile'])
+                    # saving profile attributes
+                    data = {}
+                    for form_name in request.POST:
+                        if form_name.startswith('attr_'):
+                            data[form_name[5:]] = request.POST[form_name]
+                    a_moduletype.attribute_data = data
                 if 'front_image-clear' in request.POST.keys():
                     print ("front_image_clear:", request.POST.get('front_image-clear'))
                     a_moduletype.front_image=None
