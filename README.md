@@ -130,6 +130,8 @@ Therefore, for simplicity, a web browser should be available on the installed sy
    apt-get install docker-ce
    ```
 
+2. Build and run the plugin (see [Troubleshoot](./troubleshoot.md)):
+
    ```bash
    git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
    cd DDDC-Netbox-plugin/
@@ -137,10 +139,11 @@ Therefore, for simplicity, a web browser should be available on the installed sy
    docker compose up
    ```
 
-2. Wait until `Initialization is done.` is printed. Afterwards the GUI can be accessed via [http://127.0.0.1:8000](http://127.0.0.1:8000).
-3. Login as
-   - BN: admin
-   - PW: admin
+3. Access your local netbox by [http://127.0.0.1:8000](http://127.0.0.1:8000). To create an admin user, run this command:
+
+   ```bash
+   docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser
+   ```
 
 After testing, the containers can be stopped by pressing `Ctrl+C` and restarted using `docker-compose up`.
 
