@@ -17,13 +17,14 @@ test_setup() {
 }
 
 test_netbox_unit_tests() {
-  echo "⏱ Running NetBox Unit Tests"
-  $doco run --rm netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test # dcim.tests.test_api.PlatformTest
+  echo "⏱ Running d3c Unit Tests"
+  # Include dcim.tests.test_views.DeviceTypeTestCase because d3c overrides DeviceType add/edit views
+  $doco run --rm netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c dcim.tests.test_views.DeviceTypeTestCase
 }
 
 test_cleanup() {
   echo "💣 Cleaning Up"
-  $doco logs --no-color
+  $doco logs --no-color netbox
   $doco down --volumes
 }
 
