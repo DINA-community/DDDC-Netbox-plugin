@@ -7,6 +7,7 @@ import yaml
 import os
 from glob import glob
 from re import sub as re_sub
+import logging
 
 
 def get_value(key, data):
@@ -15,6 +16,11 @@ def get_value(key, data):
     else:
         return ''
 
+class Handler:
+    def __init__(self, name):
+        self.logger = logging.getLogger(name)
+    def verbose_log(self, desc):
+        self.logger.warning(desc)
 
 class REPO:
     """
@@ -25,6 +31,7 @@ class REPO:
         self.repo_path = repo_path
         self.cwd = os.getcwd()
         self.yaml_extensions = ['yaml', 'yml']
+        self.handle = Handler('d3c.populate.REPO')
 
     def slug_format(self, name):
         return re_sub(r'\W+', '-', name.lower())
@@ -88,7 +95,7 @@ class REPO:
                 data['src'] = file
 
             if slugs and True not in [True if s.casefold() in data['slug'].casefold() else False for s in slugs]:
-                handle.verbose_log(f"Skipping {data['model']}")
+                self.handle.verbose_log(f"Skipping {data['model']}")
                 continue
 
             deviceTypes.append(data)
