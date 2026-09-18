@@ -171,7 +171,15 @@ However, an important aspect of an installation in a production environment is t
 
 ### Testing
 
-The unit tests of NetBox can be executed via `./docker-ci/test.sh`.
+The project includes Unit tests under `d3c/tests/`.
+
+To run the tests, use:
+
+- `make tests` which starts the stack and runs the tests
+- `./docker-ci/test.sh` does the same in a separate docker stack
+- `docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c.tests.test_utils` to run a specific test case in a running stack
+
+NetBox's own `dcim.tests.test_views.DeviceTypeTestCase` are also used, because D3C overrides NetBox's built-in DeviceType views.
 
 ## Help
 
