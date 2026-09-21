@@ -1,13 +1,13 @@
-# NetBox Plugin DDDC
+# NetBox Plugin D3C
 
-Even if there are tools in Malcolm and [NetBox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into NetBox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The DDDC plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within NetBox.\\
+Even if there are tools in Malcolm and [NetBox itself](https://docs.netboxlabs.com/netbox-extensions/diode-overview/) getting data into NetBox, this data should be standardized. This is done by this plugin, which contains the source code for the BSI Project 507 TP2. The D3C ("Device Detection and Device Characterization") plugin can receive input data from various sources, supports the processing and approval of this data in order to build a standardized device database within NetBox.\\
 The main features are further developed in the repository [String-Atlas](https://github.com/DINA-community/String-Atlas). This processes the data before it is placed in the NetBox framework. This ensures that the data is adapted to support IT security management tasks such as device management, vulnerability management and patch management.
 
-In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the DDDC Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary NetBox environment.
+In addition to the plugin code, this repository contains additional files for the community-driven [Docker image](https://github.com/netbox-community/netbox-docker) integrating the D3C Plugin in development mode. This is primarily used for test purposes for the CI/CD pipeline and can be used for testing the plugin within an exemplary NetBox environment.
 
-## Installation of the DDDC Plugin
+## Installation of the D3C Plugin
 
-As the DDDC plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
+As the D3C plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
 This plugin is compatible with NetBox version 4.6 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
@@ -16,7 +16,7 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-DDDC is only compatible with NetBox 4.6 and therefore with netbox-docker 5.0.2.
+D3C is only compatible with NetBox 4.6 and therefore with netbox-docker 5.0.2.
 The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `.env`.
 For a new install, clone from that tag:
 
@@ -37,7 +37,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
 1. Create the file `plugin_requirements.txt` with the following content:
 
    ```bash
-   git+https://github.com/DINA-community/DDDC-Netbox-plugin.git
+   git+https://github.com/DINA-community/D3C-Netbox-plugin.git
    ```
 
 2. Create the file `Dockerfile-Plugins` with the content from the [netbox-docker documentation](https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins#dockerfile-plugins).
@@ -107,7 +107,7 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
 
 ### Prerequisites
 
-This Dockerfile simply extends the [netbox-docker](https://github.com/netbox-community/netbox-docker) project with the custom DDDC-plugin. Therefore, the dependencies of the netbox-docker project also apply for this installation:
+This Dockerfile simply extends the [netbox-docker](https://github.com/netbox-community/netbox-docker) project with the custom D3C-plugin. Therefore, the dependencies of the netbox-docker project also apply for this installation:
 
 Recommendation: Install docker with the Compose v2 already integrated into the Docker CLI platform.
 
@@ -133,8 +133,8 @@ Therefore, for simplicity, a web browser should be available on the installed sy
 2. Build and run the plugin (see [Troubleshoot](./troubleshoot.md)):
 
    ```bash
-   git clone https://github.com/DINA-community/DDDC-Netbox-plugin.git
-   cd DDDC-Netbox-plugin/
+   git clone https://github.com/DINA-community/D3C-Netbox-plugin.git
+   cd D3C-Netbox-plugin/
    docker compose build --no-cache
    docker compose up
    ```
@@ -162,6 +162,7 @@ A default admin account (`admin`/`admin`) is created automatically via the `SUPE
 As with the other default passwords and API keys in this repo's files, this is not suitable for a production environment.
 
 To create an API token set these variables
+
 - `SUPERUSER_API_TOKEN` (40 characters)
 - `SUPERUSER_API_KEY` (12 characters)
 - `API_TOKEN_PEPPER_1` (at least 50 characters)

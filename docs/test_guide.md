@@ -46,7 +46,7 @@ Assign IPv4 Address as primary under each device
 Check the import of data via the plugin
 
 - Check if import std function in the plugin is working
-- Check if import dddc function is working properly
+- Check if import d3c function is working properly
 - Check if import of raw data is working properly
 - Check if Regex is working properly
 - Check if StringMinder is working (not useable yet)

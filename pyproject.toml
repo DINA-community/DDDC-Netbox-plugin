@@ -1,7 +1,7 @@
 [project]
 name = "d3c"
 version = "1.0"
-description = "DDDC plugin"
+description = "D3C plugin"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 readme = "README.md"
@@ -27,10 +27,10 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
-repository = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
-documentation = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
-"Bug Tracker" = "https://github.com/DINA-community/DDDC-Netbox-plugin/issues/"
+homepage = "https://github.com/DINA-community/D3C-Netbox-plugin/"
+repository = "https://github.com/DINA-community/D3C-Netbox-plugin/"
+documentation = "https://github.com/DINA-community/D3C-Netbox-plugin/"
+"Bug Tracker" = "https://github.com/DINA-community/D3C-Netbox-plugin/issues/"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
