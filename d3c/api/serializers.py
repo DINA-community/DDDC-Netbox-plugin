@@ -87,7 +87,7 @@ class MappingSerializer(NetBoxModelSerializer):
 
 class DummySerializer(NetBoxModelSerializer):
     """
-    REST API Model Serializer for DDDCAdmin.
+    REST API Model Serializer for D3C Admin.
     """
 
     class Meta:

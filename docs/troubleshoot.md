@@ -10,9 +10,9 @@ Not all problems are posted in issues. Therefore, this section lists some proble
 
 ## Docker Compose Up - Container Unhealthy
 
-### Reason dddc-netbox-plugin-netbox-1
+### Reason d3c-netbox-plugin-netbox-1
 
-If `Container dddc-netbox-plugin-netbox-1` is shown as an Error after overstepping the default time for running healthy. It is declared as unhealthy. A solution might be to stop the container and restart.
+If `Container d3c-netbox-plugin-netbox-1` is shown as an Error after overstepping the default time for running healthy. It is declared as unhealthy. A solution might be to stop the container and restart.
 
 ```bash
 $docker compose stop
@@ -28,5 +28,4 @@ with error:
 /opt/netbox/health.sh: not found\n
 ```
 
-This error can occur when a incorrect version of netbox-docker is used. An example of this issue is mentioned in [Issue #99](https://github.com/DINA-community/DDDC-Netbox-plugin/issues/99)
-
+This error can occur when a incorrect version of netbox-docker is used. An example of this issue is mentioned in [Issue #99](https://github.com/DINA-community/D3C-Netbox-plugin/issues/99)
