@@ -3,7 +3,7 @@
 #####################################################
 #
 #  Projekt: BSI-507
-#  NetBox DDDC Plugin
+#  NetBox D3C Plugin
 #  file: scripts.py
 #
 #####################################################
@@ -15,7 +15,7 @@ from dcim.choices import DeviceStatusChoices, SiteStatusChoices
 from dcim.models import Device, DeviceRole, DeviceType, Manufacturer, Site, Interface
 from ipam.models import IPAddress, Service
 from extras.scripts import *
-from d3c.models import Finding, DeviceExtra, DDDCAdmin, Communication
+from d3c.models import Finding, DeviceExtra, D3CAdmin, Communication
 from extras.models import Tag
 
 mapping_table = {'source': 'ml-module',

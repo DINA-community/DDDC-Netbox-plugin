@@ -29,5 +29,5 @@ Examples:
 When bumping, the versions needs to be adapted in:
 
 - `.env` (full string as explained above)
-- `README.md`: netbox version and netbox-docker version in [Set the proper netbox docker version](../README.md#set-the-proper-netbox-docker-version) and [Installation of the DDDC Plugin](../README.md#installation-of-the-dddc-plugin)
+- `README.md`: netbox version and netbox-docker version in [Set the proper netbox docker version](../README.md#set-the-proper-netbox-docker-version) and [Installation of the D3C Plugin](../README.md#installation-of-the-d3c-plugin)
 - `d3c/__init__.py` (Netbox major and minor version)

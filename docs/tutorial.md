@@ -6,11 +6,11 @@
 
 ---
 
-This tutorial introduces the features of the DDDC Plugin by walking you through a manual upload of asset data in CSV, raw text, or JSON format. You will see how this data is processed in the different views and get to know the individual features along the way.
+This tutorial introduces the features of the D3C Plugin by walking you through a manual upload of asset data in CSV, raw text, or JSON format. You will see how this data is processed in the different views and get to know the individual features along the way.
 
 - `Device Findings`: Shown in this tutorial
-- `Communication Findings`: Initial version described in the [manual, page 28](../d3c/documents/DDDC_User-manuel_V0.95.pdf#page=28)
-- `Communication and Software attributes`: Initial version described in the [manual, page 34 ](../d3c/documents/DDDC_User-manuel_V0.95.pdf#page=34)
+- `Communication Findings`: Initial version described in the [manual, page 28](../d3c/documents/D3C_User-manuel_V0.95.pdf#page=28)
+- `Communication and Software attributes`: Initial version described in the [manual, page 34 ](../d3c/documents/D3C_User-manuel_V0.95.pdf#page=34)
 
 ## Manual Upload
 
@@ -21,7 +21,7 @@ NetBox provides a standard import function. With this function you can either en
 1. Click the highlighted import button on the d3c module in the left-hand menu.![](./figures/DevFind_stdimport-button.png)
 
     - Paste the raw text from `data/rawdata.txt` and click **Validate**
-        ![](./figures/DDDC_Import_raw-data.png)  
+        ![](./figures/D3C_Import_raw-data.png)  
     OR  
     - Upload a data file such as `input_sdt.csv`
 
@@ -29,15 +29,15 @@ Note that the standard import function works only if the data fields are known a
 Otherwise the import fails and an error message appears in the lower right-hand corner.
 If the imported data is valid, you will see the device [Table View](#table-view).
 
-### DDDC Function
+### D3C Function
 
 1. Click the d3c plugin icon in the left-hand menu and select **Import/Mapping**
   ![](./figures/import-icon.png)
 
     - Paste the raw text from `data/rawdata.txt` and click **Validate**
-  ![](./figures/DDDC_Import_raw-data.png)
+  ![](./figures/D3C_Import_raw-data.png)
       OR  
-    - Upload a data file such as `input_sdt_dddc.csv`
+    - Upload a data file such as `input_sdt_d3c.csv`
 
 2. **Check your data** in the template. The template controls how data is transferred from the source data to the Device Findings. After you click the **Validate** command button, the templates are applied to the first data row of the source data and the result is shown next to the template. You can address attributes
 
@@ -51,7 +51,7 @@ After you have checked your data, you can use the following actions:
     - **`Validate`**: Applies the current mapping to the first row
         of data and shows the result next to the mappings.
         This does not change any data and is safe to execute.
-    - **`Run String Matcher`** 
+    - **`Run String Matcher`**
         ![Status](https://img.shields.io/badge/-inactive-darkred): Processes your input data into the intended data fields.
         This is useful if you have structured text and want to improve the assignment when a column contains several data fields, for example when a full product name is given.
     - **`Show Full Result`**: Applies the defined mappings to the
@@ -72,7 +72,7 @@ In the top right corner there are five buttons, each of which is described below
 - **Device Lookup**: This button starts a lookup for all DeviceFindings displayed
 in this table. Based on the IP and/or MAC addresses. If available, it searches for a device in the NetBox device database. Please note that this lookup is resource-intensive and may take some time to complete.
 - **Import**: Opens the default Import view that every NetBox model provides.
-- **Import/Mapping**: Opens the Import and Mapping view described in section Manual Upload → DDDC Function.
+- **Import/Mapping**: Opens the Import and Mapping view described in section Manual Upload → D3C Function.
 - **Add**: Opens the Add view described in section Manual Upload.
 - **Export**: Provides the default export function for Table Views in NetBox.
 
@@ -101,7 +101,7 @@ You must perform a Device Lookup before the changes to the 'Predicted Devices' a
 
 ![](figures/table-view_edit.png "edit the findings")
 
-The DDDC plugin supports only single values for an IP or MAC address. However, since new use cases involve multiple IP and MAC addresses, this view provides a **Split Selected** button.\
+The D3C plugin supports only single values for an IP or MAC address. However, since new use cases involve multiple IP and MAC addresses, this view provides a **Split Selected** button.\
 This feature assumes that the first item in the IP address list and the first item in the MAC address list logically belong to
 the same interface, followed by the second item of the IP list and the second item of the MAC list, and so forth.  
 Clicking the **Split** button clones the corresponding finding
