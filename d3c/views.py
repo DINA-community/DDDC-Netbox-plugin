@@ -229,14 +229,14 @@ class DeviceFindingMap(GetReturnURLMixin, BaseMultiObjectView):
                 if device_finding.device:
                     device_finding.save()
                     count += 1
-                elif device_finding.has_predicted_device:
+                else:
                     device = device_finding.get_matched_device()
                     if device:
                         device_finding.device = device
                         device_finding.save()
                         count += 1
-                else:
-                    messages.error(request, f"Mapping of record with ID {device_finding.pk} not possible.")
+                    else:
+                        messages.error(request, f"Mapping of record with ID {device_finding.pk} not possible.")
 
             model_name = self.queryset.model._meta.verbose_name_plural
             if count > 0:
