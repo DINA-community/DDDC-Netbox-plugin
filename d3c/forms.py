@@ -488,7 +488,7 @@ class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
     """
     model = DeviceFinding
 
-    source = forms.CharField(required=False)
+    source = forms.CharField(required=False, label="Source")
     has_predicted_device = forms.NullBooleanField(
         required=False,
         widget=forms.Select(
@@ -496,12 +496,14 @@ class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
         )
     )
 
-    confidence = forms.CharField(required=False)
-    manufacturer = forms.CharField(required=False)
-    device_role = forms.CharField(required=False)
-    device_type = forms.CharField(required=False)
-    ip_address = forms.CharField(required=False)
-    mac_address = forms.CharField(required=False)
+    confidence = forms.DecimalField(required=False)
+    confidence__lt = forms.DecimalField(required=False, label="Confidence <")
+    confidence__gt = forms.DecimalField(required=False, label="Confidence >")
+    manufacturer = forms.CharField(required=False, label="Manufacturer")
+    device_role = forms.CharField(required=False, label="Device Role")
+    device_type = forms.CharField(required=False, label="Device Type")
+    ip_address = forms.CharField(required=False, label="IP Address")
+    mac_address = forms.CharField(required=False, label="MAC Address")
     network_protocol = forms.CharField(required=False)
     transport_protocol = forms.CharField(required=False)
     application_protocol = forms.CharField(required=False)
@@ -825,9 +827,9 @@ class CommunicationFindingFilterForm(NetBoxModelFilterSetForm):
     Input Form for filtering CommunicationFindings.
     """
     model = CommunicationFinding
-    source = forms.CharField(required=False)
-    source_ip = forms.CharField(required=False)
-    destination_ip = forms.CharField(required=False)
+    source = forms.CharField(required=False, label="Source")
+    source_ip = forms.CharField(required=False, label="Source IP")
+    destination_ip = forms.CharField(required=False, label="Destination IP")
     destination_port = forms.CharField(required=False)
     network_protocol = forms.CharField(required=False)
     transport_protocol = forms.CharField(required=False)
