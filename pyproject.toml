@@ -26,6 +26,9 @@ dependencies = [
     "regex"
 ]
 
+[project.optional-dependencies]
+dev = ["pylint", "flake8"]
+
 [project.urls]
 homepage = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
 repository = "https://github.com/DINA-community/DDDC-Netbox-plugin/"
