@@ -125,20 +125,14 @@ class CommunicationFindingFilterSet(NetBoxModelFilterSet):
     """
     Definition of the Filterset for CommunicationFinding.
     """
-    source = django_filters.CharFilter(field_name="source", lookup_expr="icontains")
-    source_ip = django_filters.CharFilter(field_name="source_ip", lookup_expr="icontains")
-    destination_ip = django_filters.CharFilter(field_name="destination_ip", lookup_expr="icontains")
-    destination_port = django_filters.CharFilter(field_name="destination_port", lookup_expr="icontains")
-    network_protocol = django_filters.CharFilter(field_name="network_protocol", lookup_expr="icontains")
-    transport_protocol = django_filters.CharFilter(field_name="transport_protocol", lookup_expr="icontains")
-    application_protocol = django_filters.CharFilter(field_name="application_protocol", lookup_expr="icontains")
-    predicted_src_device = django_filters.CharFilter(field_name="predicted_src_device", lookup_expr="icontains")
-    predicted_dst_device = django_filters.CharFilter(field_name="predicted_dst_device", lookup_expr="icontains")
 
     class Meta:
         model = CommunicationFinding
 
-        fields = ('id',  'has_2_predicted_devices')
+        fields = ('id', 'has_2_predicted_devices',
+                  'source', 'source_ip', 'destination_ip', 'destination_port',
+                  'network_protocol', 'transport_protocol', 'application_protocol',
+                  'predicted_src_device', 'predicted_dst_device')
 
     def search(self, queryset, name, value):
         return queryset.filter(description__icontains=value)

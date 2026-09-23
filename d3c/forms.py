@@ -829,12 +829,18 @@ class CommunicationFindingFilterForm(NetBoxModelFilterSetForm):
     source = forms.CharField(required=False, label="Source")
     source_ip = forms.CharField(required=False, label="Source IP")
     destination_ip = forms.CharField(required=False, label="Destination IP")
-    destination_port = forms.CharField(required=False)
+    destination_port = forms.IntegerField(required=False)
     network_protocol = forms.CharField(required=False)
     transport_protocol = forms.CharField(required=False)
     application_protocol = forms.CharField(required=False)
-    predicted_src_device = forms.CharField(required=False)
-    predicted_dst_device = forms.CharField(required=False)
+    predicted_src_device = DynamicModelChoiceField(
+        queryset=Device.objects.all(),
+        required=False
+    )
+    predicted_dst_device = DynamicModelChoiceField(
+        queryset=Device.objects.all(),
+        required=False
+    )
     has_2_predicted_devices = forms.NullBooleanField(
         required=False,
         widget=forms.Select(
