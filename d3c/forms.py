@@ -488,26 +488,25 @@ class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
     """
     model = DeviceFinding
 
-    source = forms.CharField(required=False, label="Source")
+    source__icontains = forms.CharField(required=False, label="Source (icontains)")
     has_predicted_device = forms.NullBooleanField(
         required=False,
         widget=forms.Select(
             choices=BOOLEAN_WITH_BLANK_CHOICES
         )
     )
-
     confidence = forms.DecimalField(required=False)
     confidence__lt = forms.DecimalField(required=False, label="Confidence <")
     confidence__gt = forms.DecimalField(required=False, label="Confidence >")
-    manufacturer = forms.CharField(required=False, label="Manufacturer")
-    device_role = forms.CharField(required=False, label="Device Role")
-    device_type = forms.CharField(required=False, label="Device Type")
-    ip_address = forms.CharField(required=False, label="IP Address")
-    mac_address = forms.CharField(required=False, label="MAC Address")
-    network_protocol = forms.CharField(required=False)
-    transport_protocol = forms.CharField(required=False)
-    application_protocol = forms.CharField(required=False)
-    port = forms.CharField(required=False)
+    manufacturer__icontains = forms.CharField(required=False, label="Manufacturer (icontains)")
+    device_role__icontains = forms.CharField(required=False, label="Device Role (icontains)")
+    device_type__icontains = forms.CharField(required=False, label="Device Type (icontains)")
+    ip_address__icontains = forms.CharField(required=False, label="IP Address (icontains)")
+    mac_address__icontains = forms.CharField(required=False, label="MAC Address (icontains)")
+    network_protocol__icontains = forms.CharField(required=False, label="Network Protocol (icontains)")
+    transport_protocol__icontains = forms.CharField(required=False, label="Transport Protocol (icontains)")
+    application_protocol__icontains = forms.CharField(required=False, label="Applicatiion Protocol (icontains)")
+    port__icontains = forms.CharField(required=False, label="Port (icontains)")
 
 
 class ImportFormatChoices(ChoiceSet):

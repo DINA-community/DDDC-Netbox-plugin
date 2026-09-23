@@ -10,23 +10,22 @@ class DeviceFindingFilterSet(NetBoxModelFilterSet):
     Definition of the Filterset for DeviceFindings.
     """
 
-    source = django_filters.CharFilter(field_name='source', lookup_expr='icontains')
-    manufacturer = django_filters.CharFilter(field_name='manufacturer', lookup_expr='icontains')
-    device_role = django_filters.CharFilter(field_name='device_role', lookup_expr='icontains')
-    device_type = django_filters.CharFilter(field_name='device_type', lookup_expr='icontains')
-    ip_address = django_filters.CharFilter(field_name='ip_address', lookup_expr='icontains')
-    mac_address = django_filters.CharFilter(field_name='mac_address', lookup_expr='icontains')
-
     class Meta:
         model = DeviceFinding
         fields = {
             'id': ['exact'],
             'has_predicted_device': ['exact'],
             'confidence': ['exact', 'lt', 'gt'],
-            'network_protocol': ['exact'],
-            'transport_protocol': ['exact'],
-            'application_protocol': ['exact'],
-            'port': ['exact']
+            'source': ['icontains'],
+            'manufacturer': ['icontains'],
+            'device_role': ['icontains'],
+            'device_type': ['icontains'],
+            'ip_address': ['icontains'],
+            'mac_address': ['icontains'],
+            'network_protocol': ['icontains'],
+            'transport_protocol': ['icontains'],
+            'application_protocol': ['icontains'],
+            'port': ['icontains'],
         }
 
     def search(self, queryset, name, value):
