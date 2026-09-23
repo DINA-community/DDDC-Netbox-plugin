@@ -30,7 +30,7 @@ docker compose restart netbox netbox-worker
 Or, for faster feedback, you can reload only the NetBox application:
 
 ```bash
-./dev/netbox-reload-plugins.sh
+./dev/docker-reload-plugins.sh
 ```
 
 However, this only covers the `netbox` service itself, not `netbox-worker`.
