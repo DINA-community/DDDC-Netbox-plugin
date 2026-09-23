@@ -158,7 +158,7 @@ To enable the netbox debug mode, to get long and detailed tracebacks, add this t
 A default admin account (`admin`/`admin`) is created automatically via the `SUPERUSER_NAME`/`SUPERUSER_EMAIL`/`SUPERUSER_PASSWORD` variables in `docker-ci/env/netbox.env`.
 As with the other default passwords and API keys in this repo's files, this is not suitable for a production environment.
 
-To create an API token set these variables
+A API token is also created automatically using the variables
 - `SUPERUSER_API_TOKEN` (40 characters)
 - `SUPERUSER_API_KEY` (12 characters)
 - `API_TOKEN_PEPPER_1` (at least 50 characters)
