@@ -1,7 +1,8 @@
 .PHONY: tests lint smoke-test
 
 lint:
-	# Python syntax errors and undefined names
+	# Requires optional 'dev' dependencies
+	# Checks for Python syntax errors and undefined names
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 	# exit-zero treats all errors as warnings
 	flake8 . --count --exit-zero --max-complexity=10 --statistics
