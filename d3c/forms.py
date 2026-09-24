@@ -490,24 +490,25 @@ class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
     """
     model = DeviceFinding
 
-    source = forms.CharField(required=False)
+    source__icontains = forms.CharField(required=False, label="Source (icontains)")
     has_predicted_device = forms.NullBooleanField(
         required=False,
         widget=forms.Select(
             choices=BOOLEAN_WITH_BLANK_CHOICES
         )
     )
-
-    confidence = forms.CharField(required=False)
-    manufacturer = forms.CharField(required=False)
-    device_role = forms.CharField(required=False)
-    device_type = forms.CharField(required=False)
-    ip_address = forms.CharField(required=False)
-    mac_address = forms.CharField(required=False)
-    network_protocol = forms.CharField(required=False)
-    transport_protocol = forms.CharField(required=False)
-    application_protocol = forms.CharField(required=False)
-    port = forms.CharField(required=False)
+    confidence = forms.DecimalField(required=False)
+    confidence__lt = forms.DecimalField(required=False, label="Confidence <")
+    confidence__gt = forms.DecimalField(required=False, label="Confidence >")
+    manufacturer__icontains = forms.CharField(required=False, label="Manufacturer (icontains)")
+    device_role__icontains = forms.CharField(required=False, label="Device Role (icontains)")
+    device_type__icontains = forms.CharField(required=False, label="Device Type (icontains)")
+    ip_address__icontains = forms.CharField(required=False, label="IP Address (icontains)")
+    mac_address__icontains = forms.CharField(required=False, label="MAC Address (icontains)")
+    network_protocol__icontains = forms.CharField(required=False, label="Network Protocol (icontains)")
+    transport_protocol__icontains = forms.CharField(required=False, label="Transport Protocol (icontains)")
+    application_protocol__icontains = forms.CharField(required=False, label="Application Protocol (icontains)")
+    port__icontains = forms.CharField(required=False, label="Port (icontains)")
 
 
 class ImportFormatChoices(ChoiceSet):
@@ -827,15 +828,21 @@ class CommunicationFindingFilterForm(NetBoxModelFilterSetForm):
     Input Form for filtering CommunicationFindings.
     """
     model = CommunicationFinding
-    source = forms.CharField(required=False)
-    source_ip = forms.CharField(required=False)
-    destination_ip = forms.CharField(required=False)
+    source = forms.CharField(required=False, label="Source")
+    source_ip = forms.CharField(required=False, label="Source IP")
+    destination_ip = forms.CharField(required=False, label="Destination IP")
     destination_port = forms.CharField(required=False)
     network_protocol = forms.CharField(required=False)
     transport_protocol = forms.CharField(required=False)
     application_protocol = forms.CharField(required=False)
-    predicted_src_device = forms.CharField(required=False)
-    predicted_dst_device = forms.CharField(required=False)
+    predicted_src_device = DynamicModelChoiceField(
+        queryset=Device.objects.all(),
+        required=False
+    )
+    predicted_dst_device = DynamicModelChoiceField(
+        queryset=Device.objects.all(),
+        required=False
+    )
     has_2_predicted_devices = forms.NullBooleanField(
         required=False,
         widget=forms.Select(

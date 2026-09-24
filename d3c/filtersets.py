@@ -9,15 +9,24 @@ class DeviceFindingFilterSet(NetBoxModelFilterSet):
     """
     Definition of the Filterset for DeviceFindings.
     """
+
     class Meta:
         model = DeviceFinding
-        fields = ('id', 'device', 'source', 'confidence',
-                  'description', 'device_role', 'serial_number', 'device_name', 'status', 'site', 'rack', 'location',
-                  'device_type', 'serial_number', 'device_role', 'is_safety_critical',
-                  'ip_address', 'mac_address', 'transport_protocol', 'application_protocol', 'port',
-                  'is_router', 'manufacturer', 'oui', 'device_family', 'part_number',
-                  'hardware_version', 'hardware_cpe', 'software_name', 'is_firmware', 'version',
-                  'exposure', 'has_predicted_device', 'predicted_device')
+        fields = {
+            'id': ['exact'],
+            'has_predicted_device': ['exact'],
+            'confidence': ['exact', 'lt', 'gt'],
+            'source': ['icontains'],
+            'manufacturer': ['icontains'],
+            'device_role': ['icontains'],
+            'device_type': ['icontains'],
+            'ip_address': ['icontains'],
+            'mac_address': ['icontains'],
+            'network_protocol': ['icontains'],
+            'transport_protocol': ['icontains'],
+            'application_protocol': ['icontains'],
+            'port': ['icontains'],
+        }
 
     def search(self, queryset, name, value):
         """
@@ -116,10 +125,14 @@ class CommunicationFindingFilterSet(NetBoxModelFilterSet):
     """
     Definition of the Filterset for CommunicationFinding.
     """
+
     class Meta:
         model = CommunicationFinding
-        fields = ('id', 'source_ip', 'destination_ip', 'destination_port', 'network_protocol', 'transport_protocol',
-                  'application_protocol', 'predicted_src_device', 'predicted_dst_device', 'has_2_predicted_devices')
+
+        fields = ('id', 'has_2_predicted_devices',
+                  'source', 'source_ip', 'destination_ip', 'destination_port',
+                  'network_protocol', 'transport_protocol', 'application_protocol',
+                  'predicted_src_device', 'predicted_dst_device')
 
     def search(self, queryset, name, value):
         return queryset.filter(description__icontains=value)

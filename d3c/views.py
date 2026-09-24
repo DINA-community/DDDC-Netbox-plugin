@@ -525,6 +525,7 @@ class DeviceFindingBulkDeleteView(generic.BulkDeleteView):
     """ This view handles the bulk deletion of DeviceFindings. """
     queryset = models.DeviceFinding.objects.all()
     filterset = filtersets.DeviceFindingFilterSet
+    filterset_form = forms.DeviceFindingFilterForm
     table = tables.DeviceFindingTable
 
 
