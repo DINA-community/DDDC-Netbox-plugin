@@ -505,7 +505,7 @@ class DeviceFindingFilterForm(NetBoxModelFilterSetForm):
     mac_address__icontains = forms.CharField(required=False, label="MAC Address (icontains)")
     network_protocol__icontains = forms.CharField(required=False, label="Network Protocol (icontains)")
     transport_protocol__icontains = forms.CharField(required=False, label="Transport Protocol (icontains)")
-    application_protocol__icontains = forms.CharField(required=False, label="Applicatiion Protocol (icontains)")
+    application_protocol__icontains = forms.CharField(required=False, label="Application Protocol (icontains)")
     port__icontains = forms.CharField(required=False, label="Port (icontains)")
 
 
@@ -829,7 +829,7 @@ class CommunicationFindingFilterForm(NetBoxModelFilterSetForm):
     source = forms.CharField(required=False, label="Source")
     source_ip = forms.CharField(required=False, label="Source IP")
     destination_ip = forms.CharField(required=False, label="Destination IP")
-    destination_port = forms.IntegerField(required=False)
+    destination_port = forms.CharField(required=False)
     network_protocol = forms.CharField(required=False)
     transport_protocol = forms.CharField(required=False)
     application_protocol = forms.CharField(required=False)
