@@ -181,7 +181,7 @@ To run the tests, use:
 
 - `make tests` which starts the stack and runs the tests
 - `./docker-ci/test.sh` does the same in a separate docker stack
-- `docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c.tests.test_utils` to run a specific test case in a running stack
+- `docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c.tests.test_utils.ValidateUriTestCase` to run the specific test `ValidateUriTestCase` in test_utils.py in a running stack
 
 NetBox's own `dcim.tests.test_views.DeviceTypeTestCase` are also used, because D3C overrides NetBox's built-in DeviceType views.
 
