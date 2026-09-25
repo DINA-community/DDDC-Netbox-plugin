@@ -1,0 +1,20 @@
+name: Unit tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# only minimal access needed, drop any other permissions
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Run tests
+        run: ./docker-ci/test.sh

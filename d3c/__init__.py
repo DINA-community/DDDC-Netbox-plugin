@@ -53,7 +53,7 @@ def checkFields():
     - created: bool, indicates whether the plugin is started for the first time
     """
     from core.models import ObjectType
-    from dcim.models import Device, DeviceRole, DeviceType, Interface
+    from dcim.models import Device, DeviceRole, DeviceType, Interface, ModuleType
     from extras.models import CustomField, CustomFieldChoiceSet
     from extras.choices import CustomFieldTypeChoices
     from .models import FILEHASH_ALGO
@@ -125,7 +125,10 @@ def checkFields():
                 'required': True,
                 'weight': 50,
             })
-        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+        cf.object_types.set([
+            ObjectType.objects.get_for_model(DeviceType),
+            ObjectType.objects.get_for_model(ModuleType)
+            ])
     except Exception as e:
         print("Failed to create custom field")
         print(e)
@@ -138,7 +141,10 @@ def checkFields():
                 'required': False,
                 'weight': 60,
             })
-        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+        cf.object_types.set([
+            ObjectType.objects.get_for_model(DeviceType),
+            ObjectType.objects.get_for_model(ModuleType)
+            ])
     except Exception as e:
         print("Failed to create custom field")
         print(e)
@@ -152,7 +158,10 @@ def checkFields():
                 'required': True,
                 'weight': 40,
             })
-        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+        cf.object_types.set([
+            ObjectType.objects.get_for_model(DeviceType),
+            ObjectType.objects.get_for_model(ModuleType)
+            ])
     except Exception as e:
         print("Failed to create custom field")
         print(e)
@@ -166,7 +175,10 @@ def checkFields():
                 'required': False,
                 'weight': 10,
             })
-        cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+        cf.object_types.set([
+            ObjectType.objects.get_for_model(DeviceType),
+            ObjectType.objects.get_for_model(ModuleType)
+            ])
     except Exception as e:
         print("Failed to create custom field")
         print(e)
@@ -181,6 +193,21 @@ def checkFields():
                 'weight': 20,
             })
         cf.object_types.set([ObjectType.objects.get_for_model(DeviceType)])
+    except Exception as e:
+        print("Failed to create custom field")
+        print(e)
+
+    # ModuleType custom fields 
+    try:
+        cf, created = CustomField.objects.update_or_create(
+            name='module_family',
+            defaults={
+                'label': 'Module Family',
+                'type': CustomFieldTypeChoices.TYPE_TEXT,
+                'required': True,
+                'weight': 30,
+            })
+        cf.object_types.set([ObjectType.objects.get_for_model(ModuleType)])
     except Exception as e:
         print("Failed to create custom field")
         print(e)

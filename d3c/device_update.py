@@ -483,6 +483,5 @@ def add_software(device, name, firmware, version):
                                                                       destination_id=device.pk)
     except Exception as e:
         result = False
-    finally:
-        return result
+    return result
 
