@@ -162,8 +162,8 @@ A default admin account (`admin`/`admin`) is created automatically via the `SUPE
 As with the other default passwords and API keys in this repo's files, this is not suitable for a production environment.
 
 A API token is also created automatically using the variables
-- `SUPERUSER_API_TOKEN` (40 characters)
-- `SUPERUSER_API_KEY` (12 characters)
+- `SUPERUSER_API_TOKEN` (exactly 40 characters)
+- `SUPERUSER_API_KEY` (exactly 12 characters)
 - `API_TOKEN_PEPPER_1` (at least 50 characters)
 in `docker-ci/env/netbox.env`.
 Use the resulting token as `Authorization: Bearer nbt_<Key>.<Token>`.
