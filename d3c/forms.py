@@ -705,27 +705,27 @@ class SoftwareForm(NetBoxModelForm):
     """
     Input Form for the Software model.
     """
-    manufacturer = DynamicModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        required=True,
-        label="Manufacturer"
-    )
-        
-    cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
+    #manufacturer = DynamicModelChoiceField(
+    #    queryset=Manufacturer.objects.all(),
+    #    required=True,
+    #    label="Manufacturer"
+    #)
+    #    
+    #cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
 
-    purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
+    #purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
 
-    sbom_urls = SimpleArrayField(
-        label='SBOM URLs',
-        base_field=forms.URLField(),
-        required=False,
-        help_text='Comma-separated list of one or more sbom urls.'
-    )
+    #sbom_urls = SimpleArrayField(
+    #    label='SBOM URLs',
+    #    base_field=forms.URLField(),
+    #    required=False,
+    #    help_text='Comma-separated list of one or more sbom urls.'
+    #)
 
     class Meta:
         model = Software
-        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
-
+    #    fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
+        fields = ('id', 'name')
 
 class SoftwareFilterForm(NetBoxModelFilterSetForm):
     """
@@ -750,7 +750,7 @@ class SoftwareImportForm(ModelForm):
 
     class Meta:
         model = Software
-        fields = ('name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls')
+        fields = ('name',) #, 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls')
 
 
 ####
