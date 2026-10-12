@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from netbox.api.serializers import NetBoxModelSerializer
 from dcim.api.serializers import DeviceSerializer, ManufacturerSerializer
-from ..models import (Dummy, DeviceFinding, Software, SoftwareType, Communication,
+from ..models import (DeviceFinding, Software, SoftwareType, Communication,
                       CommunicationFinding, Mapping, ProductRelationship, PRODCUT_PARENT_MODELS,
                       XGENERICURI_PARENT_MODELS, XGenericUri, FileHash, Hash)
 from django.db.models import Q
@@ -94,16 +94,6 @@ class MappingSerializer(NetBoxModelSerializer):
     class Meta:
         model = Mapping
         fields = ('id', 'type', 'name', 'data', 'display')
-
-
-class DummySerializer(NetBoxModelSerializer):
-    """
-    REST API Model Serializer for D3C Admin.
-    """
-
-    class Meta:
-        model = Dummy
-        fields = ('id', 'initialized')
 
 
 class ProductRelationshipSerializer(NetBoxModelSerializer):

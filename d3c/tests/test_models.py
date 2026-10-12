@@ -4,7 +4,6 @@ from d3c.models import (
     Communication,
     CommunicationFinding,
     DeviceFinding,
-    Dummy,
     FileHash,
     Hash,
     Mapping,
@@ -12,13 +11,6 @@ from d3c.models import (
     Software,
     XGenericUri,
 )
-
-
-class DummyTestCase(TestCase):
-    """TODO: Dummy"""
-
-    def test_placeholder(self):
-        pass
 
 
 class SoftwareTestCase(TestCase):
