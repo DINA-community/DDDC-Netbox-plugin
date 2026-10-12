@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('d3c', '0004_alter_filehash_options_alter_hash_options_and_more'),
+        ('d3c', '0005_delete_dummy'),
         ('dcim', '0241_nullify_empty_cable_end'),
         ('extras', '0140_imageattachment_image_size'),
     ]
