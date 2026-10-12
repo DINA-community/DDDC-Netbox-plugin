@@ -1268,6 +1268,7 @@ class SoftwareListView(generic.ObjectListView):
         queryset = models.Software.objects.all()
         return queryset
 
+    actions = (AddObject, BulkExport)
     table = tables.SoftwareTable
     #template_name = 'd3c/object_list_custom.html'
 
@@ -1359,6 +1360,7 @@ class SoftwareTypeListView(generic.ObjectListView):
         return queryset
 
     table = tables.SoftwareTypeTable
+    actions = (AddObject, BulkExport)
     #template_name = 'd3c/object_list_custom.html'
 
 @register_model_view(models.SoftwareType, name='add', detail=False)
