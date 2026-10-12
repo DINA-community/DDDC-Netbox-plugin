@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from netbox.api.serializers import NetBoxModelSerializer
 from dcim.api.serializers import DeviceSerializer, ManufacturerSerializer
-from ..models import (Dummy, DeviceFinding, Software, Communication,
+from ..models import (Dummy, DeviceFinding, Software, SoftwareType, Communication,
                       CommunicationFinding, Mapping, ProductRelationship, PRODCUT_PARENT_MODELS,
                       XGENERICURI_PARENT_MODELS, XGenericUri, FileHash, Hash)
 from django.db.models import Q
@@ -32,18 +32,29 @@ class DeviceFindingSerializer(NetBoxModelSerializer):
                   'is_firmware', 'version', 'exposure', 'has_predicted_device', 'predicted_device')
 
 
+class SoftwareTypeSerializer(NetBoxModelSerializer):
+    """
+    REST API Model Serializer for SoftwareType.
+    """
+    manufacturer = ManufacturerSerializer(read_only=False, nested=True)
+    class Meta:
+        model = SoftwareType
+        brief_fields = ('id', 'url', 'display', 'name')
+        fields = ('id', 'display', 'url', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',
+                  'custom_fields', 'created', 'last_updated')
+
+
 class SoftwareSerializer(NetBoxModelSerializer):
     """
     REST API Model Serializer for Software.
     """
-    manufacturer = ManufacturerSerializer(read_only=False, nested=True)
+    software_type = SoftwareTypeSerializer(read_only=False, nested=True)
     class Meta:
         model = Software
         brief_fields = ('id', 'url', 'display', 'name')
-        fields = ('id', 'display', 'url', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',
+        fields = ('id', 'display', 'url', 'name', 'software_type',
                   'custom_fields', 'created', 'last_updated')
         
-
 
 ##
 class CommunicationSerializer(NetBoxModelSerializer):

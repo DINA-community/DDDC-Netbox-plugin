@@ -3,7 +3,7 @@
 """
 from netbox.api.viewsets import NetBoxModelViewSet
 from .. import filtersets, models
-from .serializers import DeviceFindingSerializer, SoftwareSerializer, CommunicationSerializer, CommunicationFindingSerializer, MappingSerializer, ProductRelationshipSerializer, XGenericUriSerializer, HashSerializer, FileHashSerializer
+from .serializers import DeviceFindingSerializer, SoftwareSerializer, SoftwareTypeSerializer, CommunicationSerializer, CommunicationFindingSerializer, MappingSerializer, ProductRelationshipSerializer, XGenericUriSerializer, HashSerializer, FileHashSerializer
 
 from django.db.models import Count
 
@@ -23,6 +23,14 @@ class SoftwareViewSet(NetBoxModelViewSet):
     queryset = models.Software.objects.all() 
     serializer_class = SoftwareSerializer
     filterset_class = filtersets.SoftwareFilterSet
+
+class SoftwareTypeViewSet(NetBoxModelViewSet):
+    """
+    ViewSet for Software.
+    """
+    queryset = models.SoftwareType.objects.all()
+    serializer_class = SoftwareTypeSerializer
+    #filterset_class = filtersets.SoftwareTypeFilterSet
 
 class ProductRelationshipViewSet(NetBoxModelViewSet):
     """

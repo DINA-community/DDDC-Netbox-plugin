@@ -6,6 +6,7 @@ app_name = 'd3c-api'
 router = NetBoxRouter()
 router.register('devicefindings-list', views.DeviceFindingViewSet)
 router.register('software-list', views.SoftwareViewSet)
+router.register('softaretype-list', views.SoftwareTypeViewSet)
 router.register('communication-list', views.CommunicationViewSet)
 router.register('communicationfinding-list', views.CommunicationFindingViewSet)
 router.register('mapping-list', views.MappingViewSet)

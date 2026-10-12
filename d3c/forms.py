@@ -3,7 +3,7 @@
 """
 
 import csv
-from .models import DeviceFinding, Software, Communication, \
+from .models import DeviceFinding, Software, SoftwareType, Communication, \
     CommunicationFinding, Mapping, ProductRelationship, XGenericUri, Hash, FileHash, FILEHASH_ALGO
 from .utils import parse_csv, parse_nmap, validate_cpe, validate_purl, validate_fh, validate_uri
 from dcim.models.devices import Device, DeviceType, Manufacturer, Platform
@@ -705,27 +705,42 @@ class SoftwareForm(NetBoxModelForm):
     """
     Input Form for the Software model.
     """
-    #manufacturer = DynamicModelChoiceField(
-    #    queryset=Manufacturer.objects.all(),
-    #    required=True,
-    #    label="Manufacturer"
-    #)
-    #    
-    #cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
-
-    #purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
-
-    #sbom_urls = SimpleArrayField(
-    #    label='SBOM URLs',
-    #    base_field=forms.URLField(),
-    #    required=False,
-    #    help_text='Comma-separated list of one or more sbom urls.'
-    #)
+    software_type = DynamicModelChoiceField(
+        queryset=SoftwareType.objects.all(),
+        required=True,
+        label="Software Type"
+    )
 
     class Meta:
         model = Software
-    #    fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'software_type')
+
+
+class SoftwareTypeForm(NetBoxModelForm):
+    """
+    Input Form for the SoftwareType model.
+    """
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=True,
+        label="Manufacturer"
+    )
+
+    cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
+
+    purl = forms.CharField(required=False, label="PURL", validators=[validate_purl])
+
+    sbom_urls = SimpleArrayField(
+        label='SBOM URLs',
+        base_field=forms.URLField(),
+        required=False,
+        help_text='Comma-separated list of one or more sbom urls.'
+    )
+
+    class Meta:
+        model = SoftwareType
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls',  'tags')
+
 
 class SoftwareFilterForm(NetBoxModelFilterSetForm):
     """

@@ -1335,13 +1335,45 @@ class SoftwareEditView(generic.ObjectEditView):
     """ Handles the request for editing Software. """
     queryset = models.Software.objects.all()
     form = forms.SoftwareForm
-#    template_name = 'd3c/software_edit.html'
+    #template_name = 'd3c/software_edit.html'
 
 
 @register_model_view(models.Software, name='delete')
 class SoftwareDeleteView(generic.ObjectDeleteView):
     """ Handles the request for deleting Software. """
     queryset = models.Software.objects.all()
+
+
+@register_model_view(models.SoftwareType)
+class SoftwareTypeView(generic.ObjectView):
+    """ Handles the request of displaying a single SoftwareType object. """
+    queryset = models.SoftwareType.objects.all()
+    table = tables.SoftwareTypeTable
+
+
+@register_model_view(models.SoftwareType, name='list', detail=False, path='')
+class SoftwareTypeListView(generic.ObjectListView):
+    """ Handles the request of displaying a multiple SoftwareType objects as table. """
+    def get_queryset(self, request):
+        queryset = models.SoftwareType.objects.all()
+        return queryset
+
+    table = tables.SoftwareTypeTable
+    #template_name = 'd3c/object_list_custom.html'
+
+@register_model_view(models.SoftwareType, name='add', detail=False)
+@register_model_view(models.SoftwareType, name='edit')
+class SoftwareTypeEditView(generic.ObjectEditView):
+    """ Handles the request for editing Software. """
+    queryset = models.SoftwareType.objects.all()
+    form = forms.SoftwareTypeForm
+#    template_name = 'd3c/software_edit.html'
+
+
+@register_model_view(models.SoftwareType, name='delete')
+class SoftwareTypeDeleteView(generic.ObjectDeleteView):
+    """ Handles the request for deleting SoftwareType. """
+    queryset = models.SoftwareType.objects.all()
 
 
 @register_model_view(models.Communication)

@@ -7,7 +7,7 @@ from django_tables2.utils import Accessor
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from netbox.tables import NetBoxTable, columns
-from .models import (DeviceFinding, Software, Communication, CommunicationFinding,
+from .models import (DeviceFinding, Software, SoftwareType, Communication, CommunicationFinding,
                      Mapping, ProductRelationship, XGenericUri, FileHash, Hash)
 from .device_update import get_current_value_for_device
 from .string_checker import StringChecker
@@ -404,7 +404,29 @@ class DeviceFindingTable(NetBoxTable):
 
 class SoftwareTable(NetBoxTable):
     """
-        Table for the Software model.
+    Table for the Software model.
+    """
+
+    software_type = tables.Column(
+        linkify=True
+    )
+
+    class Meta(NetBoxTable.Meta):
+        model = Software
+        fields = ('id', 'name', 'software_type', 'parent_rel_count', 'target_rel_count')
+        default_columns = ('id', 'name', 'software_type', 'parent_rel_count', 'target_rel_count')
+
+    def render_parent_rel_count(self, record):
+        return ProductRelationship.objects.filter(source_type_id=ContentType.objects.get_for_model(Software),
+                                                  source_id=record.pk).count()
+
+    def render_target_rel_count(self, record):
+        return ProductRelationship.objects.filter(destination_type_id=ContentType.objects.get_for_model(Software),
+                                                 destination_id=record.pk).count()
+
+class SoftwareTypeTable(NetBoxTable):
+    """
+        Table for the SoftwareType model.
     """
     sbom_url_count = tables.Column(empty_values=(), verbose_name='SBOM url Count')
 
@@ -421,27 +443,17 @@ class SoftwareTable(NetBoxTable):
     )
 
     class Meta(NetBoxTable.Meta):
-        model = Software
+        model = SoftwareType
         fields = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe',  'purl',
-                  'sbom_url_count', 'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
+                  'sbom_url_count', 'hashes_count', 'xgenericuri_count')
         default_columns = ('id', 'name', 'manufacturer', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_url_count',
-                           'hashes_count', 'xgenericuri_count', 'parent_rel_count', 'target_rel_count')
+                           'hashes_count', 'xgenericuri_count')
 
     def render_sbom_url_count(self, record):
         return len(record.sbom_urls) if record.sbom_urls else 0
 
     def render_hashes_count(self, record):
         return Hash.objects.filter(software=record.id).count()
-
-    def render_parent_rel_count(self, record):
-        return ProductRelationship.objects.filter(source_type_id=ContentType.objects.get_for_model(Software),
-                                                  source_id=record.pk).count()
-
-    def render_target_rel_count(self, record):
-        return ProductRelationship.objects.filter(destination_type_id=ContentType.objects.get_for_model(Software),
-                                                  destination_id=record.pk).count()
-
-
 
     def render_xgenericuri_count(self, record):
         return record.xgenericuri.count()
