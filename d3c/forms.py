@@ -747,14 +747,7 @@ class SoftwareFilterForm(NetBoxModelFilterSetForm):
     Input Form for filtering Software objects.
     """
     model = Software
-    devices = DynamicModelMultipleChoiceField(
-        queryset=Device.objects.all(),
-        required=False
-    )
     name = forms.CharField(required=False)
-    is_firmware = forms.BooleanField(required=False)
-    cpe = forms.CharField(required=False)
-    version = forms.CharField(required=False)
 
 
 class SoftwareImportForm(ModelForm):
@@ -765,7 +758,33 @@ class SoftwareImportForm(ModelForm):
 
     class Meta:
         model = Software
-        fields = ('name',) #, 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls')
+        fields = ('name',)
+
+
+class SoftwareTypeFilterForm(NetBoxModelFilterSetForm):
+    """
+    Input Form for filtering Software objects.
+    """
+    model = SoftwareType
+    devices = DynamicModelMultipleChoiceField(
+        queryset=Device.objects.all(),
+        required=False
+    )
+    name = forms.CharField(required=False)
+    is_firmware = forms.BooleanField(required=False)
+    cpe = forms.CharField(required=False)
+    version = forms.CharField(required=False)
+
+
+class SoftwareTypeImportForm(ModelForm):
+    """Form for importing Software"""
+
+    title = "Importing SoftwareType."
+    csvdata = forms.CharField(widget=forms.Textarea)
+
+    class Meta:
+        model = SoftwareType
+        fields = ('name', 'is_firmware', 'version', 'cpe', 'purl', 'sbom_urls')
 
 
 ####

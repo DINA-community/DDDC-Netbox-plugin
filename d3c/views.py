@@ -1270,6 +1270,8 @@ class SoftwareListView(generic.ObjectListView):
 
     actions = (AddObject, BulkExport)
     table = tables.SoftwareTable
+    filterset = filtersets.SoftwareFilterSet
+    filterset_form = forms.SoftwareFilterForm
     #template_name = 'd3c/object_list_custom.html'
 
 
@@ -1361,6 +1363,8 @@ class SoftwareTypeListView(generic.ObjectListView):
 
     table = tables.SoftwareTypeTable
     actions = (AddObject, BulkExport)
+    filterset = filtersets.SoftwareTypeFilterSet
+    filterset_form = forms.SoftwareTypeFilterForm
     #template_name = 'd3c/object_list_custom.html'
 
 @register_model_view(models.SoftwareType, name='add', detail=False)
