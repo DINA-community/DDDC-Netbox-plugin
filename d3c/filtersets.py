@@ -41,10 +41,6 @@ class SoftwareFilterSet(NetBoxModelFilterSet):
     """
     Definition of the Filterset for Software.
     """
-   # manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-   #     queryset=Manufacturer.objects.all(),
-   #     label='Manufacturer (ID)',
-   # )
     class Meta:
         model = Software
         fields = ('id', 'name')
@@ -63,7 +59,7 @@ class SoftwareTypeFilterSet(NetBoxModelFilterSet):
     )
     class Meta:
         model = SoftwareType
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'manufacturer', 'is_firmware', 'cpe', 'version')
 
     def search(self, queryset, name, value):
         return queryset.filter(name__icontains=value)

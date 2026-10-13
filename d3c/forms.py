@@ -766,8 +766,8 @@ class SoftwareTypeFilterForm(NetBoxModelFilterSetForm):
     Input Form for filtering Software objects.
     """
     model = SoftwareType
-    devices = DynamicModelMultipleChoiceField(
-        queryset=Device.objects.all(),
+    manufacturer = DynamicModelMultipleChoiceField(
+        queryset=Manufacturer.objects.all(),
         required=False
     )
     name = forms.CharField(required=False)
