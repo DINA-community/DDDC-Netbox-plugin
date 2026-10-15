@@ -20,6 +20,9 @@ urlpatterns = (
     path('software/', include(get_model_urls('d3c', 'software', detail=False))),
     path('software/<int:pk>/', include(get_model_urls('d3c', 'software'))),
 
+    path('softwaretype/', include(get_model_urls('d3c', 'softwaretype', detail=False))),
+    path('softwaretype/<int:pk>/', include(get_model_urls('d3c', 'softwaretype'))),
+    
     path('productrelationship/', include(get_model_urls('d3c', 'productrelationship', detail=False))),
     path('productrelationship/<int:pk>/', include(get_model_urls('d3c', 'productrelationship'))),
 

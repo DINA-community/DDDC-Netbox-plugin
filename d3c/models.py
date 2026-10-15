@@ -26,7 +26,52 @@ class Software(NetBoxModel):
         blank=False,
         null=False
     )
-    # Software/Manufacturer
+    software_type = models.ForeignKey(
+        to='d3c.SoftwareType',
+        related_name='software',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+
+    sourcerel = GenericRelation(
+        to='d3c.ProductRelationship',
+        content_type_field='source_type',
+        object_id_field='source_id'
+    )
+
+    destinationrel = GenericRelation(
+        to='d3c.ProductRelationship',
+        content_type_field='destination_type',
+        object_id_field='destination_id'
+    )
+
+    class Meta:
+        ordering = ['name', 'software_type']
+        verbose_name_plural = 'Software'
+
+    def __str__(self):
+        version = ' ' + self.software_type.version if self.software_type and self.software_type.version else ''
+        manufac = ' (' + self.software_type.manufacturer.name + ')' if (
+            self.software_type and self.software_type.manufacturer
+        ) else ''
+        return self.name + version + manufac
+
+    @property
+    def docs_url(self):
+        return None
+
+
+class SoftwareType(NetBoxModel):
+    """
+    SoftwareType represents a program and its specs.
+    For software instances see Software above.
+    """
+    name = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False
+    )
     manufacturer = models.ForeignKey(
         to='dcim.Manufacturer',
         on_delete=models.CASCADE,
@@ -65,29 +110,17 @@ class Software(NetBoxModel):
         null=True
     )
 
-    sourcerel = GenericRelation(
-        to='d3c.ProductRelationship',
-        content_type_field='source_type',
-        object_id_field='source_id'
-    )
-
-    destinationrel = GenericRelation(
-        to='d3c.ProductRelationship',
-        content_type_field='destination_type',
-        object_id_field='destination_id'
-    )
-
     xgenericuri = GenericRelation(
         to='d3c.XGenericUri',
     )
 
     class Meta:
         ordering = ['name', 'manufacturer', 'version', 'id']
-        verbose_name_plural = 'Software'
+        verbose_name_plural = 'SoftwareTypes'
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'manufacturer', 'version'],
-                name="software_unique",
+                name="software_type_unique",
                 nulls_distinct=False)
         ]
 
@@ -96,14 +129,10 @@ class Software(NetBoxModel):
         manufac = ' (' + self.manufacturer.name + ')' if self.manufacturer else ''
         return self.name + version + manufac
 
-    @property
-    def docs_url(self):
-        return None
-
 
 XGENERICURI_PARENT_MODELS = Q(
     Q(app_label='dcim', model='devicetype') |
-    Q(app_label='d3c', model='software')
+    Q(app_label='d3c', model='softwaretype')
 )
 
 

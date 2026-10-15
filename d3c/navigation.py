@@ -66,6 +66,20 @@ softwareItem = PluginMenuItem(
     buttons=software_buttons
 )
 
+software_type_buttons = [
+    PluginMenuButton(
+        link='plugins:d3c:softwaretype_add',
+        title='Add',
+        icon_class='mdi mdi-plus-thick',
+    )
+]
+
+softwareTypeItem = PluginMenuItem(
+    link='plugins:d3c:softwaretype_list',
+    link_text='Software Type',
+    buttons=software_type_buttons
+)
+
 productrel_buttons = [
     PluginMenuButton(
         link='plugins:d3c:productrelationship_add',
@@ -151,6 +165,7 @@ _menu_items_findings = (
 _menu_items_models = (
     communicationItem,
     softwareItem,
+    softwareTypeItem,
     productrelItem,
     xgenericuriItem,
     hashItem,
@@ -179,4 +194,4 @@ if plugin_settings.get("top_level_menu"):
     )
 else:
     menu_items = (findingItem, communicationFindingItem, communicationItem, softwareItem,
-                  productrelItem, xgenericuriItem, hashItem, filehashItem)
+                  softwareTypeItem. productrelItem, xgenericuriItem, hashItem, filehashItem)

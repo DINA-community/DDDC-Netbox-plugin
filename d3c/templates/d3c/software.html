@@ -33,16 +33,8 @@
               <td>{{ object.name|placeholder }}</td>
             </tr>
             <tr>
-              <th scope="row">Version</th>
-              <td>{{ object.version }}</td>
-            </tr>
-	    <tr>
-              <th scope="row">Manufacturer</th>
-              <td>{{ object.manufacturer| linkify }}</td>
-            </tr>
-            <tr>
-              <th scope="row">Is Firmware</th>
-              <td>{{ object.is_firmware|placeholder }}</td>
+              <th scope="row">Software Type</th>
+              <td>{{ object.software_type| linkify }}</td>
             </tr>
                 <tr>
                   <th scope="row">Relationships as parent</th>
@@ -62,47 +54,6 @@
           </table>
       </div>
       {% include 'inc/panels/tags.html' %}
-    </div>
-    <div class="col col-md-6">
-      <div class="card">
-        <h5 class="card-header">Identification Helper</h5>
-          <table class="table table-hover attr-table">
-            <tr>
-              <th scope="row">CPE</th>
-	            <td>{{ object.cpe }}</td>
-            </tr>
-            <tr>
-              <th scope="row">PURL</th>
-      	      <td>{{ object.purl }}</td>
-            </tr>
-            <tr>
-              <th scope="row">SBOM URLs</th>
-      	      <td>
-                  {% for url in object.sbom_urls %}
-                      {{ url }}<br />
-                  {% empty %}
-                      {{ ''|placeholder }}
-                  {% endfor %}
-              <td>
-            </tr>
-          <tr>
-              <th scope="row">XGenericUris</th>
-              <td>
-                {% for fh in object.xgenericuri.all %}
-                {{ fh | linkify}} <br />
-                {% endfor %}
-              </td>
-          </tr>
-              <tr>
-                  <th scope="row">Hashes</th>
-                  <td>
-                      {% for fh in object.hashes.all %}
-                      {{ fh | linkify}} <br />
-                      {% endfor %}
-                  </td>
-                </tr>
-          </table>
-      </div>
     </div>
   </div>
 
