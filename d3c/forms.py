@@ -706,7 +706,8 @@ class SoftwareForm(NetBoxModelForm):
     manufacturer = DynamicModelChoiceField(
         queryset=Manufacturer.objects.all(),
         required=True,
-        label="Manufacturer"
+        label="Manufacturer",
+        error_messages={'required': 'Manufacturer is required.'}
     )
         
     cpe = forms.CharField(required=False, label="CPE", validators=[validate_cpe])
