@@ -439,20 +439,24 @@ def find_interface(device, mac, ip):
 def add_service(device, ip_address, network_protocol, transport_protocol, application_protocol, port):
     """
     This function creates a new Service object.
+    Returns a tuple (success, error message).
     """
     if not application_protocol or application_protocol == 'False':
         application_protocol = 'Unspecified'
 
     if not transport_protocol or not port:
-        # NetBox requites both a protocol and a port
-        return False
+        # NetBox requires both a protocol and a port
+        return (False, 'Transport protocol and port must be set.')
 
+    # if port is a float, convert to int
     try:
-        port_number = int(port)
+        port_number = float(port)
     except (TypeError, ValueError):
-        return False
+        port_number = None
+    if port_number is None or not port_number.is_integer():
+        return (False, f'Port must be an integer, got "{port}".')
 
-    port_mapping = f'{transport_protocol.lower()}/{port_number}'
+    port_mapping = f'{transport_protocol.lower()}/{int(port_number)}'
 
     try:
         device_content_type = ContentType.objects.get_for_model(Device)

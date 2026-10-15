@@ -16,10 +16,20 @@ test_setup() {
   $doco start redis-cache
 }
 
+# docker-entrypoint.sh is the CMD, not ENTRYPOINT, so call it explicitly for the custom commands
+netbox_run() {
+  $doco run --rm netbox /opt/netbox/docker-entrypoint.sh "$@"
+}
+
+test_netbox_import_example_data() {
+  echo "⏱ Importing d3c example data"
+  netbox_run /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py d3c_example_data
+}
+
 test_netbox_unit_tests() {
   echo "⏱ Running d3c Unit Tests"
-  # Include NetBox's dcim.tests.test_views.DeviceTypeTestCase because d3c overrides NetBox's DeviceType add/edit views
-  $doco run --rm netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c dcim.tests.test_views.DeviceTypeTestCase
+  # D3C's changes to DeviceType's behaviour make the dcim.tests.test_views.DeviceTypeTestCase fail, so we can only execute our own tests
+  netbox_run /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py test d3c --noinput
 }
 
 test_cleanup() {
@@ -33,6 +43,8 @@ echo "🐳🐳🐳 Start testing"
 # Make sure the cleanup script is executed
 trap test_cleanup EXIT ERR
 test_setup
+
+test_netbox_import_example_data
 
 test_netbox_unit_tests
 

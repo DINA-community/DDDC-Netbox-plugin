@@ -5,7 +5,7 @@ description = "D3C plugin"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 readme = "README.md"
-requires-python = ">=3"
+requires-python = ">=3.6"
 keywords = ["netbox", "incident response"]
 classifiers = [
     "Development Status :: 4 - Beta",
