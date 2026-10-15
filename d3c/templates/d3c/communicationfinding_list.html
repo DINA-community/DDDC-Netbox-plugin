@@ -2,11 +2,12 @@
 
 {% block bulk_buttons %}
   {% if perms.extras.sync_configcontext %}
-    <button type="submit" name="_sync" formaction="{% url 'plugins:d3c:communicationfinding_bulk_map' %}" class="btn btn-primary">
-      <i class="mdi mdi-sync" aria-hidden="true"></i> Map Selected to Device
-    </button><button type="submit" name="_reject" formaction="{% url 'plugins:d3c:communicationfinding_bulk_reject' %}" class="btn btn-danger">
-      <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i> Reject Selected
-    </button>
+    <div class="btn-list bulk-action-buttons">
+      <button type="submit" name="_sync" formaction="{% url 'plugins:d3c:communicationfinding_bulk_map' %}" class="btn btn-primary">
+        <i class="mdi mdi-sync" aria-hidden="true"></i> Map Selected to Device
+      </button><button type="submit" name="_reject" formaction="{% url 'plugins:d3c:communicationfinding_bulk_reject' %}" class="btn btn-danger">
+        <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i> Reject Selected
+      </button>
+    </div>
   {% endif %}
-  {{ block.super }}
 {% endblock %}
