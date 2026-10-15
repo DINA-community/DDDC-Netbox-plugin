@@ -1091,8 +1091,6 @@ class FindingImportView(FormView):
                 except (AbortRequest, PermissionsViolation) as e:
                     form.add_error(None, e.message)
                     clear_events.send(sender=self)
-                except IntegrityError:
-                    pass
                 return render(request, self.template_name, {'form': form, 'examples': examples})
 
             if cleaned_data.get('submit_button') == 'string_matcher':
@@ -1186,7 +1184,6 @@ class FindingImportView(FormView):
                                     fullTableData[idx].append("[Error]")
                                     fullTableData[idx][0] += str(e)
                                 idx += 1
-
         if not form.cleaned_data.get('source', None) and form.cleaned_data.get('file_name', None):
             form.cleaned_data['source'] = form.cleaned_data.get('file_name')
         form = forms.FindingImportForm(form.cleaned_data, request.FILES)
@@ -1220,9 +1217,12 @@ class FindingImportView(FormView):
                 obj = findingForm.save()
                 new_objects.append(obj)
             else:
+                errors = []
                 for errorField, error in findingForm.errors.items():
                     form.add_error(errorField, error)
-                raise IntegrityError()
+                for error in findingForm.errors:
+                    errors.append(*findingForm.errors[error])
+                raise ValidationError(f"Error in create Device Finding: {', '.join(errors)}")
 
         return new_objects, countDup, countFail
 
