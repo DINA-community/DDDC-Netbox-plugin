@@ -64,12 +64,10 @@ class DeviceFindingImportViewTestCase(ModelViewTestCase):
             'submit_button': 'data_validate'
         }
         response = self.client.post(reverse('plugins:d3c:devicefinding_import'), data)
-        self.assertHttpStatus(response, 200)
-        res = str(response.content)
-        self.assertIn('Source:', res)
-        self.assertIn('{source}', res)
-        self.assertIn('IPadded', res)
-        self.assertIn('{confidence}', res)
+        self.assertContains(response, 'Source:')
+        self.assertContains(response, '{source}')
+        self.assertContains(response, 'IPadded')
+        self.assertContains(response, '{confidence}')
 
     def test_validate_without_data(self):
         self.add_permissions('d3c.import_devicefinding')
@@ -83,12 +81,10 @@ class DeviceFindingImportViewTestCase(ModelViewTestCase):
         response = self.client.get(reverse('plugins:d3c:devicefinding_import'))
         self.assertHttpStatus(response, 200)
         response = self.client.post(reverse('plugins:d3c:devicefinding_import'), data)
-        self.assertHttpStatus(response, 200)
-        res = str(response.content)
-        self.assertIn('Source:', res)
-        self.assertIn('{source}', res)
-        self.assertNotIn('IPadded', res)
-        self.assertIn('{confidence}', res)
+        self.assertContains(response, 'Source:')
+        self.assertContains(response, '{source}')
+        self.assertNotContains(response, 'IPadded')
+        self.assertContains(response, '{confidence}')
 
 
 class CommunicationFindingMapTestCase(ModelViewTestCase):
