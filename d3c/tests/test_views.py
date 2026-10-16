@@ -47,6 +47,46 @@ class DeviceFindingLookupViewTestCase(ModelViewTestCase):
         pass
 
 
+class DeviceFindingImportViewTestCase(ModelViewTestCase):
+    """ Automatic tests for DeviceFinding import"""
+    model = models.DeviceFinding
+
+    def test_validate_with_data(self):
+        self.add_permissions('d3c.import_devicefinding')
+        data = {
+            'data_string': (
+                'mac_address,ip_address,device_role,manufacturer,device_family,confidence,source\n'
+                '00:01:e6:44:19:ff,,IODevice2,Packard,SPS-5001,0.067,IPadded\n'
+                ',192.168.10.46,IODevice2,Packard,SPS-5001,0.067,IPadded\n'),
+            'format': 'csv',
+            'csv_delimiter': 'auto',
+            'step_field': 1,
+            'submit_button': 'data_validate'
+        }
+        response = self.client.post(reverse('plugins:d3c:devicefinding_import'), data)
+        self.assertContains(response, 'Source:')
+        self.assertContains(response, '{source}')
+        self.assertContains(response, 'IPadded')
+        self.assertContains(response, '{confidence}')
+
+    def test_validate_without_data(self):
+        self.add_permissions('d3c.import_devicefinding')
+        data = {
+            'data_string': 'mac_address,ip_address,device_role,manufacturer,device_family,confidence,source',
+            'format': 'csv',
+            'csv_delimiter': 'auto',
+            'step_field': 1,
+            'submit_button': 'data_validate'
+        }
+        response = self.client.get(reverse('plugins:d3c:devicefinding_import'))
+        self.assertHttpStatus(response, 200)
+        response = self.client.post(reverse('plugins:d3c:devicefinding_import'), data)
+        self.assertContains(response, 'Source:')
+        self.assertContains(response, '{source}')
+        self.assertNotContains(response, 'IPadded')
+        self.assertContains(response, '{confidence}')
+
+
 class CommunicationFindingMapTestCase(ModelViewTestCase):
     """TODO: CommunicationFindingMap"""
     model = models.CommunicationFinding

@@ -536,7 +536,7 @@ class FindingImportForm(forms.Form):
 
     step = 0
     step_field = forms.IntegerField(widget=forms.HiddenInput(), initial=1)
-    file_name = forms.CharField(widget=forms.HiddenInput(), initial='')
+    file_name = forms.CharField(widget=forms.HiddenInput(), initial='', required=False)
     data_string = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'font-monospace form-control',
