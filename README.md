@@ -8,7 +8,7 @@ In addition to the plugin code, this repository contains additional files for th
 ## Installation of the D3C Plugin
 
 As the D3C plugin is a standard NetBox plugin, it can be installed according to the [NetBox documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins).
-This plugin is compatible with NetBox version 4.6 and ensured by the docker file.
+This plugin is compatible with NetBox version 4.7 and ensured by the docker file.
 
 Additionally, this repository contains files from the community-driven Docker image to set up NetBox, along with all its dependencies, such as a PostgreSQL database. Please note: This is not an installation for a production environment, as it uses default passwords and API keys as specified in the project's files. Furthermore, this installation sets up NetBox in 'developer mode', which means that the user will receive detailed information in case of an exception. This is very useful for alpha and beta testing, which is why this installation option is described below:
 
@@ -16,18 +16,18 @@ Additionally, this repository contains files from the community-driven Docker im
 
 ### Set the proper netbox docker version
 
-D3C is only compatible with NetBox 4.6 and therefore with netbox-docker 5.0.2.
+D3C is only compatible with NetBox 4.7 and therefore with netbox-docker 5.1.1.
 The exact tag to use is the second part of `NETBOX_DOCKER_VERSION` in `.env`.
 For a new install, clone from that tag:
 
    ```bash
-   git clone -b 5.0.2 https://github.com/netbox-community/netbox-docker.git
+   git clone -b 5.1.1 https://github.com/netbox-community/netbox-docker.git
    ```
 
 For existing installations, switch to that tag before continuing:
 
    ```bash
-   git checkout 5.0.2
+   git checkout 5.1.1
    ```
 
 ### Add plugin
@@ -103,6 +103,18 @@ The Plugin can be added to any existing or new setup of netbox-docker by followi
    docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser
    ```
 
+7. Import some example data.
+
+   The default docker-compose setup executes this step by default on startup, with the `d3c-example-data` service.
+
+   In other setups, use this command to import the example data:
+
+   ```bash
+   docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py d3c_example_data
+   ```
+
+   Existing objects are left unchanged.
+
 ## Installation via Docker for developing and testing purposes
 
 ### Prerequisites
@@ -162,8 +174,8 @@ A default admin account (`admin`/`admin`) is created automatically via the `SUPE
 As with the other default passwords and API keys in this repo's files, this is not suitable for a production environment.
 
 A API token is also created automatically using the variables
-- `SUPERUSER_API_TOKEN` (40 characters)
-- `SUPERUSER_API_KEY` (12 characters)
+- `SUPERUSER_API_TOKEN` (exactly 40 characters)
+- `SUPERUSER_API_KEY` (exactly 12 characters)
 - `API_TOKEN_PEPPER_1` (at least 50 characters)
 in `docker-ci/env/netbox.env`.
 Use the resulting token as `Authorization: Bearer nbt_<Key>.<Token>`.

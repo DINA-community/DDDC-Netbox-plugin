@@ -267,11 +267,11 @@ def change_device_exposure(device, value):
             if exposure:
                 device.custom_field_data['exposure'] = exposure
                 device.save()
-                return True
+                return (True, None)
             else:
-                return False
+                return (False, None)
         except Exception as e:
-            return False
+            return (False, str(e))
 
 
 def change_device_safety(device, value):
@@ -439,17 +439,31 @@ def find_interface(device, mac, ip):
 def add_service(device, ip_address, network_protocol, transport_protocol, application_protocol, port):
     """
     This function creates a new Service object.
+    Returns a tuple (success, error message).
     """
-    result = False
-
     if not application_protocol or application_protocol == 'False':
         application_protocol = 'Unspecified'
 
+    if not transport_protocol or not port:
+        # NetBox requires both a protocol and a port
+        return (False, 'Transport protocol and port must be set.')
+
+    # if port is a float, convert to int
     try:
-        service, created = Service.objects.get_or_create(device=device,
+        port_number = float(port)
+    except (TypeError, ValueError):
+        port_number = None
+    if port_number is None or not port_number.is_integer():
+        return (False, f'Port must be an integer, got "{port}".')
+
+    port_mapping = f'{transport_protocol.lower()}/{int(port_number)}'
+
+    try:
+        device_content_type = ContentType.objects.get_for_model(Device)
+        service, created = Service.objects.get_or_create(parent_object_type=device_content_type,
+                                                         parent_object_id=device.pk,
                                                          name=application_protocol,
-                                                         protocol=transport_protocol,
-                                                         ports=[int(port)])
+                                                         port_mappings=[port_mapping])
         ip = get_ip(ip_address)
         if ip and created:
             ips = IPAddress.objects.filter(address=ip)
@@ -457,18 +471,15 @@ def add_service(device, ip_address, network_protocol, transport_protocol, applic
                 an_ip = IPAddress.objects.get(address=ip)
                 service.ipaddresses.add(an_ip)
                 service.save()
-
-        return True
     except Exception as e:
-        return False
+        return (False, str(e))
+    return (True, None)
 
 
 def add_software(device, name, firmware, version):
     """
     This function creates a new Software object.
     """
-    result = True
-
     name = name if name else 'Unspecified'
     version = version if version else 'Unspecified'
     firmware = firmware == "True"
@@ -482,6 +493,6 @@ def add_software(device, name, firmware, version):
                                                                       destination_type=ContentType.objects.get_for_model(Device),
                                                                       destination_id=device.pk)
     except Exception as e:
-        result = False
-    return result
+        return (False, str(e))
+    return (True, None)
 

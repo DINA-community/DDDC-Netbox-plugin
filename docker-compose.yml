@@ -15,7 +15,7 @@ services:
     user: "netbox:root"
     env_file: docker-ci/env/netbox.env
     healthcheck:
-      test: curl -f http://localhost:8080/login/ || exit 1
+      test: /opt/netbox/health.sh
       # the first start runs all netbox migrations and can take a while
       start_period: 10m
       timeout: 3s
@@ -26,6 +26,22 @@ services:
       - netbox-media-files:/opt/netbox/netbox/media:rw
       - netbox-reports-files:/opt/netbox/netbox/reports:rw
       - netbox-scripts-files:/opt/netbox/netbox/scripts:rw
+  # Imports the example data after the netbox container completed all migrations
+  d3c-example-data:
+    <<: *netbox
+    ports: []
+    restart: "no"
+    # `up --wait` requires a healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 2s
+    depends_on:
+      netbox:
+        condition: service_healthy
+    command:
+      - /opt/netbox/venv/bin/python
+      - /opt/netbox/netbox/manage.py
+      - d3c_example_data
   netbox-worker:
     <<: *netbox
     ports: []

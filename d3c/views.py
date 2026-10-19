@@ -4,6 +4,7 @@ from dcim.models import Device, DeviceType, DeviceRole, ModuleType, ModuleTypePr
 from extras.models import Tag
 from dcim.tables.devices import DeviceTable
 from dcim.forms.model_forms import DeviceTypeForm
+from django import forms as django_forms
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
@@ -473,7 +474,10 @@ class FindingListForDeviceView(View, TableMixin):
         if device_status:
             result_device &= change_device_status(self.device, device_status)
         if device_exposure:
-            result_device &= change_device_exposure(self.device, device_exposure)
+            ok, err = change_device_exposure(self.device, device_exposure)
+            result_device &= ok
+            if err:
+                messages.error(request, f'Error in change_device_exposure: {err}')
         if device_site:
             result_device &= change_device_site(self.device, device_site)
         if device_rack:
@@ -489,13 +493,23 @@ class FindingListForDeviceView(View, TableMixin):
         if device_hcpe:
             result_device &= change_device_hcpe(self.device, device_hcpe)
 
+        error_msgs = []
         for service in groupsData.get('service'):
-            result_service &= add_service(self.device, service.get('ip_address'),
-                                          service.get('network_protocol'), service.get('transport_protocol'),
-                                          service.get('application_protocol'), service.get('port'))
+            ok, err = add_service(self.device, service.get('ip_address'),
+                                  service.get('network_protocol'), service.get('transport_protocol'),
+                                  service.get('application_protocol'), service.get('port'))
+            result_service &= ok
+            if not ok:
+                error_msgs.append(err)
+        self.handle_error_messages(request, 'Error(s) in add_service: ', error_msgs)
 
+        error_msgs = []
         for software in groupsData.get('software'):
-            result_software &= add_software(self.device, software.get('software_name'), software.get('is_firmware'), software.get('version'))
+            ok, err = add_software(self.device, software.get('software_name'), software.get('is_firmware'), software.get('version'))
+            result_software &= ok
+            if not ok:
+                error_msgs.append(err)
+        self.handle_error_messages(request, 'Error(s) in add_software: ', error_msgs)
 
         if result_device and result_role and result_service and result_software:
             msg = f'Updated Device'
@@ -511,6 +525,13 @@ class FindingListForDeviceView(View, TableMixin):
 
         fullPath = request.get_full_path()
         return redirect(fullPath)
+
+    def handle_error_messages(self, request, prefix_msg, error_msgs):
+        if len(error_msgs) > 3:
+            error_msgs = error_msgs[0:3]
+            error_msgs.append('...')
+        if error_msgs:
+            messages.error(request, f'{prefix_msg}{", ".join(error_msgs)}')
 
 
 @register_model_view(models.DeviceFinding, name='add', detail=False)
@@ -702,7 +723,10 @@ class DeviceFindingApply(generic.ObjectEditView):
                     device_exposure_option = form.cleaned_data['device_exposure'] or '0'
                     if device_exposure_option != '0':
                         new_device_exposure = choices['exposure_c'][int(device_exposure_option)][1]
-                        result_device &= change_device_exposure(self.device, new_device_exposure)
+                        ok, err = change_device_exposure(self.device, new_device_exposure)
+                        result_device &= ok
+                        if err:
+                            messages.error(request, f'Error in change_device_exposure: {err}')
 
                     device_site_option = form.cleaned_data['device_site'] or '0'
                     if device_site_option != '0':
@@ -744,14 +768,18 @@ class DeviceFindingApply(generic.ObjectEditView):
 
                     service_option = form.cleaned_data.get('add_service', False)
                     if service_option:
-                        result_service = add_service(self.device, self.finding.ip_address,
-                                                     self.finding.network_protocol, self.finding.transport_protocol,
-                                                     self.finding.application_protocol, self.finding.port)
+                        result_service, err = add_service(self.device, self.finding.ip_address,
+                                                          self.finding.network_protocol, self.finding.transport_protocol,
+                                                          self.finding.application_protocol, self.finding.port)
+                        if not result_service:
+                            messages.error(request, f'Error in add_service: {err}')
 
                     software_option = form.cleaned_data.get('add_software', False)
                     if software_option:
-                        result_software = add_software(self.device, self.finding.software_name,
-                                                       self.finding.is_firmware, self.finding.version)
+                        result_software, err = add_software(self.device, self.finding.software_name,
+                                                            self.finding.is_firmware, self.finding.version)
+                        if not result_software:
+                            messages.error(request, f'Error in add_software: {err}')
 
                     if result_device and result_role and result_service and result_software:
                         try:
@@ -1469,26 +1497,43 @@ class DeviceTypeEditView(generic.ObjectEditView):
     """ This view handles the edit requests for the DeviceType model. """
     queryset = DeviceType.objects.all()
     form = forms.MyDeviceTypeForm
-    
+
+    def render_field_error(self, request, obj, message):
+        """
+        Re-render the form showing error messages inline.
+        Matches NetBox's behavior for form validation fails.
+
+        Based on NetBox's netbox.views.generic.object_views.ObjectEditView.post
+        """
+        form = self.form(data=request.POST, files=request.FILES, instance=obj)
+        form.is_valid()
+        form.add_error(None, message)
+        return render(request, self.template_name, {
+            'object': obj,
+            'form': form,
+            'return_url': self.get_return_url(request, obj),
+            **self.get_extra_context(request, obj),
+        })
+
     def post(self, request, *args, **kwargs):
         device_type = self.get_object(**kwargs)
-        manufacturer = request.POST['manufacturer']
-        model_number = request.POST['cf_model_number']
-        hardware_name = request.POST['cf_hardware_name']
-        hardware_version = request.POST['cf_hardware_version']
-        device_family = request.POST['cf_device_family']
-        part_number = request.POST['part_number']
-        default_platform = request.POST['default_platform']
-        if request.POST['exclude_from_utilization'] == "on":
-            exclude_from_utilization = True
-        else:
-            exclude_from_utilization = False
-        if request.POST['is_full_depth'] == "on":
-            is_full_depth = True
-        else:
-            is_full_depth = False
+        manufacturer = request.POST.get('manufacturer', '')
+        if not manufacturer:
+            return self.render_field_error(request, device_type, "Manufacturer is required.")
+        device_family = request.POST.get('cf_device_family', '')
+        if not device_family.strip():
+            return self.render_field_error(request, device_type, "Device family is required.")
+        model_number = request.POST.get('cf_model_number', '')
+        hardware_name = request.POST.get('cf_hardware_name', '')
+        hardware_version = request.POST.get('cf_hardware_version', '')
+        part_number = request.POST.get('part_number', '')
+        default_platform = request.POST.get('default_platform', '')
+        # Browsers omitt the value for unchecked boxes and send "on" for checked.AbortRequest
+        # APIs send "True"/"true"/"1" etc.
+        exclude_from_utilization = django_forms.BooleanField(required=False).to_python(request.POST.get('exclude_from_utilization'))
+        is_full_depth = django_forms.BooleanField(required=False).to_python(request.POST.get('is_full_depth'))
 
-        weight = request.POST['weight']
+        weight = request.POST.get('weight', '')
         if weight == '':
             weight = float(0)
         else:
@@ -1522,26 +1567,26 @@ class DeviceTypeEditView(generic.ObjectEditView):
                     a_devicetype.slug = model
                 else:
                     a_devicetype = DeviceType.objects.create(manufacturer=Manufacturer.objects.get(id=manufacturer), model=model)
-                    a_devicetype.slug = model  
-                    
+                    a_devicetype.slug = model
+
                 a_devicetype.custom_field_data['model_number'] = model_number
                 a_devicetype.custom_field_data['hardware_version'] = hardware_version
                 a_devicetype.custom_field_data['hardware_name'] = hardware_name
-                a_devicetype.custom_field_data['cpe'] = request.POST['cf_cpe']
-                a_devicetype.custom_field_data['device_description'] = request.POST['cf_device_description']
+                a_devicetype.custom_field_data['cpe'] = request.POST.get('cf_cpe', '')
+                a_devicetype.custom_field_data['device_description'] = request.POST.get('cf_device_description', '')
                 a_devicetype.custom_field_data['device_family'] = device_family
                 a_devicetype.part_number = part_number
                 if default_platform:
                     a_devicetype.default_platform = Platform.objects.get(id=default_platform)
-                a_devicetype.description = request.POST['description']
-                a_devicetype.u_height = request.POST['u_height']
+                a_devicetype.description = request.POST.get('description', '')
+                a_devicetype.u_height = request.POST.get('u_height') or 1.0
                 a_devicetype.exclude_for_utilization = exclude_from_utilization
                 a_devicetype.is_full_depth = is_full_depth
-                a_devicetype.subdevice_role = request.POST['subdevice_role']
-                a_devicetype.airflow = request.POST['airflow']
+                a_devicetype.subdevice_role = request.POST.get('subdevice_role', '')
+                a_devicetype.airflow = request.POST.get('airflow', '')
                 a_devicetype.weight = weight
-                a_devicetype.weight_unit = request.POST['weight_unit']
-                a_devicetype.comments = request.POST['comments']
+                a_devicetype.weight_unit = request.POST.get('weight_unit', '')
+                a_devicetype.comments = request.POST.get('comments', '')
                 if 'front_image-clear' in request.POST.keys():
                     print ("front_image_clear:", request.POST.get('front_image-clear'))
                     a_devicetype.front_image=None
@@ -1554,17 +1599,28 @@ class DeviceTypeEditView(generic.ObjectEditView):
                     a_devicetype.rear_image=default_storage.save(str(request._files.get('rear_image')),ContentFile(request._files.get('rear_image').read()))
                 if 'update' in request.POST.keys():
                     a_devicetype.update = request.POST['update']
+
+                # Save all the form data now, because touching the many-to-many relation (tags)
+                # silently discards all fields that we haven't saved yet
+                a_devicetype.save()
+
                 a_devicetype.tags.clear()
                 if 'tags' in request.POST.keys():
-                    print ("new:", request.POST.getlist('tags'))
                     for a_tag in request.POST.getlist('tags'):
                         a_devicetype.tags.add (Tag.objects.get(id=a_tag))
-                a_devicetype.save()
+
+                # Check if the user has permissions on the object being changed
+                # Based on NetBox's netbox.views.generic.object_views.ObjectEditView.post
+                if not self.queryset.filter(pk=a_devicetype.pk).exists():
+                    raise PermissionsViolation()
+
                 messages.success(request, f"DeviceType record stored")
         except IntegrityError as err:
             messages.error(request, "devicetype record not saved: " + str(err))
+        except PermissionsViolation as e:
+            return self.render_field_error(request, a_devicetype, e.message)
         return redirect(self.get_return_url(request))
-    
+
 # ModuleType add/edit view
 @register_model_view(ModuleType, 'add', detail=False)
 @register_model_view(ModuleType, 'edit')
